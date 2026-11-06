@@ -29,7 +29,8 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [ ] Prueba manual de la pantalla con ratón, teclado y mando.
 
 ## Fase 3 — Leyendas pedidas por Mauro
-- [ ] La Leyenda del Anzuelo: anzuelo garantizado desde la oleada elegida y probabilidad de maldición configurable.
+- [x] La Leyenda del Anzuelo: anzuelo garantizado desde la oleada elegida y probabilidad de maldición configurable.
+- [ ] Prueba manual de La Leyenda del Anzuelo (lista en `docs/CATALOGO_MODS.md`).
 - [ ] La Leyenda de la Cosecha Eterna: pérdida de recolección configurable tras la oleada 20 y hucha en modo infinito.
 
 ## Fase 4 — Más leyendas clásicas

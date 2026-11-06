@@ -30,6 +30,10 @@ No se declara compatibilidad por intuición. «Verificado en código» significa
 | DLC disponible / en la partida | `ProgressData.is_dlc_available()`, `RunData.enabled_dlcs` | `singletons/progress_data.gd`, `singletons/run_data.gd` | 0.1.0 |
 | Objetos y prohibiciones | `ItemService.items`, `ItemService.get_element()`, `RunData.get_player_items()`, `players_data[i].banned_items`, `CharacterData.banned_items` | `singletons/item_service.gd`, `singletons/run_data.gd` | 0.1.0 |
 | Oleadas | `RunData.current_wave`, `RunData.nb_of_waves`, `RunData.get_player_count()` | `singletons/run_data.gd` | 0.1.0 |
+| Tienda: generar artículos al entrar | `BaseShop.fill_shop_items(locked, player_index, just_entered_shop)`, `_shop_items[player_index]` = `[[ItemParentData, oleada], ...]` (bloqueados primero) | `ui/menus/shop/base_shop.gd` | Anzuelo |
+| Tienda: aplicar modificaciones de DLC a un objeto | `ItemService.apply_item_effect_modifications(item, player_index)` | `singletons/item_service.gd` | Anzuelo |
+| Anzuelo | `item_fish_hook`, efecto `curse_locked_items` (`Effect.key`, `Effect.value`), `max_nb` | `dlcs/dlc_1/items/fish_hook/` | Anzuelo |
+| Maldición de bloqueados al salir de la tienda | `BaseShop._on_tree_exited()` (no se reemplaza; solo se cambia el valor del efecto) | `ui/menus/shop/base_shop.gd` | Anzuelo |
 | Tema y fuentes de la interfaz | `res://resources/themes/base_theme.tres`, `res://resources/fonts/actual/base/*.tres` (opcionales) | recursos del juego | 0.1.0 |
 
 `tools/game_scripts.txt` contiene las rutas de scripts del juego que existen en la versión objetivo; la validación falla si una extensión apunta a otra ruta. Para regenerarlo tras una actualización, con una copia local descompilada del juego (fuera del repositorio):
@@ -42,7 +46,7 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 
 | Leyenda | Brotato | Estado |
 |---|---|---|
-| *(ninguna todavía)* | | |
+| La Leyenda del Anzuelo | 1.1.15.4 (DLC: datos de 1.1.14.5) | Verificado en código; no probado en el juego |
 
 ## Historial de pruebas
 

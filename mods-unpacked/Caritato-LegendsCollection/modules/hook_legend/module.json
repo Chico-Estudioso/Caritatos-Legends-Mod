@@ -1,0 +1,74 @@
+{
+	"id": "hook_legend",
+	"version": "1.0.0",
+	"category": "shop",
+	"name_key": "CLC_MOD_HOOK_LEGEND_NAME",
+	"description_key": "CLC_MOD_HOOK_LEGEND_DESC",
+	"enabled_by_default": true,
+	"requires_dlc": ["abyssal_terrors"],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "hook_legend.gd",
+	"extensions": [
+		"extensions/ui/menus/shop/base_shop.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": ["1.1.15.4"]
+	},
+	"origin": {
+		"type": "independent_recreation",
+		"inspired_by": [
+			"Mod de Workshop que garantizaba el Anzuelo en la tienda de la oleada 4 (autor por identificar)",
+			"Mod de Workshop que permitía cambiar la probabilidad de cada Anzuelo (autor por identificar)",
+			"Guaranteed Curse (Xterionix) y ImperfectHook (mojimoon) como referencia de la mecánica"
+		],
+		"notes": "Código propio. No se ha copiado código ni recursos de los mods originales."
+	},
+	"settings": [
+		{
+			"key": "guaranteed_enabled",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_HOOK_GUARANTEED",
+			"help_key": "CLC_HOOK_GUARANTEED_HELP"
+		},
+		{
+			"key": "guaranteed_wave",
+			"type": "int",
+			"default": 4,
+			"min": 1,
+			"max": 20,
+			"step": 1,
+			"label_key": "CLC_HOOK_WAVE",
+			"help_key": "CLC_HOOK_WAVE_HELP",
+			"depends_on": "guaranteed_enabled"
+		},
+		{
+			"key": "guaranteed_until_owned",
+			"type": "bool",
+			"default": false,
+			"label_key": "CLC_HOOK_UNTIL_OWNED",
+			"help_key": "CLC_HOOK_UNTIL_OWNED_HELP",
+			"depends_on": "guaranteed_enabled"
+		},
+		{
+			"key": "custom_chance_enabled",
+			"type": "bool",
+			"default": false,
+			"label_key": "CLC_HOOK_CUSTOM_CHANCE",
+			"help_key": "CLC_HOOK_CUSTOM_CHANCE_HELP"
+		},
+		{
+			"key": "chance_per_hook",
+			"type": "int",
+			"default": 30,
+			"min": 1,
+			"max": 100,
+			"step": 1,
+			"suffix": " %",
+			"label_key": "CLC_HOOK_CHANCE",
+			"depends_on": "custom_chance_enabled"
+		}
+	]
+}

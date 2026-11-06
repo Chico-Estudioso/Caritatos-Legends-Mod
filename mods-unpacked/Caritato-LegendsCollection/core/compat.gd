@@ -77,6 +77,15 @@ static func get_item_data(item_id: String):
 	return item_service.get_element(item_service.items, generate_hash(item_id))
 
 
+# Prepara un objeto base para ponerlo en la tienda igual que hace el juego con
+# los objetos garantizados (aplica las modificaciones de los DLC activos).
+static func prepare_shop_item(item_data, player_index: int):
+	var item_service = _singleton("ItemService")
+	if item_service == null or not item_service.has_method("apply_item_effect_modifications"):
+		return item_data
+	return item_service.apply_item_effect_modifications(item_data, player_index)
+
+
 static func count_player_items(player_index: int, item_id: String) -> int:
 	var run_data = _singleton("RunData")
 	if run_data == null:
