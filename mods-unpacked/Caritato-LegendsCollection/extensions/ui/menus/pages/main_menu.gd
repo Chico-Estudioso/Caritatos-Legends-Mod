@@ -2,19 +2,19 @@ extends "res://ui/menus/pages/main_menu.gd"
 
 # Añade el botón «Leyendas» al menú principal, debajo del botón «Mods».
 
-const LegendsAPI = preload("res://mods-unpacked/Caritato-LegendsCollection/core/legends_api.gd")
+const _CLC_CORE_API = preload("res://mods-unpacked/Caritato-LegendsCollection/core/legends_api.gd")
 
-var _clc_legends_button: Button = null
+var _clc_core_legends_button: Button = null
 
 
 # En Godot 3, _ready() se ejecuta en todos los niveles de herencia de forma
 # automática (primero el del juego), así que no se llama a ._ready().
 func _ready() -> void:
-	_clc_add_legends_button()
+	_clc_core_add_legends_button()
 
 
-func _clc_add_legends_button() -> void:
-	if _clc_legends_button != null and is_instance_valid(_clc_legends_button):
+func _clc_core_add_legends_button() -> void:
+	if _clc_core_legends_button != null and is_instance_valid(_clc_core_legends_button):
 		return
 	if mods_button == null or mods_button.get_parent() == null:
 		return
@@ -33,9 +33,9 @@ func _clc_add_legends_button() -> void:
 
 	var container: Node = mods_button.get_parent()
 	container.add_child_below_node(mods_button, button)
-	var _err = button.connect("pressed", self, "_clc_on_legends_button_pressed")
-	_clc_legends_button = button
+	var _err = button.connect("pressed", self, "_clc_core_on_legends_button_pressed")
+	_clc_core_legends_button = button
 
 
-func _clc_on_legends_button_pressed() -> void:
-	var _menu = LegendsAPI.open_menu("title", _clc_legends_button)
+func _clc_core_on_legends_button_pressed() -> void:
+	var _menu = _CLC_CORE_API.open_menu("title", _clc_core_legends_button)

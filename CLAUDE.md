@@ -50,7 +50,7 @@ Si la documentación contradice el código, no elijas en silencio: corrige la qu
 - Verifica nombres de funciones y rutas contra el código real del juego (ver `docs/COMPATIBILIDAD.md`). No inventes APIs.
 - Las llamadas a la API del juego compartidas van en `core/compat.gd`.
 - Una leyenda desactivada no instala extensiones ni crea su runtime. Si se desactiva en caliente, sus extensiones deben comportarse como el juego base.
-- Las extensiones deben ser finas: comprueban si la leyenda está activa y delegan en su runtime.
+- Las extensiones deben ser finas: comprueban si la leyenda está activa y delegan en su runtime. Sus constantes, variables y funciones auxiliares llevan prefijo `_clc_<leyenda>_` / `_CLC_<LEYENDA>_` (un miembro repetido en la cadena de herencia rompe el script).
 - Cada leyenda declara procedencia (`origin`) y compatibilidad en su `module.json`.
 - No se incluyen archivos del juego, código descompilado ni recursos propietarios en el repositorio. Las copias de referencia viven fuera (carpetas ignoradas en `.gitignore`).
 - No afirmes que una prueba ha pasado si no la has ejecutado; distingue pruebas automáticas de pruebas dentro de Brotato.

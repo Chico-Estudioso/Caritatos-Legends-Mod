@@ -1,0 +1,58 @@
+{
+	"id": "endless_harvest",
+	"version": "1.0.0",
+	"category": "economy",
+	"name_key": "CLC_MOD_ENDLESS_HARVEST_NAME",
+	"description_key": "CLC_MOD_ENDLESS_HARVEST_DESC",
+	"enabled_by_default": true,
+	"requires_dlc": [],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "endless_harvest.gd",
+	"extensions": [
+		"extensions/main.gd",
+		"extensions/singletons/item_service.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": ["1.1.15.4"]
+	},
+	"origin": {
+		"type": "independent_recreation",
+		"inspired_by": [
+			"No Harvesting Decay (Windows98, Workshop 3120330525)",
+			"Infinite Bank and Harvesting (Hypermarine_AuT)",
+			"Piggy Bank And Harvest Work After 20 Waves (dreadhead, Workshop 3638873783)",
+			"Endless-less (dami, Workshop 2938652633)"
+		],
+		"notes": "Código propio. No se ha copiado código ni recursos de los mods originales."
+	},
+	"settings": [
+		{
+			"key": "grow_in_endless",
+			"type": "bool",
+			"default": false,
+			"label_key": "CLC_HARVEST_GROW",
+			"help_key": "CLC_HARVEST_GROW_HELP"
+		},
+		{
+			"key": "decay_percent",
+			"type": "int",
+			"default": 0,
+			"min": 0,
+			"max": 100,
+			"step": 1,
+			"suffix": " %",
+			"label_key": "CLC_HARVEST_DECAY",
+			"help_key": "CLC_HARVEST_DECAY_HELP",
+			"depends_on": "!grow_in_endless"
+		},
+		{
+			"key": "piggy_bank_in_endless",
+			"type": "bool",
+			"default": false,
+			"label_key": "CLC_HARVEST_PIGGY",
+			"help_key": "CLC_HARVEST_PIGGY_HELP"
+		}
+	]
+}

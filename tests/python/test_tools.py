@@ -99,6 +99,22 @@ class ValidateTests(unittest.TestCase):
                          "default fuera de rango", "origin.type", "CLC_MISSING_NAME"):
             self.assertIn(expected, output)
 
+    def test_extension_members_need_prefix(self) -> None:
+        module_dir = self.mod_dir / "modules" / "prefix_legend"
+        (module_dir / "extensions").mkdir(parents=True)
+        (module_dir / "extensions" / "main.gd").write_text(
+            'extends "res://main.gd"\n\nconst LegendsAPI = null\nvar _clc_prefix_ok := 1\n', encoding="utf-8"
+        )
+        self.write_module("prefix_legend", {
+            "id": "prefix_legend", "version": "1.0.0", "category": "mechanics",
+            "name_key": "CLC_MOD_HOOK_LEGEND_NAME", "description_key": "CLC_MOD_HOOK_LEGEND_DESC",
+            "origin": {"type": "original"}, "extensions": ["extensions/main.gd"],
+        })
+        code, output = run_validate(self.mod_dir)
+        self.assertEqual(code, 1)
+        self.assertIn("'LegendsAPI' debe empezar por _clc_", output)
+        self.assertNotIn("'_clc_prefix_ok'", output)
+
     def test_unlisted_module_folder_is_rejected(self) -> None:
         (self.mod_dir / "modules" / "stray_legend").mkdir()
         code, output = run_validate(self.mod_dir)

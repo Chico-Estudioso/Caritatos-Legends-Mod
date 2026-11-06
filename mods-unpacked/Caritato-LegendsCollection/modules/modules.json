@@ -1,5 +1,6 @@
 {
 	"modules": [
-		"hook_legend"
+		"hook_legend",
+		"endless_harvest"
 	]
 }

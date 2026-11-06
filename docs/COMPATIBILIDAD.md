@@ -34,6 +34,10 @@ No se declara compatibilidad por intuición. «Verificado en código» significa
 | Tienda: aplicar modificaciones de DLC a un objeto | `ItemService.apply_item_effect_modifications(item, player_index)` | `singletons/item_service.gd` | Anzuelo |
 | Anzuelo | `item_fish_hook`, efecto `curse_locked_items` (`Effect.key`, `Effect.value`), `max_nb` | `dlcs/dlc_1/items/fish_hook/` | Anzuelo |
 | Maldición de bloqueados al salir de la tienda | `BaseShop._on_tree_exited()` (no se reemplaza; solo se cambia el valor del efecto) | `ui/menus/shop/base_shop.gd` | Anzuelo |
+| Recolección al final de la oleada | `Main._on_HarvestingTimer_timeout()`, `RunData.ENDLESS_HARVESTING_DECREASE` (20), `RunData.remove_stat()`, `Utils.get_stat()` | `main.gd`, `singletons/run_data.gd`, `singletons/utils.gd` | Cosecha Eterna |
+| Inicio de oleada (Hucha) | `Main._on_EntitySpawner_players_spawned(players)`, efecto `gain_pct_gold_start_wave`, `RunData.add_gold()`, `RunData.add_tracked_value()` | `main.gd`, `singletons/run_data.gd` | Cosecha Eterna |
+| Objetos vetados en infinito | `ItemService.banned_items_for_endless` | `singletons/item_service.gd` | Cosecha Eterna |
+| Texto de la estadística | `ItemService.get_stat_description_text(stat_hash, value, player_index)`, `Text.text()`, clave `INFO_POS_STAT_HARVESTING_LIMITED` | `singletons/item_service.gd`, `singletons/text.gd` | Cosecha Eterna |
 | Tema y fuentes de la interfaz | `res://resources/themes/base_theme.tres`, `res://resources/fonts/actual/base/*.tres` (opcionales) | recursos del juego | 0.1.0 |
 
 `tools/game_scripts.txt` contiene las rutas de scripts del juego que existen en la versión objetivo; la validación falla si una extensión apunta a otra ruta. Para regenerarlo tras una actualización, con una copia local descompilada del juego (fuera del repositorio):
@@ -47,6 +51,7 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 | Leyenda | Brotato | Estado |
 |---|---|---|
 | La Leyenda del Anzuelo | 1.1.15.4 (DLC: datos de 1.1.14.5) | Verificado en código; no probado en el juego |
+| La Leyenda de la Cosecha Eterna | 1.1.15.4 | Verificado en código; no probado en el juego |
 
 ## Historial de pruebas
 

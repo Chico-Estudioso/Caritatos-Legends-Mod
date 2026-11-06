@@ -14,8 +14,8 @@ Fuentes consultadas el 2026-11-06: repositorios públicos de GitHub y buscadores
 | | Mod de probabilidad del anzuelo configurable | Por identificar | Por identificar | Cambia la probabilidad de maldición de cada anzuelo | — | Recreación independiente | Incluida (sin probar en el juego) |
 | | Guaranteed Curse | Xterionix | [GitHub](https://github.com/Xterionix/BrotatoMod-GuaranteedCurse) | Garantiza que al menos un objeto bloqueado se maldiga | Sin licencia | Recreación (cubierta con probabilidad 100 %) | Referencia |
 | | ImperfectHook (obsoleto) | mojimoon | [GitHub](https://github.com/mojimoon/BrotatoMods/tree/main/deprecated/Mojimoon-ImperfectHook) | El anzuelo maldice siempre los objetos bloqueados | Sin licencia | Referencia | Referencia |
-| **La Leyenda de la Cosecha Eterna** (`endless_harvest`) | No Harvesting Decay | Windows98 | Workshop 3120330525 (retirado, «OUTDATED») | Sin pérdida de recolección tras la oleada 20 | — | Recreación independiente | Planificada |
-| | Infinite Bank and Harvesting | Hypermarine_AuT | Workshop (página no localizada) | Hucha y recolección siguen funcionando tras la oleada 20 | — | Recreación independiente | Planificada |
+| **La Leyenda de la Cosecha Eterna** (`endless_harvest`) | No Harvesting Decay | Windows98 | Workshop 3120330525 (retirado, «OUTDATED») | Sin pérdida de recolección tras la oleada 20 | — | Recreación independiente | Incluida (sin probar en el juego) |
+| | Infinite Bank and Harvesting | Hypermarine_AuT | Workshop (página no localizada) | Hucha y recolección siguen funcionando tras la oleada 20 | — | Recreación independiente | Incluida (sin probar en el juego) |
 | | Piggy Bank And Harvest Work After 20 Waves | dreadhead | Workshop 3638873783 | Igual que el anterior, actualizado | — | Recreación independiente | Referencia |
 | | Endless-less | dami | Workshop 2938652633 | Hucha/recolección en infinito y deslizadores de escalado infinito | — | Recreación independiente | Referencia |
 | | Stronger Harvesting | CommanderAstern | [GitHub](https://github.com/CommanderAstern/brotato-stronger-harvesting), Workshop 3780496839 | Crecimiento base de recolección configurable y crecimiento en infinito | Sin licencia | Referencia | Referencia |
@@ -56,3 +56,20 @@ Pruebas manuales (Brotato con Abyssal Terrors activo):
 - [ ] Al apagar la probabilidad personalizada, el texto vuelve al valor del juego.
 - [ ] Sin el DLC activo, la leyenda no hace nada y la pantalla avisa de que necesita Abyssal Terrors.
 - [ ] Cooperativo: cada jugador recibe su Anzuelo en su tienda.
+
+### La Leyenda de la Cosecha Eterna (`endless_harvest`)
+
+Cómo funciona en el juego (verificado en el código de 1.1.15.4):
+- Al final de cada oleada, `Main._on_HarvestingTimer_timeout()` hace crecer la recolección un `harvesting_growth` % (5 % base, más Granjero y Corona). Si `RunData.current_wave > RunData.nb_of_waves` (oleada 21 en adelante del modo infinito), en su lugar quita `ceil(recolección × 20 %)` (`RunData.ENDLESS_HARVESTING_DECREASE`).
+- La Hucha (`gain_pct_gold_start_wave`) solo da su interés positivo hasta la oleada 20 (`Main._on_EntitySpawner_players_spawned`).
+- La leyenda: con «Seguir creciendo» ejecuta el crecimiento del propio juego tratando la oleada como la última normal; con un porcentaje distinto del 20 % quita ese porcentaje en lugar del del juego; con la Hucha activada, da el interés al empezar cada oleada posterior a la 20. Con 20 % y sin crecer, deja actuar al juego tal cual.
+- La Hucha y la Corona figuran en `ItemService.banned_items_for_endless`; la leyenda las retira de esa lista cuando vuelven a servir.
+
+Pruebas manuales (modo infinito, pasando de la oleada 20):
+- [ ] Por defecto (0 %): tras la oleada 21 la recolección no baja; el texto de la estadística dice que se mantiene.
+- [ ] Con 10 %: baja aproximadamente la mitad que en el juego base.
+- [ ] Con «Seguir creciendo»: sube como en las oleadas normales; con la Corona, su contador también avanza.
+- [ ] Con la Hucha activada y materiales guardados: al empezar la oleada 21 se recibe el interés y el contador de la Hucha aumenta.
+- [ ] Antes de la oleada 21, todo funciona exactamente como en el juego base.
+- [ ] Desactivar la leyenda en pausa: en la siguiente oleada vuelve el 20 % del juego.
+- [ ] Cooperativo: se aplica a cada jugador con su propia recolección y su Hucha.

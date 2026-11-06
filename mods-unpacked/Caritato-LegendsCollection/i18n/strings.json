@@ -37,7 +37,17 @@
 		"CLC_HOOK_UNTIL_OWNED_HELP": "Si no lo compras, vuelve a aparecer en cada tienda posterior hasta que tengas al menos un anzuelo.",
 		"CLC_HOOK_CUSTOM_CHANCE": "Probabilidad personalizada por anzuelo",
 		"CLC_HOOK_CUSTOM_CHANCE_HELP": "Apagado: se usa el valor del juego. Encendido: cada anzuelo da esta probabilidad de maldecir los objetos y armas bloqueados al salir de la tienda (se suma por anzuelo; 100 % = siempre).",
-		"CLC_HOOK_CHANCE": "Probabilidad por anzuelo"
+		"CLC_HOOK_CHANCE": "Probabilidad por anzuelo",
+		"CLC_MOD_ENDLESS_HARVEST_NAME": "La Leyenda de la Cosecha Eterna",
+		"CLC_MOD_ENDLESS_HARVEST_DESC": "En el modo infinito, a partir de la oleada 21, el juego quita un 20 % de la recolección al final de cada oleada. Aquí eliges cuánto se pierde (hasta 0 %), si sigue creciendo como antes y si la Hucha sigue funcionando.",
+		"CLC_HARVEST_GROW": "Seguir creciendo en el modo infinito",
+		"CLC_HARVEST_GROW_HELP": "La recolección sigue aumentando como en las oleadas 1-20 (con el Granjero y la Corona incluidos) en lugar de bajar.",
+		"CLC_HARVEST_DECAY": "Pérdida de recolección por oleada",
+		"CLC_HARVEST_DECAY_HELP": "Se aplica al final de cada oleada del modo infinito. El juego usa un 20 %; con 0 % la recolección se mantiene.",
+		"CLC_HARVEST_PIGGY": "La Hucha sigue funcionando en el modo infinito",
+		"CLC_HARVEST_PIGGY_HELP": "La Hucha vuelve a dar su interés al empezar cada oleada después de la 20 y puede aparecer en la tienda.",
+		"CLC_HARVEST_INFO_GROW": "Consigues {0} materiales y XP al acabar una oleada. Aumenta un {1}% con cada activación, también en el modo infinito.",
+		"CLC_HARVEST_INFO_KEEP": "Consigues {0} materiales y XP al acabar una oleada. Aumenta un {1}% con cada activación hasta la oleada {2} y después se mantiene."
 	},
 	"en": {
 		"CLC_MENU_BUTTON": "Legends",
@@ -77,6 +87,16 @@
 		"CLC_HOOK_UNTIL_OWNED_HELP": "If you skip it, it shows up again in every later shop until you own at least one hook.",
 		"CLC_HOOK_CUSTOM_CHANCE": "Custom chance per hook",
 		"CLC_HOOK_CUSTOM_CHANCE_HELP": "Off: the game value is used. On: each hook gives this chance to curse locked items and weapons when leaving the shop (it stacks per hook; 100% = always).",
-		"CLC_HOOK_CHANCE": "Chance per hook"
+		"CLC_HOOK_CHANCE": "Chance per hook",
+		"CLC_MOD_ENDLESS_HARVEST_NAME": "The Legend of the Eternal Harvest",
+		"CLC_MOD_ENDLESS_HARVEST_DESC": "In endless mode, from wave 21 onwards, the game removes 20% of your harvesting at the end of every wave. Choose how much is lost (down to 0%), whether it keeps growing like before, and whether the Piggy Bank keeps working.",
+		"CLC_HARVEST_GROW": "Keep growing in endless mode",
+		"CLC_HARVEST_GROW_HELP": "Harvesting keeps increasing like in waves 1-20 (Farmer and Crown included) instead of going down.",
+		"CLC_HARVEST_DECAY": "Harvesting lost per wave",
+		"CLC_HARVEST_DECAY_HELP": "Applied at the end of every endless wave. The game uses 20%; with 0% harvesting stays the same.",
+		"CLC_HARVEST_PIGGY": "Piggy Bank keeps working in endless mode",
+		"CLC_HARVEST_PIGGY_HELP": "The Piggy Bank pays its interest again at the start of every wave after 20 and can show up in the shop.",
+		"CLC_HARVEST_INFO_GROW": "You earn {0} materials and XP at the end of a wave. Increases by {1}% every time it activates, endless mode included.",
+		"CLC_HARVEST_INFO_KEEP": "You earn {0} materials and XP at the end of a wave. Increases by {1}% every time it activates until wave {2}, then stays the same."
 	}
 }

@@ -68,7 +68,7 @@ El runtime recibe `setup(core, module_id)` al crearse y `on_config_changed()` ca
 Reglas de Godot 3 que hay que respetar:
 - `_ready`, `_enter_tree`, `_process`, `_input`… se ejecutan en todos los niveles de herencia automáticamente: no se llama a `._ready()`.
 - Para métodos normales, `.metodo(args)` llama a la implementación original y mantiene la cadena con otros mods.
-- Varias leyendas pueden extender el mismo script; ModLoader encadena las extensiones.
+- Varias leyendas pueden extender el mismo script; ModLoader encadena las extensiones. Como en Godot 3 un miembro repetido en la cadena de herencia es un error, las constantes, variables y funciones auxiliares propias de una extensión llevan un prefijo único por leyenda (`_CLC_HOOK_API`, `_clc_core_legends_button`…). `tools/validate.py` lo comprueba.
 
 ## Definición de una leyenda (`module.json`)
 
@@ -97,7 +97,7 @@ Reglas de Godot 3 que hay que respetar:
 
 - `category`: `mechanics`, `shop`, `economy`, `balance`, `content` o `quality_of_life`.
 - Tipos de ajuste: `bool`, `int`, `float` y `enum` (`options` + textos `<label_key>_<OPCION>`).
-- `depends_on`: el control se atenúa si el ajuste booleano indicado está apagado.
+- `depends_on`: el control se atenúa si el ajuste booleano indicado está apagado (`"clave"`) o encendido (`"!clave"`).
 - `compatibility.status`: `tested` solo cuando se ha probado dentro de Brotato en esas versiones.
 - `origin.type`: `independent_recreation`, `reused_with_license`, `reused_with_permission` u `original`.
 

@@ -39,6 +39,8 @@ SETTING_KEY_RE = re.compile(r"^[a-z][a-z0-9_]{0,47}$")
 TEXT_KEY_RE = re.compile(r"\bCLC_[A-Z0-9_]+\b")
 EXTENDS_RE = re.compile(r'^extends\s+"(res://[^"]+)"', re.MULTILINE)
 RES_PATH_RE = re.compile(r'"(res://mods-unpacked/[^"]+)"')
+MEMBER_RE = re.compile(r"^(?:onready\s+)?(const|var)\s+([A-Za-z_][A-Za-z0-9_]*)", re.MULTILINE)
+HELPER_FUNC_RE = re.compile(r"^(?:static\s+)?func\s+(_clc_[A-Za-z0-9_]*)", re.MULTILINE)
 
 REQUIRED_MANIFEST_ROOT = ["name", "namespace", "version_number", "website_url", "description", "dependencies", "extra"]
 REQUIRED_MANIFEST_GODOT = ["authors", "compatible_mod_loader_version", "compatible_game_version"]
@@ -275,7 +277,7 @@ def validate_modules(report: Report, game_scripts: set[str]) -> tuple[list[str],
         for i, setting in enumerate(settings):
             text_keys.extend(validate_setting(module_id, i, setting, seen, report))
         for setting in settings:
-            if isinstance(setting, dict) and setting.get("depends_on") and setting["depends_on"] not in seen:
+            if isinstance(setting, dict) and setting.get("depends_on") and setting["depends_on"].lstrip("!") not in seen:
                 report.error(f"[{module_id}] ajuste '{setting.get('key')}' depende de un ajuste inexistente")
 
     for module_id, definition in definitions.items():
@@ -302,6 +304,10 @@ def depends_on(definitions: dict, start: str, target: str, visited: set) -> bool
     return False
 
 
+# target -> nombre -> archivo, para detectar choques entre extensiones del mismo script
+EXTENSION_MEMBERS: dict[str, dict[str, str]] = {}
+
+
 def validate_extension(path: Path, game_scripts: set[str], report: Report) -> None:
     text = path.read_text(encoding="utf-8")
     match = EXTENDS_RE.search(text)
@@ -309,6 +315,18 @@ def validate_extension(path: Path, game_scripts: set[str], report: Report) -> No
         report.error(f"{rel(path)}: una extensión debe empezar con extends \"res://...\"")
         return
     target = match.group(1)
+
+    # En Godot 3 un miembro con el mismo nombre que otro de la cadena de herencia
+    # es un error, así que las constantes y variables propias llevan prefijo y
+    # no pueden repetirse entre extensiones del mismo script.
+    members = EXTENSION_MEMBERS.setdefault(target, {})
+    names = [name for _, name in MEMBER_RE.findall(text)] + HELPER_FUNC_RE.findall(text)
+    for name in names:
+        if not name.lower().startswith("_clc_"):
+            report.error(f"{rel(path)}: '{name}' debe empezar por _clc_ / _CLC_ para no chocar con el juego u otros mods")
+        if name in members and members[name] != rel(path):
+            report.error(f"{rel(path)}: '{name}' ya existe en {members[name]} (misma cadena de {target})")
+        members.setdefault(name, rel(path))
     if target.startswith("res://mods-unpacked/"):
         report.error(f"{rel(path)}: una extensión debe extender un script del juego, no del mod")
     elif game_scripts and target not in game_scripts:
@@ -414,6 +432,7 @@ def main() -> int:
     args = parser.parse_args()
 
     report = Report()
+    EXTENSION_MEMBERS.clear()
     if not MOD_DIR.is_dir():
         print(f"ERROR: no existe {rel(MOD_DIR)}")
         return 1
