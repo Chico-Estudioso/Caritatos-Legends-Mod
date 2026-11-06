@@ -1,0 +1,65 @@
+{
+	"id": "supermarket_legend",
+	"version": "1.0.0",
+	"category": "shop",
+	"name_key": "CLC_MOD_SUPERMARKET_LEGEND_NAME",
+	"description_key": "CLC_MOD_SUPERMARKET_LEGEND_DESC",
+	"enabled_by_default": true,
+	"requires_dlc": [],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "supermarket_legend.gd",
+	"extensions": [
+		"extensions/ui/menus/shop/base_shop.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": ["1.1.15.4"]
+	},
+	"origin": {
+		"type": "independent_recreation",
+		"inspired_by": [
+			"Supermarket / 超市 (duyang97, Workshop 2993532272, retirado)"
+		],
+		"notes": "Código propio. No se ha copiado código ni recursos del mod original."
+	},
+	"settings": [
+		{
+			"key": "orders_per_shop",
+			"type": "int",
+			"default": 1,
+			"min": 1,
+			"max": 20,
+			"step": 1,
+			"label_key": "CLC_SUPER_ORDERS",
+			"help_key": "CLC_SUPER_ORDERS_HELP"
+		},
+		{
+			"key": "order_fee_percent",
+			"type": "int",
+			"default": 0,
+			"min": 0,
+			"max": 200,
+			"step": 5,
+			"suffix": " %",
+			"label_key": "CLC_SUPER_FEE",
+			"help_key": "CLC_SUPER_FEE_HELP"
+		},
+		{
+			"key": "max_tier",
+			"type": "int",
+			"default": 4,
+			"min": 1,
+			"max": 4,
+			"step": 1,
+			"label_key": "CLC_SUPER_MAX_TIER",
+			"help_key": "CLC_SUPER_MAX_TIER_HELP"
+		},
+		{
+			"key": "include_weapons",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_SUPER_WEAPONS"
+		}
+	]
+}

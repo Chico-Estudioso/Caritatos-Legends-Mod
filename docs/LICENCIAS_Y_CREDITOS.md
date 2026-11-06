@@ -32,6 +32,7 @@ Se documentan al incorporar cada leyenda, con enlace al original y la confirmaci
 | La Leyenda de la Cosecha Eterna | Endless-less | dami | Steam Workshop 2938652633 | Referencia de la mecánica | No |
 | La Leyenda del Mercader | FreeRerolls | Por identificar | Steam Workshop | La idea de rerolls gratis | No |
 | La Leyenda del Mercader | SIFD's Mod | SIFD | Steam Workshop | La idea de precios y rerolls sin inflación por oleada | No |
+| La Leyenda del Supermercado | Supermarket (超市) | duyang97 | Steam Workshop 2993532272 (retirado) | La idea de un botón en la tienda para elegir artículos | No |
 | La Leyenda de la Cosecha Eterna | Stronger Harvesting | CommanderAstern | https://github.com/CommanderAstern/brotato-stronger-harvesting | Referencia de la opción de crecer en infinito | No (repositorio sin licencia) |
 
 ## Herramientas y dependencias del juego

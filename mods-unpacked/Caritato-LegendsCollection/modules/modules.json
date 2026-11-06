@@ -2,6 +2,7 @@
 	"modules": [
 		"hook_legend",
 		"endless_harvest",
-		"merchant_legend"
+		"merchant_legend",
+		"supermarket_legend"
 	]
 }

@@ -39,6 +39,9 @@ No se declara compatibilidad por intuición. «Verificado en código» significa
 | Objetos vetados en infinito | `ItemService.banned_items_for_endless` | `singletons/item_service.gd` | Cosecha Eterna |
 | Texto de la estadística | `ItemService.get_stat_description_text(stat_hash, value, player_index)`, `Text.text()`, clave `INFO_POS_STAT_HARVESTING_LIMITED` | `singletons/item_service.gd`, `singletons/text.gd` | Cosecha Eterna |
 | Precios de la tienda | `ItemService.get_value(wave, base_value, player_index, affected_by_items_price_stat, is_weapon, item_id)`, `ItemService.get_reroll_price(wave, reroll_count, player_index)` → `[precio, descuento]` | `singletons/item_service.gd` | Mercader |
+| Catálogo del Supermercado | `ItemService.get_pool(tier, TierData)`, `ItemService.item_groups`, `RunData.get_remaining_max_nb_item()`, efectos `no_melee_weapons`, `no_ranged_weapons`, `min/max_weapon_tier`, `remove_shop_items`, `EntityService.is_weapon_spawning_structure()` | `singletons/item_service.gd`, `singletons/run_data.gd`, `singletons/entity_service.gd` | Supermercado |
+| Colocar artículos en la tienda | `BaseShop._get_reroll_button()`, `_get_shop_items_container()`, `ShopItemsContainer.set_shop_items()`, `is_shop_item_locked_visually()`, `unlock_all_shop_items_visually()`, `BaseShop._update_visual_locks()`, `set_reroll_button_price()`, `ItemService.NB_SHOP_ITEMS` | `ui/menus/shop/base_shop.gd`, `ui/menus/shop/shop_items_container.gd` | Supermercado |
+| Cobro en la moneda del jugador | `RunData.get_player_currency()`, `RunData.remove_currency()` | `singletons/run_data.gd` | Supermercado |
 | Tema y fuentes de la interfaz | `res://resources/themes/base_theme.tres`, `res://resources/fonts/actual/base/*.tres` (opcionales) | recursos del juego | 0.1.0 |
 
 `tools/game_scripts.txt` contiene las rutas de scripts del juego que existen en la versión objetivo; la validación falla si una extensión apunta a otra ruta. Para regenerarlo tras una actualización, con una copia local descompilada del juego (fuera del repositorio):
@@ -54,6 +57,7 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 | La Leyenda del Anzuelo | 1.1.15.4 (DLC: datos de 1.1.14.5) | Verificado en código; no probado en el juego |
 | La Leyenda de la Cosecha Eterna | 1.1.15.4 | Verificado en código; no probado en el juego |
 | La Leyenda del Mercader | 1.1.15.4 | Verificado en código; no probado en el juego |
+| La Leyenda del Supermercado | 1.1.15.4 | Verificado en código; no probado en el juego; solo tienda de un jugador |
 
 ## Historial de pruebas
 

@@ -37,7 +37,9 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 ## Fase 4 — Más leyendas clásicas
 - [x] Priorizar candidatos del catálogo por interés, estado técnico y licencia.
 - [x] La Leyenda del Mercader (FreeRerolls + SIFD's Mod).
-- [ ] La Leyenda del Supermercado (Supermarket).
+- [x] La Leyenda del Supermercado (Supermarket), versión de un jugador.
+- [ ] Supermercado en cooperativo.
+- [ ] Siguientes candidatas: Rainbow Crate (Apache-2.0), Second Chance (MIT), contador de rerolls, medidor de daño.
 - [ ] Una leyenda por PR, con procedencia y pruebas.
 
 ## Fase 5 — Integración y pruebas

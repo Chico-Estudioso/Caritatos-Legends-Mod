@@ -152,6 +152,109 @@ static func prepare_shop_item(item_data, player_index: int):
 	return item_service.apply_item_effect_modifications(item_data, player_index)
 
 
+# Precio de un artículo en la tienda de la oleada actual (con los modificadores
+# del juego y de otras leyendas, como el Mercader).
+static func get_shop_price(item, player_index: int) -> int:
+	var item_service = _singleton("ItemService")
+	if item_service == null:
+		return 0
+	return item_service.get_value(current_wave(), item.value, player_index, true, is_weapon(item), item.my_id_hash)
+
+
+static func is_weapon(item) -> bool:
+	return item != null and "weapon_id" in item
+
+
+# Objetos o armas desbloqueados de un tier que la tienda puede ofrecer.
+static func get_shop_pool(tier: int, weapons: bool) -> Array:
+	var item_service = _singleton("ItemService")
+	if item_service == null or not item_service.has_method("get_pool"):
+		return []
+	var tier_data: Dictionary = _script_constant(item_service, "TierData", {})
+	var type_key := "WEAPONS" if weapons else "ITEMS"
+	if not tier_data.has(type_key):
+		return []
+	return item_service.get_pool(tier, tier_data[type_key])
+
+
+# Mismas restricciones que aplica el juego al generar la tienda: prohibiciones,
+# grupos vetados del personaje, etiquetas retiradas y máximo por objeto.
+static func can_offer_item(item, player_index: int) -> bool:
+	var run_data = _singleton("RunData")
+	if run_data == null:
+		return false
+	if is_item_banned_for_player(player_index, item.my_id) or is_in_banned_item_group(player_index, item.my_id):
+		return false
+	if run_data.has_method("get_remaining_max_nb_item") and run_data.get_remaining_max_nb_item(item, player_index) <= 0:
+		return false
+	var keys = _singleton("Keys")
+	if keys != null and "hash_to_string" in keys:
+		for tag_hash in run_data.get_player_effect(generate_hash("remove_shop_items"), player_index):
+			if keys.hash_to_string.has(tag_hash) and item.tags.has(keys.hash_to_string[tag_hash]):
+				return false
+	return true
+
+
+static func can_offer_weapon(weapon, player_index: int) -> bool:
+	var run_data = _singleton("RunData")
+	if run_data == null:
+		return false
+	if is_item_banned_for_player(player_index, weapon.my_id):
+		return false
+	# WeaponData.Type: 0 = cuerpo a cuerpo, 1 = a distancia.
+	if run_data.get_player_effect_bool(generate_hash("no_melee_weapons"), player_index) and weapon.type == 0:
+		return false
+	if run_data.get_player_effect_bool(generate_hash("no_ranged_weapons"), player_index) and weapon.type == 1:
+		return false
+	var min_tier = run_data.get_player_effect(generate_hash("min_weapon_tier"), player_index)
+	var max_tier = run_data.get_player_effect(generate_hash("max_weapon_tier"), player_index)
+	if weapon.tier < int(min_tier) or weapon.tier > int(max_tier):
+		return false
+	var removed: Array = run_data.get_player_effect(generate_hash("remove_shop_items"), player_index)
+	var entity_service = _singleton("EntityService")
+	if removed.has(generate_hash("structure")) and entity_service != null and entity_service.is_weapon_spawning_structure(weapon):
+		return false
+	return true
+
+
+static func is_in_banned_item_group(player_index: int, item_id: String) -> bool:
+	var run_data = _singleton("RunData")
+	var item_service = _singleton("ItemService")
+	if run_data == null or item_service == null or not run_data.has_method("get_player_character"):
+		return false
+	var character = run_data.get_player_character(player_index)
+	if character == null or not "banned_item_groups" in character:
+		return false
+	for group in character.banned_item_groups:
+		if item_service.item_groups.has(group) and item_service.item_groups[group].has(item_id):
+			return true
+	return false
+
+
+static func get_player_currency(player_index: int) -> int:
+	var run_data = _singleton("RunData")
+	if run_data == null:
+		return 0
+	if run_data.has_method("get_player_currency"):
+		return run_data.get_player_currency(player_index)
+	return run_data.get_player_gold(player_index)
+
+
+# Cobra en la moneda del jugador (materiales, o vida con los personajes que
+# pagan así), igual que una compra normal.
+static func remove_currency(amount: int, player_index: int) -> void:
+	var run_data = _singleton("RunData")
+	if run_data != null:
+		run_data.remove_currency(amount, player_index)
+
+
+static func tier_color(tier: int) -> Color:
+	var item_service = _singleton("ItemService")
+	if item_service != null and item_service.has_method("get_color_from_tier"):
+		return item_service.get_color_from_tier(tier)
+	return Color(1, 1, 1)
+
+
 static func count_player_items(player_index: int, item_id: String) -> int:
 	var run_data = _singleton("RunData")
 	if run_data == null:
