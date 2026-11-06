@@ -1,0 +1,58 @@
+name: Validación
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validar:
+    name: Validación, pruebas y paquete
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar gdtoolkit 3
+        run: pip install "gdtoolkit==3.6.0" "setuptools<81"
+
+      - name: Validar el mod
+        run: python tools/validate.py --gdparse
+
+      - name: Pruebas de herramientas
+        run: python -m unittest discover -s tests/python -v
+
+      - name: Empaquetar
+        run: python tools/build.py
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Caritato-LegendsCollection
+          path: dist/Caritato-LegendsCollection.zip
+          if-no-files-found: error
+
+  gdscript:
+    name: Pruebas GDScript (Godot 3.6 headless)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Descargar Godot 3.6 headless
+        run: |
+          curl -sSfL -o godot.zip https://github.com/godotengine/godot/releases/download/3.6-stable/Godot_v3.6-stable_linux_headless.64.zip
+          unzip -q godot.zip
+          chmod +x Godot_v3.6-stable_linux_headless.64
+
+      - name: Ejecutar pruebas del núcleo
+        run: python tools/run_gdscript_tests.py --godot ./Godot_v3.6-stable_linux_headless.64
