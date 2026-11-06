@@ -1,0 +1,38 @@
+# Configuración local de Claude Code
+.claude/settings.local.json
+
+# Variables y secretos
+.env
+.env.*
+!.env.example
+
+# Archivos temporales y logs
+*.log
+.tmp/
+.temp/
+
+# Builds y paquetes generados
+/dist/
+/build/
+
+# Archivos locales del juego y material de investigación no redistribuible
+/game-install/
+/game-dump/
+/decompiled-game/
+/art-source/
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Entornos de Python y cachés
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Binarios de Godot descargados para pruebas
+Godot_v*
+godot.zip
