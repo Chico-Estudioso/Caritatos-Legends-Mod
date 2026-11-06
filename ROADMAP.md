@@ -48,6 +48,7 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [ ] Revisar rendimiento y registros.
 
 ## Fase 6 — Publicación
+- [x] Versión candidata 0.2.0 y borrador de la página de Workshop (`docs/WORKSHOP.md`).
 - [ ] Revisar créditos y licencias de todo lo incluido.
 - [ ] Prueba de instalación limpia.
 - [ ] Descripción, imágenes e instrucciones de Workshop.

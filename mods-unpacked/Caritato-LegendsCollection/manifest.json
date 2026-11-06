@@ -1,7 +1,7 @@
 {
 	"name": "LegendsCollection",
 	"namespace": "Caritato",
-	"version_number": "0.1.0",
+	"version_number": "0.2.0",
 	"description": "Caritatos Legends: una colección de leyendas (mods clásicos recuperados) configurables desde el propio juego.",
 	"website_url": "https://github.com/Chico-Estudioso/Caritatos-Legends-Mod",
 	"dependencies": [],

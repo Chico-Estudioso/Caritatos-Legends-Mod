@@ -4,6 +4,10 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 
 ## [Sin publicar]
 
+## [0.2.0] - 2026-11-06
+
+Versión candidata: completa en pruebas automáticas, pendiente de probar dentro de Brotato antes de publicarla.
+
 ### Añadido
 - **La Leyenda del Anzuelo** (`hook_legend`, Abyssal Terrors): Anzuelo garantizado al entrar en la tienda de la oleada elegida (por defecto, la 4), opción de repetirlo hasta tener uno y probabilidad de maldición por anzuelo configurable (1-100 %). Respeta objetos bloqueados, prohibidos y el máximo de anzuelos.
 - **La Leyenda de la Cosecha Eterna** (`endless_harvest`): pérdida de recolección por oleada del modo infinito configurable (0-100 %, por defecto 0 %; el juego quita un 20 %), opción de seguir creciendo como en las oleadas 1-20 (Granjero y Corona incluidos) y Hucha que sigue dando interés tras la oleada 20. El texto de la estadística de Recolección refleja la configuración.

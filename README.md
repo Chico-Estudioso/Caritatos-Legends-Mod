@@ -44,7 +44,7 @@ python tools/build.py                   # ZIP reproducible en dist/
 
 La sintaxis GDScript se comprueba con `gdtoolkit` 3 (`pip install "gdtoolkit==3.6.0" "setuptools<81"`). Las pruebas del núcleo en GDScript se ejecutan en la CI con Godot 3.6 headless (`tools/run_gdscript_tests.py`).
 
-Arquitectura y cómo añadir una leyenda: `docs/ARQUITECTURA.md`. Reglas de trabajo: `CLAUDE.md` y `AGENTS.md`.
+Arquitectura y cómo añadir una leyenda: `docs/ARQUITECTURA.md`. Reglas de trabajo: `CLAUDE.md` y `AGENTS.md`. Página de Workshop y publicación: `docs/WORKSHOP.md`.
 
 ## Créditos y licencias
 

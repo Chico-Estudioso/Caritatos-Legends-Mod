@@ -31,6 +31,16 @@ La CI (`.github/workflows/validacion.yml`) ejecuta todo lo anterior en cada push
 
 La configuración se guarda en `%APPDATA%\Brotato\caritato_legends\settings.json`. Si se borra, el mod vuelve a los valores por defecto. Si está dañada, se guarda una copia `settings.json.invalido.bak` y se arranca con los valores por defecto.
 
+## Prueba rápida recomendada (15 minutos)
+
+1. Instala el ZIP como se indica arriba y abre Brotato.
+2. Menú principal → **Leyendas**: deben aparecer 4 leyendas activas. Cierra con «Guardar y cerrar».
+3. Partida nueva con Abyssal Terrors: al terminar la oleada 4, el Anzuelo debe estar en la tienda.
+4. En esa tienda, botón **Supermercado** → encarga un objeto → aparece en la tienda y se puede comprar.
+5. Pausa → **Leyendas** → Mercader: rerolls al 0 % → al volver a la tienda, el reroll cuesta 0.
+6. Si tienes una partida infinita guardada pasada la oleada 20: la recolección ya no baja.
+7. Envía `%APPDATA%\Brotato\logs\modloader.log` si algo falla.
+
 ## Pruebas manuales dentro de Brotato
 
 Núcleo (cada versión):
