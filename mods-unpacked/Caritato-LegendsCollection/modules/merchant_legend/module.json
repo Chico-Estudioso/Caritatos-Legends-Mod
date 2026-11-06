@@ -1,0 +1,65 @@
+{
+	"id": "merchant_legend",
+	"version": "1.0.0",
+	"category": "shop",
+	"name_key": "CLC_MOD_MERCHANT_LEGEND_NAME",
+	"description_key": "CLC_MOD_MERCHANT_LEGEND_DESC",
+	"enabled_by_default": true,
+	"requires_dlc": [],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "merchant_legend.gd",
+	"extensions": [
+		"extensions/singletons/item_service.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": ["1.1.15.4"]
+	},
+	"origin": {
+		"type": "independent_recreation",
+		"inspired_by": [
+			"FreeRerolls (Steam Workshop, autor por identificar)",
+			"SIFD's Mod: tienda sin inflación por oleada y precio de reroll fijo (SIFD)"
+		],
+		"notes": "Código propio. No se ha copiado código ni recursos de los mods originales."
+	},
+	"settings": [
+		{
+			"key": "item_price_percent",
+			"type": "int",
+			"default": 100,
+			"min": 10,
+			"max": 300,
+			"step": 5,
+			"suffix": " %",
+			"label_key": "CLC_MERCHANT_ITEM_PRICE",
+			"help_key": "CLC_MERCHANT_ITEM_PRICE_HELP"
+		},
+		{
+			"key": "fixed_item_prices",
+			"type": "bool",
+			"default": false,
+			"label_key": "CLC_MERCHANT_FIXED_ITEMS",
+			"help_key": "CLC_MERCHANT_FIXED_ITEMS_HELP"
+		},
+		{
+			"key": "reroll_price_percent",
+			"type": "int",
+			"default": 100,
+			"min": 0,
+			"max": 300,
+			"step": 5,
+			"suffix": " %",
+			"label_key": "CLC_MERCHANT_REROLL_PRICE",
+			"help_key": "CLC_MERCHANT_REROLL_PRICE_HELP"
+		},
+		{
+			"key": "fixed_reroll_prices",
+			"type": "bool",
+			"default": false,
+			"label_key": "CLC_MERCHANT_FIXED_REROLLS",
+			"help_key": "CLC_MERCHANT_FIXED_REROLLS_HELP"
+		}
+	]
+}

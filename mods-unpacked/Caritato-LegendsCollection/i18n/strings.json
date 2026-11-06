@@ -47,7 +47,17 @@
 		"CLC_HARVEST_PIGGY": "La Hucha sigue funcionando en el modo infinito",
 		"CLC_HARVEST_PIGGY_HELP": "La Hucha vuelve a dar su interés al empezar cada oleada después de la 20 y puede aparecer en la tienda.",
 		"CLC_HARVEST_INFO_GROW": "Consigues {0} materiales y XP al acabar una oleada. Aumenta un {1}% con cada activación, también en el modo infinito.",
-		"CLC_HARVEST_INFO_KEEP": "Consigues {0} materiales y XP al acabar una oleada. Aumenta un {1}% con cada activación hasta la oleada {2} y después se mantiene."
+		"CLC_HARVEST_INFO_KEEP": "Consigues {0} materiales y XP al acabar una oleada. Aumenta un {1}% con cada activación hasta la oleada {2} y después se mantiene.",
+		"CLC_MOD_MERCHANT_LEGEND_NAME": "La Leyenda del Mercader",
+		"CLC_MOD_MERCHANT_LEGEND_DESC": "Recupera los clásicos de rerolls gratis y tienda sin inflación: ajusta el precio de los artículos y de los rerolls, y decide si suben con las oleadas. Con los valores por defecto la tienda funciona como en el juego.",
+		"CLC_MERCHANT_ITEM_PRICE": "Precio de los artículos",
+		"CLC_MERCHANT_ITEM_PRICE_HELP": "Porcentaje sobre el precio del juego (después de sus descuentos). El valor de reciclaje cambia en la misma proporción.",
+		"CLC_MERCHANT_FIXED_ITEMS": "Los artículos no se encarecen con las oleadas",
+		"CLC_MERCHANT_FIXED_ITEMS_HELP": "Todo cuesta lo mismo que en la oleada 1, también en el modo infinito.",
+		"CLC_MERCHANT_REROLL_PRICE": "Precio de los rerolls",
+		"CLC_MERCHANT_REROLL_PRICE_HELP": "Porcentaje sobre el precio del juego; 0 % = rerolls gratis.",
+		"CLC_MERCHANT_FIXED_REROLLS": "Los rerolls no se encarecen con las oleadas",
+		"CLC_MERCHANT_FIXED_REROLLS_HELP": "El reroll cuesta lo mismo que en la oleada 1 (sigue subiendo con cada reroll de la misma tienda)."
 	},
 	"en": {
 		"CLC_MENU_BUTTON": "Legends",
@@ -97,6 +107,16 @@
 		"CLC_HARVEST_PIGGY": "Piggy Bank keeps working in endless mode",
 		"CLC_HARVEST_PIGGY_HELP": "The Piggy Bank pays its interest again at the start of every wave after 20 and can show up in the shop.",
 		"CLC_HARVEST_INFO_GROW": "You earn {0} materials and XP at the end of a wave. Increases by {1}% every time it activates, endless mode included.",
-		"CLC_HARVEST_INFO_KEEP": "You earn {0} materials and XP at the end of a wave. Increases by {1}% every time it activates until wave {2}, then stays the same."
+		"CLC_HARVEST_INFO_KEEP": "You earn {0} materials and XP at the end of a wave. Increases by {1}% every time it activates until wave {2}, then stays the same.",
+		"CLC_MOD_MERCHANT_LEGEND_NAME": "The Legend of the Merchant",
+		"CLC_MOD_MERCHANT_LEGEND_DESC": "Brings back the classic free-reroll and no-inflation shop mods: tune item and reroll prices and decide whether they go up with each wave. With the default values the shop works like the base game.",
+		"CLC_MERCHANT_ITEM_PRICE": "Item prices",
+		"CLC_MERCHANT_ITEM_PRICE_HELP": "Percentage of the game price (after its discounts). Recycling value changes in the same proportion.",
+		"CLC_MERCHANT_FIXED_ITEMS": "Items do not get pricier each wave",
+		"CLC_MERCHANT_FIXED_ITEMS_HELP": "Everything costs the same as on wave 1, endless mode included.",
+		"CLC_MERCHANT_REROLL_PRICE": "Reroll price",
+		"CLC_MERCHANT_REROLL_PRICE_HELP": "Percentage of the game price; 0% = free rerolls.",
+		"CLC_MERCHANT_FIXED_REROLLS": "Rerolls do not get pricier each wave",
+		"CLC_MERCHANT_FIXED_REROLLS_HELP": "A reroll costs the same as on wave 1 (it still goes up with each reroll in the same shop)."
 	}
 }

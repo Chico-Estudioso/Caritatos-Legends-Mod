@@ -30,6 +30,8 @@ Se documentan al incorporar cada leyenda, con enlace al original y la confirmaci
 | La Leyenda de la Cosecha Eterna | Infinite Bank and Harvesting | Hypermarine_AuT | Steam Workshop | La idea de mantener la Hucha y la recolección en infinito | No |
 | La Leyenda de la Cosecha Eterna | Piggy Bank And Harvest Work After 20 Waves | dreadhead | Steam Workshop 3638873783 | Referencia de la mecánica | No |
 | La Leyenda de la Cosecha Eterna | Endless-less | dami | Steam Workshop 2938652633 | Referencia de la mecánica | No |
+| La Leyenda del Mercader | FreeRerolls | Por identificar | Steam Workshop | La idea de rerolls gratis | No |
+| La Leyenda del Mercader | SIFD's Mod | SIFD | Steam Workshop | La idea de precios y rerolls sin inflación por oleada | No |
 | La Leyenda de la Cosecha Eterna | Stronger Harvesting | CommanderAstern | https://github.com/CommanderAstern/brotato-stronger-harvesting | Referencia de la opción de crecer en infinito | No (repositorio sin licencia) |
 
 ## Herramientas y dependencias del juego
