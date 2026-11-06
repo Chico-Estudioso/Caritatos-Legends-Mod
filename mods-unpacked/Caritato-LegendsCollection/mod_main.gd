@@ -9,7 +9,7 @@ extends Node
 
 const MOD_ID := "Caritato-LegendsCollection"
 const LOG_NAME := "Caritato-LegendsCollection:Main"
-const VERSION := "0.1.0"
+const VERSION := "0.2.0"
 
 var mod_dir := ""
 var core: Node = null
