@@ -26,6 +26,11 @@ Se documentan al incorporar cada leyenda, con enlace al original y la confirmaci
 | La Leyenda del Anzuelo | Mod de probabilidad de anzuelo configurable | Por identificar | Steam Workshop | La idea de ajustar la probabilidad de cada anzuelo | No |
 | La Leyenda del Anzuelo | Guaranteed Curse | Xterionix | https://github.com/Xterionix/BrotatoMod-GuaranteedCurse | Referencia de la mecánica (cubierta con la probabilidad al 100 %) | No (repositorio sin licencia) |
 | La Leyenda del Anzuelo | ImperfectHook | mojimoon | https://github.com/mojimoon/BrotatoMods | Referencia de la mecánica | No (repositorio sin licencia) |
+| La Leyenda de la Cosecha Eterna | No Harvesting Decay | Windows98 | Steam Workshop 3120330525 | La idea de anular la pérdida de recolección | No |
+| La Leyenda de la Cosecha Eterna | Infinite Bank and Harvesting | Hypermarine_AuT | Steam Workshop | La idea de mantener la Hucha y la recolección en infinito | No |
+| La Leyenda de la Cosecha Eterna | Piggy Bank And Harvest Work After 20 Waves | dreadhead | Steam Workshop 3638873783 | Referencia de la mecánica | No |
+| La Leyenda de la Cosecha Eterna | Endless-less | dami | Steam Workshop 2938652633 | Referencia de la mecánica | No |
+| La Leyenda de la Cosecha Eterna | Stronger Harvesting | CommanderAstern | https://github.com/CommanderAstern/brotato-stronger-harvesting | Referencia de la opción de crecer en infinito | No (repositorio sin licencia) |
 
 ## Herramientas y dependencias del juego
 

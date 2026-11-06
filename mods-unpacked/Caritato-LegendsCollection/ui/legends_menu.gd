@@ -313,8 +313,12 @@ func _refresh_module(id: String) -> void:
 				control.select(int(max(0, index)))
 
 		var usable := enabled
-		if entry.depends_on != "" and values.has(entry.depends_on):
-			usable = usable and bool(values[entry.depends_on])
+		if entry.depends_on != "":
+			# «clave» = usable si el ajuste está encendido; «!clave» = si está apagado.
+			var inverted: bool = entry.depends_on.begins_with("!")
+			var parent_key: String = entry.depends_on.trim_prefix("!")
+			if values.has(parent_key):
+				usable = usable and (bool(values[parent_key]) != inverted)
 		_set_control_enabled(control, usable)
 		entry.row.modulate = Color(1, 1, 1, 1) if usable else Color(1, 1, 1, 0.45)
 

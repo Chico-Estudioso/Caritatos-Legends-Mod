@@ -7,6 +7,7 @@
 | Leyenda | Qué hace | Estado |
 |---|---|---|
 | **La Leyenda del Anzuelo** *(Abyssal Terrors)* | El Anzuelo aparece garantizado en la tienda de la oleada que elijas (por defecto, la 4) y puedes fijar la probabilidad de maldición que da cada anzuelo | Incluida, pendiente de prueba en el juego |
+| **La Leyenda de la Cosecha Eterna** | En el modo infinito eliges cuánta recolección se pierde tras la oleada 20 (por defecto 0 %, el juego quita un 20 %), si sigue creciendo como antes y si la Hucha sigue funcionando | Incluida, pendiente de prueba en el juego |
 
 ## Instalación
 
