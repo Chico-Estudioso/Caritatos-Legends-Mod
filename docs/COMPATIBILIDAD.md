@@ -1,0 +1,51 @@
+# Compatibilidad
+
+No se declara compatibilidad por intuición. «Verificado en código» significa que las funciones y rutas usadas existen con esa firma en el código del juego; «probado en el juego» significa que se ha ejecutado dentro de Brotato.
+
+## Entorno objetivo
+
+| Componente | Versión | Estado | Evidencia / notas |
+|---|---|---|---|
+| Brotato | 1.1.15.4 | Verificado en código; **no probado en el juego** | `ProgressData.VERSION = "1.1.15.4"` en el código de referencia (actualización «All Pain No Gain», 2026) |
+| Abyssal Terrors (DLC) | datos de 1.1.14.5 | Verificado en código | Rutas `res://dlcs/dlc_1/...`; el código de 1.1.15.4 disponible no incluye el DLC |
+| Godot | 3.x (GDScript 3) | Verificado | El juego es un proyecto Godot 3 |
+| ModLoader | 6.3.0 | Verificado en código | `MODLOADER_VERSION = "6.3.0"` integrado en el juego; perfil Steam con Workshop activado |
+| Mod Options | 0.6.2 (MIT) | Evaluado, no se usa | Requiere instalar otro mod; ver `docs/DECISIONES.md` |
+| ContentLoader | 6.2.3 | Evaluado, sin decidir | Sin licencia publicada |
+
+## Cómo se carga un mod
+
+- ModLoader carga ZIPs desde `<instalación de Brotato>/mods/` y desde las carpetas de Steam Workshop (`steamapps/workshop/content/1942280/<id>/`).
+- Dentro del ZIP: `mods-unpacked/<Namespace>-<Nombre>/manifest.json` y `mod_main.gd`.
+- Registro de ModLoader: `user://logs/modloader.log` (en Windows `%APPDATA%\Brotato\logs\modloader.log`).
+
+## API del juego usada
+
+| Uso | API | Archivo del juego | Desde |
+|---|---|---|---|
+| Botón del menú principal | `MainMenu.mods_button` (`%ModsButton`) | `ui/menus/pages/main_menu.gd` | 0.1.0 |
+| Botón del menú de pausa | `%OptionsButton`, `_buttons_array` | `ui/menus/ingame/ingame_main_menu.gd` | 0.1.0 |
+| Acciones de cancelar/pausa | `ui_cancel*`, `ui_pause*` en `InputMap` | `project.godot` | 0.1.0 |
+| Versión del juego | constante `ProgressData.VERSION` | `singletons/progress_data.gd` | 0.1.0 |
+| DLC disponible / en la partida | `ProgressData.is_dlc_available()`, `RunData.enabled_dlcs` | `singletons/progress_data.gd`, `singletons/run_data.gd` | 0.1.0 |
+| Objetos y prohibiciones | `ItemService.items`, `ItemService.get_element()`, `RunData.get_player_items()`, `players_data[i].banned_items`, `CharacterData.banned_items` | `singletons/item_service.gd`, `singletons/run_data.gd` | 0.1.0 |
+| Oleadas | `RunData.current_wave`, `RunData.nb_of_waves`, `RunData.get_player_count()` | `singletons/run_data.gd` | 0.1.0 |
+| Tema y fuentes de la interfaz | `res://resources/themes/base_theme.tres`, `res://resources/fonts/actual/base/*.tres` (opcionales) | recursos del juego | 0.1.0 |
+
+`tools/game_scripts.txt` contiene las rutas de scripts del juego que existen en la versión objetivo; la validación falla si una extensión apunta a otra ruta. Para regenerarlo tras una actualización, con una copia local descompilada del juego (fuera del repositorio):
+
+```bash
+cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\./#res://#' | sort
+```
+
+## Estado por leyenda
+
+| Leyenda | Brotato | Estado |
+|---|---|---|
+| *(ninguna todavía)* | | |
+
+## Historial de pruebas
+
+| Fecha | Brotato | ModLoader | Versión del mod | Resultado | Leyendas probadas | Notas |
+|---|---|---|---|---|---|---|
+| 2026-11-06 | — | — | 0.1.0 | Solo pruebas automáticas | — | Validación, sintaxis (gdparse), pruebas de herramientas y del núcleo. Pendiente de probar dentro de Brotato. |
