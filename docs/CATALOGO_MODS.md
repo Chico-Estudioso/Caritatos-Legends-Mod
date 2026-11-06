@@ -26,8 +26,8 @@ Fuentes consultadas el 2026-11-06: repositorios públicos de GitHub y buscadores
 |---|---|---|---|---|---|---|
 | Supermarket (超市) | duyang97 | Workshop 2993532272 (retirado por Steam) | Botón en la tienda que muestra más artículos a la venta | Desconocida | Media | Por investigar (recreación) |
 | Rainbow Crate | Pasha (boardengineer) | [GitHub](https://github.com/boardengineer/Brotato-Rainbow-Crate) | Cajas arcoíris que permiten elegir cualquier objeto | **Apache-2.0** | Media | Apto para reutilización |
-| SIFD's Mod (sin inflación / reroll fijo) | SIFD | Workshop | Precios de tienda y de reroll sin escalar por oleada | Desconocida | Baja | Por investigar (recreación) |
-| FreeRerolls | — | Workshop | Rerolls gratis | Desconocida | Baja | Por investigar (recreación) |
+| SIFD's Mod (sin inflación / reroll fijo) | SIFD | Workshop | Precios de tienda y de reroll sin escalar por oleada | Desconocida | Baja | Incluida como **La Leyenda del Mercader** (recreación) |
+| FreeRerolls | — | Workshop | Rerolls gratis | Desconocida | Baja | Incluida como **La Leyenda del Mercader** (recreación) |
 | Shoptato | — | Workshop | Todas las armas comprables en la tienda | Desconocida | Media | Por investigar |
 | Second Chance | Nailim | [GitHub](https://github.com/Nailim/brotato-mod-secondchance) | Al morir, vuelve una oleada atrás en vez de perder la partida | **MIT** | Media | Apto para reutilización |
 | DPS Meter | LRueckert | [GitHub](https://github.com/LRueckert/brotato-mod-dps-meter) | Medidor de daño por arma durante la oleada | Sin licencia | Media | Por investigar (recreación) |
@@ -73,3 +73,18 @@ Pruebas manuales (modo infinito, pasando de la oleada 20):
 - [ ] Antes de la oleada 21, todo funciona exactamente como en el juego base.
 - [ ] Desactivar la leyenda en pausa: en la siguiente oleada vuelve el 20 % del juego.
 - [ ] Cooperativo: se aplica a cada jugador con su propia recolección y su Hucha.
+
+### La Leyenda del Mercader (`merchant_legend`)
+
+Cómo funciona en el juego (verificado en el código de 1.1.15.4):
+- El precio de un artículo sale de `ItemService.get_value(oleada, valor_base, …)`: `(valor + oleada + valor × oleada × 0,1) × modificadores × factor infinito`.
+- El del reroll, de `ItemService.get_reroll_price(oleada, rerolls, …)`, que sube con la oleada y con cada reroll de la misma tienda.
+- La leyenda calcula esos precios con la oleada 1 si se eligen precios fijos y aplica después el porcentaje configurado. El reciclaje usa `get_value`, así que cambia en la misma proporción.
+
+Pruebas manuales:
+- [ ] Con los valores por defecto, los precios coinciden con los del juego.
+- [ ] Artículos al 50 %: los precios de la tienda se reducen a la mitad y se cobra ese precio.
+- [ ] Rerolls al 0 %: el botón muestra 0 y rerolear no cuesta materiales.
+- [ ] «Los artículos no se encarecen»: en la oleada 15 cuestan lo mismo que en la 1.
+- [ ] «Los rerolls no se encarecen»: el primer reroll de cada tienda cuesta lo mismo que en la oleada 1.
+- [ ] Cambiar los valores desde la pausa se refleja en la siguiente tienda.

@@ -7,6 +7,7 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 ### Añadido
 - **La Leyenda del Anzuelo** (`hook_legend`, Abyssal Terrors): Anzuelo garantizado al entrar en la tienda de la oleada elegida (por defecto, la 4), opción de repetirlo hasta tener uno y probabilidad de maldición por anzuelo configurable (1-100 %). Respeta objetos bloqueados, prohibidos y el máximo de anzuelos.
 - **La Leyenda de la Cosecha Eterna** (`endless_harvest`): pérdida de recolección por oleada del modo infinito configurable (0-100 %, por defecto 0 %; el juego quita un 20 %), opción de seguir creciendo como en las oleadas 1-20 (Granjero y Corona incluidos) y Hucha que sigue dando interés tras la oleada 20. El texto de la estadística de Recolección refleja la configuración.
+- **La Leyenda del Mercader** (`merchant_legend`): precio de los artículos (10-300 %) y de los rerolls (0-300 %, 0 % = gratis), con opción de que no se encarezcan con las oleadas. Valores por defecto neutros.
 - Ajustes que dependen de que otro esté apagado (`"depends_on": "!clave"`).
 - Validación: los miembros propios de las extensiones llevan prefijo `_clc_` y no pueden repetirse entre extensiones del mismo script.
 - Pruebas GDScript de arranque completo del núcleo con las leyendas reales y de la pantalla de configuración, con sustitutos de ModLoader.

@@ -35,7 +35,9 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [ ] Prueba manual de La Leyenda de la Cosecha Eterna (lista en `docs/CATALOGO_MODS.md`).
 
 ## Fase 4 — Más leyendas clásicas
-- [ ] Priorizar candidatos del catálogo por interés, estado técnico y licencia.
+- [x] Priorizar candidatos del catálogo por interés, estado técnico y licencia.
+- [x] La Leyenda del Mercader (FreeRerolls + SIFD's Mod).
+- [ ] La Leyenda del Supermercado (Supermarket).
 - [ ] Una leyenda por PR, con procedencia y pruebas.
 
 ## Fase 5 — Integración y pruebas
