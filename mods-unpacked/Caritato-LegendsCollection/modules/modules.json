@@ -1,3 +1,5 @@
 {
-	"modules": []
+	"modules": [
+		"hook_legend"
+	]
 }

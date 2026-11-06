@@ -20,6 +20,13 @@ Registro de la procedencia de todo código, texto o recurso de la colección.
 
 Se documentan al incorporar cada leyenda, con enlace al original y la confirmación de que no se ha copiado su material.
 
+| Leyenda | Mods que la inspiran | Autor | Enlace | Qué se toma | Código copiado |
+|---|---|---|---|---|---|
+| La Leyenda del Anzuelo | Mod de anzuelo garantizado en la oleada 4 | Por identificar | Steam Workshop | La idea de garantizar el Anzuelo en una tienda concreta | No |
+| La Leyenda del Anzuelo | Mod de probabilidad de anzuelo configurable | Por identificar | Steam Workshop | La idea de ajustar la probabilidad de cada anzuelo | No |
+| La Leyenda del Anzuelo | Guaranteed Curse | Xterionix | https://github.com/Xterionix/BrotatoMod-GuaranteedCurse | Referencia de la mecánica (cubierta con la probabilidad al 100 %) | No (repositorio sin licencia) |
+| La Leyenda del Anzuelo | ImperfectHook | mojimoon | https://github.com/mojimoon/BrotatoMods | Referencia de la mecánica | No (repositorio sin licencia) |
+
 ## Herramientas y dependencias del juego
 
 - **Brotato** © Blobfish Games. El repositorio no contiene archivos del juego. Las extensiones solo referencian rutas `res://` del juego en tiempo de ejecución.

@@ -6,7 +6,7 @@
 
 | Leyenda | Qué hace | Estado |
 |---|---|---|
-| *(llegan en las siguientes versiones)* | Consulta `ROADMAP.md` y `docs/CATALOGO_MODS.md` | — |
+| **La Leyenda del Anzuelo** *(Abyssal Terrors)* | El Anzuelo aparece garantizado en la tienda de la oleada que elijas (por defecto, la 4) y puedes fijar la probabilidad de maldición que da cada anzuelo | Incluida, pendiente de prueba en el juego |
 
 ## Instalación
 

@@ -26,7 +26,18 @@
 		"CLC_STATUS_REQUIRES_DLC": "Necesita el DLC %s.",
 		"CLC_STATUS_TESTED": "probada en Brotato %s",
 		"CLC_STATUS_UNTESTED": "todavía sin probar en Brotato %s",
-		"CLC_DLC_ABYSSAL_TERRORS": "Abyssal Terrors"
+		"CLC_DLC_ABYSSAL_TERRORS": "Abyssal Terrors",
+		"CLC_MOD_HOOK_LEGEND_NAME": "La Leyenda del Anzuelo",
+		"CLC_MOD_HOOK_LEGEND_DESC": "Recupera dos mods clásicos del Anzuelo de Abyssal Terrors: aparece garantizado en la tienda que elijas y puedes decidir qué probabilidad de maldición da cada anzuelo.",
+		"CLC_HOOK_GUARANTEED": "Anzuelo garantizado en la tienda",
+		"CLC_HOOK_GUARANTEED_HELP": "Al entrar en la tienda, un objeto no bloqueado se cambia por el Anzuelo. Respeta los objetos prohibidos, los bloqueados y el máximo de anzuelos.",
+		"CLC_HOOK_WAVE": "Tienda al terminar la oleada",
+		"CLC_HOOK_WAVE_HELP": "Por defecto, la tienda que aparece al terminar la oleada 4.",
+		"CLC_HOOK_UNTIL_OWNED": "Repetir en las tiendas siguientes hasta tener uno",
+		"CLC_HOOK_UNTIL_OWNED_HELP": "Si no lo compras, vuelve a aparecer en cada tienda posterior hasta que tengas al menos un anzuelo.",
+		"CLC_HOOK_CUSTOM_CHANCE": "Probabilidad personalizada por anzuelo",
+		"CLC_HOOK_CUSTOM_CHANCE_HELP": "Apagado: se usa el valor del juego. Encendido: cada anzuelo da esta probabilidad de maldecir los objetos y armas bloqueados al salir de la tienda (se suma por anzuelo; 100 % = siempre).",
+		"CLC_HOOK_CHANCE": "Probabilidad por anzuelo"
 	},
 	"en": {
 		"CLC_MENU_BUTTON": "Legends",
@@ -55,6 +66,17 @@
 		"CLC_STATUS_REQUIRES_DLC": "Needs the %s DLC.",
 		"CLC_STATUS_TESTED": "tested on Brotato %s",
 		"CLC_STATUS_UNTESTED": "not yet tested on Brotato %s",
-		"CLC_DLC_ABYSSAL_TERRORS": "Abyssal Terrors"
+		"CLC_DLC_ABYSSAL_TERRORS": "Abyssal Terrors",
+		"CLC_MOD_HOOK_LEGEND_NAME": "The Legend of the Fish Hook",
+		"CLC_MOD_HOOK_LEGEND_DESC": "Brings back two classic Abyssal Terrors Fish Hook mods: it is guaranteed in the shop you choose, and you decide the curse chance each hook gives.",
+		"CLC_HOOK_GUARANTEED": "Guaranteed Fish Hook in the shop",
+		"CLC_HOOK_GUARANTEED_HELP": "When entering the shop, one unlocked item is replaced with the Fish Hook. Banned items, locked items and the hook limit are respected.",
+		"CLC_HOOK_WAVE": "Shop after wave",
+		"CLC_HOOK_WAVE_HELP": "By default, the shop that appears after wave 4.",
+		"CLC_HOOK_UNTIL_OWNED": "Repeat in later shops until you own one",
+		"CLC_HOOK_UNTIL_OWNED_HELP": "If you skip it, it shows up again in every later shop until you own at least one hook.",
+		"CLC_HOOK_CUSTOM_CHANCE": "Custom chance per hook",
+		"CLC_HOOK_CUSTOM_CHANCE_HELP": "Off: the game value is used. On: each hook gives this chance to curse locked items and weapons when leaving the shop (it stacks per hook; 100% = always).",
+		"CLC_HOOK_CHANCE": "Chance per hook"
 	}
 }
