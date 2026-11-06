@@ -24,7 +24,7 @@ Fuentes consultadas el 2026-11-06: repositorios públicos de GitHub y buscadores
 
 | Mod | Autor | Workshop / código | Qué hace | Licencia | Dificultad | Estado |
 |---|---|---|---|---|---|---|
-| Supermarket (超市) | duyang97 | Workshop 2993532272 (retirado por Steam) | Botón en la tienda que muestra más artículos a la venta | Desconocida | Media | Por investigar (recreación) |
+| Supermarket (超市) | duyang97 | Workshop 2993532272 (retirado por Steam) | Botón en la tienda que muestra más artículos a la venta | Desconocida | Media | Incluida como **La Leyenda del Supermercado** (recreación) |
 | Rainbow Crate | Pasha (boardengineer) | [GitHub](https://github.com/boardengineer/Brotato-Rainbow-Crate) | Cajas arcoíris que permiten elegir cualquier objeto | **Apache-2.0** | Media | Apto para reutilización |
 | SIFD's Mod (sin inflación / reroll fijo) | SIFD | Workshop | Precios de tienda y de reroll sin escalar por oleada | Desconocida | Baja | Incluida como **La Leyenda del Mercader** (recreación) |
 | FreeRerolls | — | Workshop | Rerolls gratis | Desconocida | Baja | Incluida como **La Leyenda del Mercader** (recreación) |
@@ -88,3 +88,20 @@ Pruebas manuales:
 - [ ] «Los artículos no se encarecen»: en la oleada 15 cuestan lo mismo que en la 1.
 - [ ] «Los rerolls no se encarecen»: el primer reroll de cada tienda cuesta lo mismo que en la oleada 1.
 - [ ] Cambiar los valores desde la pausa se refleja en la siguiente tienda.
+
+### La Leyenda del Supermercado (`supermarket_legend`)
+
+Diseño:
+- El catálogo sale de `ItemService.get_pool(tier, ITEMS/WEAPONS)` (solo lo desbloqueado y de los DLC activos) y se filtra con las mismas restricciones que usa el juego al generar la tienda: prohibiciones del jugador y del personaje, grupos vetados, etiquetas retiradas, máximo por objeto, armas cuerpo a cuerpo/a distancia, tier mínimo y máximo de armas y estructuras.
+- El encargo no compra nada: coloca el artículo en `_shop_items` (en un hueco vacío o sustituyendo el último no bloqueado) y refresca la tienda como hace el juego al rerolear. La compra, el precio, los cupones y los huecos de armas los gestiona el propio juego.
+- El precio mostrado sale de `ItemService.get_value()`, así que incluye la Leyenda del Mercader si está activa.
+
+Pruebas manuales:
+- [ ] El botón **Supermercado** aparece junto al de reroll en la tienda de un jugador (no en cooperativo).
+- [ ] El catálogo muestra objetos y armas ordenados por tier con su precio.
+- [ ] Encargar un objeto lo coloca en la tienda y se puede comprar normalmente.
+- [ ] Con todos los artículos bloqueados, el encargo avisa de que no hay hueco.
+- [ ] Con «Encargos por tienda» = 1, el segundo encargo se rechaza hasta la siguiente tienda.
+- [ ] Con coste del encargo al 50 % se descuenta al encargar y se avisa si no hay materiales.
+- [ ] Un personaje sin armas cuerpo a cuerpo no ve armas cuerpo a cuerpo; los objetos prohibidos no aparecen.
+- [ ] «Atrás» cierra el catálogo sin abrir la pausa.
