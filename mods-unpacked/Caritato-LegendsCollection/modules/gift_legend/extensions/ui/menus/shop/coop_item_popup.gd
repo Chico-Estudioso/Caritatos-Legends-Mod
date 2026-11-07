@@ -1,8 +1,12 @@
-extends "res://ui/menus/shop/item_popup.gd"
+extends "res://ui/menus/shop/coop_item_popup.gd"
 
 # La Leyenda del Regalo: botón «Regalar» en el menú que sale al pulsar un arma
 # u objeto propio en la tienda cooperativa, junto a Reciclar y Cancelar. Los
 # objetos, que en el juego no tienen botones, muestran Regalar y Cancelar.
+#
+# Se extiende CoopItemPopup (el menú de la tienda cooperativa) y no ItemPopup:
+# CoopItemPopup hereda de ItemPopup al cargarse, antes de que ModLoader
+# instale las extensiones, así que una extensión de ItemPopup no le llega.
 
 const _CLC_GIFT_API = preload("res://mods-unpacked/Caritato-LegendsCollection/core/legends_api.gd")
 const _CLC_GIFT_ID := "gift_legend"
@@ -23,7 +27,7 @@ func _ready() -> void:
 	button.text = tr("CLC_GIFT_BUTTON")
 	button.visible = false
 	button.focus_mode = Control.FOCUS_NONE
-	_cancel_button.get_parent().add_child_below_node(_discard_button, button)
+	_discard_button.get_parent().add_child_below_node(_discard_button, button)
 	var _err = button.connect("pressed", self, "_clc_gift_on_pressed")
 	_clc_gift_button = button
 	# Con mando: Reciclar → Regalar → Cancelar.

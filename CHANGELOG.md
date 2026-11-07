@@ -10,6 +10,7 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 - Paquete para el Workshop Uploader de Brotato (artefacto `Caritatopc-Workshop` de la CI y `python tools/build.py --workshop`): ZIP con el título como nombre, portada de 512×512 dibujada con piezas del mod y descripciones en `workshop/`. Pasos en `docs/WORKSHOP.md`.
 
 ### Corregido
+- **Regalar no aparecía en el menú del objeto**: al pulsar un arma u objeto en la tienda cooperativa sonaba pero no se abría nada con Regalar. El menú de la tienda cooperativa (`CoopItemPopup`) se compilaba antes que la extensión de `ItemPopup` y no la heredaba; ahora se extiende `CoopItemPopup` directamente. Si volviera a faltar, el log de ModLoader lo indica al abrir la tienda.
 - **Pantalla Caritatopc en cooperativo**: en la pausa de una partida cooperativa no respondía al teclado ni al mando, porque los `FocusEmulator` del juego se comían la entrada. Ahora se pausan mientras la pantalla está abierta, y las acciones de cada mando (`ui_up_3`…) se reenvían como las normales.
 
 ### Cambiado
