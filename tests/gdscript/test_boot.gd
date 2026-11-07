@@ -26,6 +26,7 @@ func _initialize() -> void:
 	run_case("los ajustes se sanean y desactivar es inmediato", "test_settings_and_toggle")
 	run_case("la pantalla de configuración se construye y cancela", "test_menu")
 	run_case("la ventana de regalos se construye y se cierra", "test_gift_menu")
+	run_case("la confirmación del regalo acepta, rechaza y celebra", "test_gift_confirm")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -149,6 +150,50 @@ func test_gift_menu() -> void:
 	menu._move_focus(1)
 	menu._press_focused()
 	check(menu.is_queued_for_deletion(), "«Cerrar» debería cerrar la ventana")
+
+
+func test_gift_confirm() -> void:
+	var legend = core.get_runtime("gift_legend")
+	var script = load(MOD_PATH + "modules/gift_legend/gift_confirm.gd")
+	var fake := GDScript.new()
+	fake.source_code = "extends Resource\nvar my_id := \"item_test\"\nvar name := \"ITEM_TEST\"\nvar tier := 1\nvar icon = null\n"
+	var _reloaded = fake.reload()
+	var offer := {"data": fake.new(), "is_weapon": false, "label": "Objeto de prueba", "tier": 1, "tags": ["CLC_GIFT_TAG_CURSED"], "recipients": []}
+	var results := []
+
+	# Rechazar desde la ventana.
+	var confirm = _open_confirm(script, legend, offer, results)
+	check(confirm._buttons.size() == 2, "deberían verse «Rechazar» y «Aceptar»")
+	check(confirm._focus_index == confirm.BUTTON_ACCEPT, "el foco debería empezar en «Aceptar»")
+	confirm._activate(confirm.BUTTON_DECLINE)
+	check(results == ["declined"], "rechazar debería avisar a la ventana de regalos")
+
+	# Aceptar sin partida cooperativa: no se regala y se explica el motivo.
+	confirm = _open_confirm(script, legend, offer, results)
+	confirm.accept()
+	check(confirm._result == "CLC_GIFT_REASON_INACTIVE", "sin partida el regalo no debería hacerse (%s)" % confirm._result)
+	check(confirm._buttons_box.modulate.a == 0.0 and confirm._buttons[1].disabled, "tras responder no deberían quedar botones")
+	confirm._finish(confirm._result)
+	check(results.back() == "CLC_GIFT_REASON_INACTIVE", "el motivo debería llegar a la ventana de regalos")
+
+	# La celebración oculta los botones y termina como aceptado.
+	confirm = _open_confirm(script, legend, offer, results)
+	confirm.celebrate()
+	check(confirm._title.text == tr("CLC_GIFT_RECEIVED_TITLE"), "falta el título de la celebración")
+	confirm._finish(confirm._result)
+	check(results.back() == "accepted", "la celebración debería terminar como aceptado")
+
+
+func _open_confirm(script, legend, offer: Dictionary, results: Array):
+	var confirm = script.new()
+	root.add_child(confirm)
+	var _err = confirm.connect("finished", self, "_on_confirm_result", [results])
+	confirm.open(legend, null, 0, 1, offer)
+	return confirm
+
+
+func _on_confirm_result(result: String, results: Array) -> void:
+	results.append(result)
 
 
 func test_disabled_not_loaded() -> void:

@@ -9,15 +9,12 @@ extends CanvasLayer
 # con cualquier mando, teclado o ratón.
 
 const Compat = preload("res://mods-unpacked/Caritato-LegendsCollection/core/compat.gd")
+const UiStyle = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/ui_style.gd")
+const Heart = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/heart.gd")
+const CONFIRM_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/gift_legend/gift_confirm.gd"
 
-const THEME_PATH := "res://resources/themes/base_theme.tres"
-const FONT_TITLE_PATH := "res://resources/fonts/actual/base/font_40_outline.tres"
-const FONT_SMALL_PATH := "res://resources/fonts/actual/base/font_smallest_text.tres"
 const FOCUS_EMULATOR_SCRIPT_SUFFIX := "focus_emulator.gd"
-const COLOR_MUTED := Color(0.72, 0.72, 0.72)
-const COLOR_OK := Color(0.55, 0.85, 0.45)
-const COLOR_ERROR := Color(1.0, 0.45, 0.4)
-const ICON_SIZE := Vector2(52, 52)
+const ICON_SIZE := Vector2(68, 68)
 
 var legend = null
 var shop: Node = null
@@ -31,7 +28,8 @@ var _return_focus: Control = null
 var _nav := []
 var _nav_index := 0
 var _paused_emulators := []
-var _font_small: Font = null
+var _confirm: Node = null
+var _fonts := {}
 
 
 func _init() -> void:
@@ -61,12 +59,14 @@ func close() -> void:
 
 func _exit_tree() -> void:
 	_resume_focus_emulators()
+	if _confirm != null and is_instance_valid(_confirm):
+		_confirm.queue_free()
 
 
 # --- Entrada propia ----------------------------------------------------------
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventMouse:
+	if event is InputEventMouse or (_confirm != null and is_instance_valid(_confirm)):
 		return
 	if _is_action(event, "ui_cancel") or _is_action(event, "ui_pause"):
 		get_tree().set_input_as_handled()
@@ -149,18 +149,24 @@ func _resume_focus_emulators() -> void:
 # --- Construcción -------------------------------------------------------------
 
 func _build() -> void:
-	_font_small = _load_resource(FONT_SMALL_PATH) as Font
+	_fonts = {
+		"title": UiStyle.font(46, 2),
+		"name": UiStyle.font(28),
+		"body": UiStyle.font(24),
+		"small": UiStyle.font(21),
+		"tiny": UiStyle.font(18),
+	}
 
 	var root := Control.new()
 	root.set_anchors_and_margins_preset(Control.PRESET_WIDE)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
-	var theme_resource = _load_resource(THEME_PATH)
-	if theme_resource is Theme:
-		root.theme = theme_resource
+	var theme := UiStyle.game_theme()
+	if theme != null:
+		root.theme = theme
 	add_child(root)
 
 	var dim := ColorRect.new()
-	dim.color = Color(0, 0, 0, 0.82)
+	dim.color = Color(0.03, 0.02, 0.06, 0.84)
 	dim.set_anchors_and_margins_preset(Control.PRESET_WIDE)
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	root.add_child(dim)
@@ -168,36 +174,40 @@ func _build() -> void:
 	var outer := MarginContainer.new()
 	outer.set_anchors_and_margins_preset(Control.PRESET_WIDE)
 	for side in ["margin_left", "margin_right"]:
-		outer.add_constant_override(side, 240)
+		outer.add_constant_override(side, 250)
 	for side in ["margin_top", "margin_bottom"]:
 		outer.add_constant_override(side, 60)
 	root.add_child(outer)
 
 	var panel := PanelContainer.new()
+	panel.add_stylebox_override("panel", UiStyle.panel_box())
 	outer.add_child(panel)
-	var inner := MarginContainer.new()
-	for side in ["margin_left", "margin_right", "margin_top", "margin_bottom"]:
-		inner.add_constant_override(side, 24)
-	panel.add_child(inner)
 
 	var layout := VBoxContainer.new()
-	layout.add_constant_override("separation", 12)
-	inner.add_child(layout)
+	layout.add_constant_override("separation", 14)
+	panel.add_child(layout)
 
-	var title := Label.new()
-	title.text = tr("CLC_GIFT_TITLE") % [giver + 1, tr(Compat.get_character_name_key(giver))]
-	title.align = Label.ALIGN_CENTER
-	var title_font = _load_resource(FONT_TITLE_PATH)
-	if title_font is Font:
-		title.add_font_override("font", title_font)
-	layout.add_child(title)
+	var header := HBoxContainer.new()
+	header.add_constant_override("separation", 16)
+	layout.add_child(header)
+	var heart := Heart.new()
+	heart.color = UiStyle.BRAND
+	heart.rect_min_size = Vector2(50, 50)
+	heart.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(heart)
+	var title := _make_label(tr("CLC_GIFT_TITLE"), UiStyle.TEXT, "title", false)
+	title.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(title)
+	var name_key := Compat.get_character_name_key(giver)
+	var player_text: String = "J%d" % (giver + 1) if name_key == "" else "J%d · %s" % [giver + 1, tr(name_key)]
+	var player_chip := _make_chip(player_text, UiStyle.INK, Compat.player_color(giver))
+	player_chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(player_chip)
 
-	_info_label = _make_label("", COLOR_MUTED)
-	_info_label.align = Label.ALIGN_CENTER
+	_info_label = _make_label("", UiStyle.MUTED, "small")
 	layout.add_child(_info_label)
 
-	_message_label = _make_label("", COLOR_OK)
-	_message_label.align = Label.ALIGN_CENTER
+	_message_label = _make_label("", UiStyle.OK, "body")
 	_message_label.visible = false
 	layout.add_child(_message_label)
 
@@ -209,12 +219,14 @@ func _build() -> void:
 
 	_list = VBoxContainer.new()
 	_list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_list.add_constant_override("separation", 8)
+	_list.add_constant_override("separation", 10)
 	scroll.add_child(_list)
 
 	_close_button = Button.new()
 	_close_button.text = tr("CLC_GIFT_CLOSE")
+	_close_button.rect_min_size = Vector2(200, 0)
 	_close_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	UiStyle.style_button(_close_button, "ghost", UiStyle.BRAND, 26)
 	var _err = _close_button.connect("pressed", self, "close")
 	layout.add_child(_close_button)
 
@@ -238,7 +250,7 @@ func _rebuild_rows() -> void:
 			items.append(offer)
 
 	if offers.empty():
-		_list.add_child(_make_label(tr("CLC_GIFT_EMPTY"), COLOR_MUTED))
+		_list.add_child(_make_label(tr("CLC_GIFT_EMPTY"), UiStyle.MUTED, "body"))
 	if not weapons.empty():
 		_list.add_child(_make_header(tr("CLC_GIFT_WEAPONS")))
 		for offer in weapons:
@@ -254,35 +266,52 @@ func _rebuild_rows() -> void:
 
 
 func _build_row(offer: Dictionary) -> void:
-	var box := VBoxContainer.new()
-	box.add_constant_override("separation", 2)
-	_list.add_child(box)
+	var tier_color := Compat.tier_color(offer.tier)
+	var card := PanelContainer.new()
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.add_stylebox_override("panel", UiStyle.box(UiStyle.SURFACE, 16, Vector2(16, 12)))
+	_list.add_child(card)
 
 	var row := HBoxContainer.new()
-	row.add_constant_override("separation", 12)
-	box.add_child(row)
+	row.add_constant_override("separation", 16)
+	card.add_child(row)
 
+	var tile := PanelContainer.new()
+	tile.rect_min_size = ICON_SIZE
+	tile.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	tile.add_stylebox_override("panel", UiStyle.bordered(tier_color.darkened(0.6), 14, tier_color, 2, Vector2(6, 6)))
+	row.add_child(tile)
 	var icon := TextureRect.new()
-	icon.rect_min_size = ICON_SIZE
 	icon.expand = true
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	if "icon" in offer.data and offer.data.icon is Texture:
-		icon.texture = offer.data.icon
-	row.add_child(icon)
+	icon.texture = Compat.item_icon(offer.data)
+	tile.add_child(icon)
 
-	var name_label := Label.new()
-	var text: String = offer.label
+	var texts := VBoxContainer.new()
+	texts.alignment = BoxContainer.ALIGN_CENTER
+	texts.add_constant_override("separation", 4)
+	texts.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(texts)
+	var name_line := HBoxContainer.new()
+	name_line.add_constant_override("separation", 8)
+	texts.add_child(name_line)
+	name_line.add_child(_make_label(offer.label, tier_color, "name", false))
 	for tag in offer.tags:
-		text += "  [%s]" % tr(tag)
-	name_label.text = text
-	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	name_label.add_color_override("font_color", Compat.tier_color(offer.tier))
-	row.add_child(name_label)
+		var chip := _make_chip(tr(tag), UiStyle.INK, UiStyle.WARN)
+		chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		name_line.add_child(chip)
 
 	var first_reason := ""
+	var buttons := HBoxContainer.new()
+	buttons.add_constant_override("separation", 10)
+	buttons.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(buttons)
 	for recipient in offer.recipients:
 		var button := Button.new()
-		button.text = tr("CLC_GIFT_TO") % [recipient.index + 1, tr(Compat.get_character_name_key(recipient.index))]
+		var name_key := Compat.get_character_name_key(recipient.index)
+		button.text = tr("CLC_GIFT_TO") % (recipient.index + 1)
+		button.hint_tooltip = tr(name_key) if name_key != "" else ""
+		UiStyle.style_button(button, "primary", Compat.player_color(recipient.index), 22)
 		if recipient.reason != "":
 			button.disabled = true
 			button.focus_mode = Control.FOCUS_NONE
@@ -292,43 +321,67 @@ func _build_row(offer: Dictionary) -> void:
 		else:
 			var _err = button.connect("pressed", self, "_on_gift_pressed", [offer, recipient.index])
 			_nav.append(button)
-		row.add_child(button)
+		buttons.add_child(button)
 
 	if first_reason != "":
-		var reason_label := _make_label(tr(first_reason), COLOR_MUTED)
-		box.add_child(reason_label)
+		texts.add_child(_make_label(tr(first_reason), UiStyle.MUTED, "tiny"))
 
 
 func _on_gift_pressed(offer: Dictionary, recipient: int) -> void:
-	var error_key: String = legend.gift(shop, giver, recipient, offer.data, offer.is_weapon)
+	var reason: String = legend.block_reason(giver, recipient, offer.data, offer.is_weapon)
+	if reason != "":
+		_show_message(tr(reason), UiStyle.ERROR)
+		_rebuild_rows()
+		return
+	var confirm_script = load(CONFIRM_PATH)
+	if confirm_script == null:
+		return
+	_confirm = confirm_script.new()
+	get_tree().root.add_child(_confirm)
+	var _err = _confirm.connect("finished", self, "_on_confirm_finished", [offer, recipient])
+	_confirm.open(legend, shop, giver, recipient, offer)
+
+
+func _on_confirm_finished(result: String, offer: Dictionary, recipient: int) -> void:
+	_confirm = null
+	match result:
+		"accepted":
+			_show_message(tr("CLC_GIFT_DONE") % [offer.label, recipient + 1], UiStyle.OK)
+		"declined":
+			_show_message(tr("CLC_GIFT_DECLINED") % (recipient + 1), UiStyle.WARN)
+		"withdrawn":
+			_show_message(tr("CLC_GIFT_WITHDRAWN"), UiStyle.MUTED)
+		_:
+			_show_message(tr(result), UiStyle.ERROR)
+	if is_inside_tree():
+		_rebuild_rows()
+
+
+func _show_message(text: String, color: Color) -> void:
+	_message_label.text = text
+	_message_label.add_color_override("font_color", color)
 	_message_label.visible = true
-	if error_key != "":
-		_message_label.text = tr(error_key)
-		_message_label.add_color_override("font_color", COLOR_ERROR)
-	else:
-		_message_label.text = tr("CLC_GIFT_DONE") % [offer.label, recipient + 1]
-		_message_label.add_color_override("font_color", COLOR_OK)
-	_rebuild_rows()
 
 
 func _make_header(text: String) -> Label:
-	var label := Label.new()
-	label.text = text
-	return label
+	return _make_label(text.to_upper(), UiStyle.MUTED, "tiny", false)
 
 
-func _make_label(text: String, color: Color) -> Label:
+func _make_label(text: String, color: Color, font_key: String = "small", wrap: bool = true) -> Label:
 	var label := Label.new()
 	label.text = text
-	label.autowrap = true
-	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.autowrap = wrap
+	if wrap:
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.add_color_override("font_color", color)
-	if _font_small != null:
-		label.add_font_override("font", _font_small)
+	var label_font = _fonts.get(font_key)
+	if label_font != null:
+		label.add_font_override("font", label_font)
 	return label
 
 
-static func _load_resource(path: String):
-	if ResourceLoader.exists(path):
-		return load(path)
-	return null
+func _make_chip(text: String, color: Color, background: Color) -> PanelContainer:
+	var chip := PanelContainer.new()
+	chip.add_stylebox_override("panel", UiStyle.box(background, 10, Vector2(12, 4)))
+	chip.add_child(_make_label(text, color, "tiny", false))
+	return chip

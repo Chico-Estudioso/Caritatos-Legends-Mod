@@ -5,6 +5,7 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 ## [Sin publicar]
 
 ### Añadido
+- **Regalo: quien recibe confirma.** Ventana «¡Un regalo de tu Cari!» con corazón que late, corazones que suben y lluvia de corazones al aceptar. Solo responde el mando de quien recibe; quien regala puede retirarlo. La ventana «Regalar» adopta el estilo nuevo (tarjetas por objeto, botones con el color de cada jugador).
 - **Nueva pantalla de configuración con forma de biblioteca**: tarjetas por leyenda con su color, inicial y estado a la izquierda; ficha de la leyenda a la derecha con interruptores dibujados (en lugar de casillas), deslizadores con estilo propio y un recuadro que explica el ajuste seleccionado. Paleta, botones y corazón animado comunes en `ui/ui_style.gd` y `ui/widgets/`.
 - Campos opcionales en `module.json`: `short_name_key`, `accent` y `warning_key`.
 - CI: trabajo «Capturas de la interfaz» que abre las ventanas con Godot 3.6 en una pantalla virtual y guarda capturas (artefacto y rama `capturas-ui`).

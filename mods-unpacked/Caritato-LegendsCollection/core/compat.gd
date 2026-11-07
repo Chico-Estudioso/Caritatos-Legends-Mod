@@ -351,6 +351,54 @@ static func remove_currency(amount: int, player_index: int) -> void:
 		run_data.remove_currency(amount, player_index)
 
 
+# --- Jugadores en cooperativo --------------------------------------------------
+
+const FALLBACK_PLAYER_COLORS := [Color("4fc3f7"), Color("ff6b6b"), Color("7ddc8a"), Color("ffc845")]
+
+
+static func player_color(player_index: int) -> Color:
+	var coop = _singleton("CoopService")
+	if coop != null and coop.has_method("get_player_color"):
+		return coop.get_player_color(player_index)
+	return FALLBACK_PLAYER_COLORS[int(abs(player_index)) % FALLBACK_PLAYER_COLORS.size()]
+
+
+static func player_device(player_index: int) -> int:
+	var coop = _singleton("CoopService")
+	if coop != null and coop.has_method("get_remapped_player_device"):
+		return int(coop.get_remapped_player_device(player_index))
+	return -1
+
+
+static func player_uses_gamepad(player_index: int) -> bool:
+	var coop = _singleton("CoopService")
+	if coop != null and coop.has_method("is_player_using_gamepad"):
+		return bool(coop.is_player_using_gamepad(player_index))
+	return false
+
+
+# En cooperativo el juego crea una copia de cada acción por dispositivo
+# («ui_accept_3»). Devuelve si el evento es la acción del mando o teclado de
+# ese jugador; sin esas copias (un jugador, fuera del juego) vale cualquiera.
+static func is_player_action(event: InputEvent, action: String, player_index: int) -> bool:
+	var device := player_device(player_index)
+	var player_action := "%s_%d" % [action, device]
+	if device >= 0 and InputMap.has_action(player_action):
+		return event.is_action(player_action)
+	return InputMap.has_action(action) and event.is_action(action)
+
+
+static func has_player_actions(player_index: int) -> bool:
+	var device := player_device(player_index)
+	return device >= 0 and InputMap.has_action("ui_accept_%d" % device)
+
+
+static func item_icon(item) -> Texture:
+	if item != null and "icon" in item and item.icon is Texture:
+		return item.icon
+	return null
+
+
 static func tier_color(tier: int) -> Color:
 	var item_service = _singleton("ItemService")
 	if item_service != null and item_service.has_method("get_color_from_tier"):

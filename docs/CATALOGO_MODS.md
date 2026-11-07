@@ -122,10 +122,13 @@ Diseño:
 - Nunca se regalan: el personaje (figura como objeto), `item_tumor`, `item_meca_evolved_leap`, `item_mut_evolved_leap`, `item_builder_turret*` y los objetos con `replaced_by` (quitarlos dejaría su sustituto a quien regala).
 - Reglas de quien recibe: huecos de arma libres, máximo por objeto, objetos prohibidos y grupos vetados de su personaje (las prohibiciones de tienda que elige cada jugador no impiden recibir regalos), sin cuerpo a cuerpo / sin distancia, tier de armas, armas bloqueadas (`lock_current_weapons`), y bando de evolución (no se da un arma meca a un personaje `mutant_only` ni un objeto mutado a uno `meca_only`).
 - Mientras la ventana está abierta, se pausan los `FocusEmulator` de la tienda (igual que hace el juego al pausar) y la ventana gestiona la navegación: arriba/izquierda y abajo/derecha recorren los botones, aceptar regala y atrás cierra.
+- **Rasgo propio: quien recibe confirma.** Al elegir a quién regalar se abre «¡Un regalo de tu Cari!» con un corazón que late y corazones que suben, el objeto y los botones Aceptar/Rechazar. Solo responde el mando o teclado de quien recibe (el juego crea acciones por dispositivo, `ui_accept_<dispositivo>`, que se leen con `CoopService.get_remapped_player_device`); el ratón solo vale si quien recibe juega con teclado y ratón. Quien regala puede retirarlo con Atrás. Al aceptar se hace el regalo y sale una lluvia de corazones.
 
 Pruebas manuales (partida cooperativa de 2 jugadores):
 - [ ] Cada jugador ve su botón **Regalar** en la tienda.
-- [ ] J1 regala un objeto a J2: desaparece de J1, aparece en J2 y las estadísticas de ambos cambian.
+- [ ] J1 regala un objeto a J2: se abre la confirmación; solo el mando de J2 puede aceptar o rechazar.
+- [ ] Al aceptar sale la lluvia de corazones, el objeto desaparece de J1, aparece en J2 y las estadísticas de ambos cambian.
+- [ ] Al rechazar, o si J1 lo retira con Atrás, no cambia nada y la ventana de regalos lo indica.
 - [ ] J1 regala un arma a J2 con hueco libre; con J2 sin huecos, el botón aparece desactivado con el motivo.
 - [ ] Un arma mecanizada (Primal Dread) conserva su mecanización al regalarla.
 - [ ] El Tumor y el propio personaje no aparecen en la lista.
