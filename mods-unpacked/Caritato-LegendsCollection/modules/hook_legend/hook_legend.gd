@@ -19,8 +19,12 @@ const CURSE_EFFECT_KEY := "curse_locked_items"
 const ORIGINAL_VALUE_META := "clc_hook_original_value"
 const LOG_NAME := "Caritato-LegendsCollection:HookLegend"
 
+const FISHING_POPUP_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/hook_legend/fishing_popup.gd"
+
 var core = null
 var module_id := ""
+# jugador -> true si en esta tienda se le ha garantizado el Anzuelo
+var _fishing_pending := {}
 
 
 func setup(p_core, p_module_id: String) -> void:
@@ -108,10 +112,27 @@ func on_shop_entered(shop_items: Array, locked_count: int, player_index: int) ->
 
 	var new_item = Compat.prepare_shop_item(hook, player_index)
 	shop_items[slot] = [new_item, shop_items[slot][1]]
+	_fishing_pending[player_index] = true
 	ModLoaderLog.info(
 		"Anzuelo garantizado en la tienda de la oleada %d (jugador %d)" % [Compat.current_wave(), player_index + 1],
 		LOG_NAME
 	)
+
+
+# Ventana «¡Pica!» para el jugador al que se le acaba de garantizar el
+# Anzuelo (null si no toca o si el minijuego está apagado).
+func make_fishing_popup(player_index: int) -> Node:
+	if not _fishing_pending.has(player_index):
+		return null
+	var _erased = _fishing_pending.erase(player_index)
+	if not is_active() or not bool(get_setting("fishing_minigame", true)):
+		return null
+	var popup_script = load(FISHING_POPUP_PATH)
+	if popup_script == null:
+		return null
+	var popup = popup_script.new()
+	popup.player_index = player_index if Compat.is_coop_run() else -1
+	return popup
 
 
 func should_guarantee(player_index: int) -> bool:

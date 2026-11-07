@@ -19,6 +19,38 @@ func _enter_tree() -> void:
 		legend.apply_curse_chance()
 
 
+# En Godot 3, _ready() se ejecuta en todos los niveles de herencia de forma
+# automática, así que no se llama a ._ready().
+func _ready() -> void:
+	if _CLC_HOOK_API.get_runtime(_CLC_HOOK_ID) == null:
+		return
+	# «¡Pica!» sale un momento después de que se vea la tienda.
+	var _err = get_tree().create_timer(0.4).connect("timeout", self, "_clc_hook_show_fishing")
+
+
+func _exit_tree() -> void:
+	_CLC_HOOK_API.clear_popups()
+
+
+func _clc_hook_show_fishing() -> void:
+	var legend = _CLC_HOOK_API.get_runtime(_CLC_HOOK_ID)
+	if legend == null or not is_inside_tree():
+		return
+	for player_index in RunData.get_player_count():
+		var popup = legend.make_fishing_popup(player_index)
+		if popup != null:
+			var _err = popup.connect("closed", self, "_clc_hook_on_fishing", [player_index])
+			_CLC_HOOK_API.show_popup(popup)
+
+
+# Premio del minijuego: un reroll gratis en esta tienda.
+func _clc_hook_on_fishing(result: String, player_index: int) -> void:
+	if result != "caught" or not is_inside_tree():
+		return
+	_free_rerolls[player_index] += 1
+	set_reroll_button_price(player_index)
+
+
 func fill_shop_items(player_locked_items: Array, player_index: int, just_entered_shop: bool = false) -> void:
 	.fill_shop_items(player_locked_items, player_index, just_entered_shop)
 	if not just_entered_shop:
