@@ -8,6 +8,8 @@ Un único mod que recupera mods clásicos de Brotato («leyendas»), los equilib
 [*][b]La Leyenda del Mercader[/b]: precio de artículos y rerolls a tu gusto (0 % = rerolls gratis), con o sin inflación por oleada. [i]Regateo: para la aguja en la zona verde y la tienda te hace descuento.[/i]
 [*][b]La Leyenda del Supermercado[/b] (muy fuerte, apagada por defecto): encarga el objeto o arma que quieras. Los encargos se ganan derrotando élites o jefes, cuestan un 50 % más y llegan bloqueados a la siguiente tienda. [i]Abre la caja del encargo a toques.[/i]
 [*][b]La Leyenda del Regalo[/b] (cooperativo): en la tienda, pulsa un arma u objeto tuyo → [b]Regalar[/b] (junto a Reciclar). El otro jugador lo acepta con su mando en «¡Regalo de tu bro!», con un choque de puños de colegas. Las armas mecanizadas o malditas también se regalan; el Tumor no.
+[*][b]La Leyenda de las Cajas[/b]: al terminar la oleada, fusiona cajas por abrir en una caja legendaria. La primera fusión pide 3 cajas, después 6 y 9. [i]Las cajas se juntan, destellan y sale la legendaria.[/i]
+[*][b]La Leyenda de la Fusión[/b] (muy fuerte, apagada por defecto): al empezar la partida, fusiónate con otro personaje y suma sus efectos, a cambio de menos experiencia, precios más altos y más enemigos. [i]«¡Fusión de bros!» con choque de puños.[/i]
 [/list]
 
 [h2]Configuración[/h2]
@@ -17,6 +19,6 @@ Menú principal → [b]Caritatopc[/b] (también desde la pausa). Una biblioteca 
 Brotato 1.2 (con Primal Dread) y su ModLoader 6.3.0. Puede chocar con mods que cambien las mismas mecánicas (tienda, precios, recolección del modo infinito).
 
 [h2]Créditos[/h2]
-Recreaciones independientes, con código propio, inspiradas en: Supermarket (duyang97), FreeRerolls, SIFD's Mod (SIFD), No Harvesting Decay (Windows98), Infinite Bank and Harvesting (Hypermarine_AuT), Piggy Bank And Harvest Work After 20 Waves (dreadhead), Endless-less (dami), Stronger Harvesting (CommanderAstern), Guaranteed Curse (Xterionix), ImperfectHook (mojimoon) y los mods del Anzuelo de la comunidad. Gracias a todos sus autores.
+Recreaciones independientes, con código propio, inspiradas en: Genetically Modified Overkill (Flabort), Supermarket (duyang97), FreeRerolls, SIFD's Mod (SIFD), No Harvesting Decay (Windows98), Infinite Bank and Harvesting (Hypermarine_AuT), Piggy Bank And Harvest Work After 20 Waves (dreadhead), Endless-less (dami), Stronger Harvesting (CommanderAstern), Guaranteed Curse (Xterionix), ImperfectHook (mojimoon) y los mods del Anzuelo de la comunidad. Gracias a todos sus autores.
 
 Código: https://github.com/Chico-Estudioso/Caritatos-Legends-Mod

@@ -213,6 +213,38 @@ func _capture_haggle_and_harvest() -> void:
 	harvest.close_popup("gold")
 	yield(_frames(2), "completed")
 
+	var crates = load(MOD_PATH + "modules/crates_legend/crates_popup.gd").new()
+	crates.crates = 5
+	crates.cost = 3
+	crates.next_cost = 6
+	core.show_popup(crates)
+	yield(_frames(20), "completed")
+	_save("cajas_1_oferta")
+	crates.fuse()
+	yield(_frames(75), "completed")
+	_save("cajas_2_legendaria")
+	yield(_frames(60), "completed")
+
+	var fusion = load(MOD_PATH + "modules/fusion_legend/fusion_popup.gd").new()
+	var tints := [Color("4fc3f7"), Color("ff6b6b"), Color("7ddc8a"), Color("ffc845"), Color("a970ff"), Color("ff8fd8")]
+	for i in 30:
+		fusion.partners.append({
+			"id": "p%d" % i,
+			"name": "Personaje %d" % (i + 1),
+			"icon": UiStyle.circle_texture(56, tints[i % tints.size()], Color("1b1225"), 4.0),
+			"text": "[color=#7ddc8a]+%d[/color] Daño\n[color=#7ddc8a]+%d %%[/color] Velocidad de ataque\n[color=#ff6b6b]-%d[/color] Armadura" % [2 + i % 5, 5 + i, 1 + i % 3],
+		})
+	fusion.own_icon = UiStyle.circle_texture(96, Color("a1fced"), Color("1b1225"), 5.0)
+	fusion.penalties = [["xp_gain", -10], ["items_price", 20], ["number_of_enemies", 20], ["enemy_speed", 10]]
+	core.show_popup(fusion)
+	fusion.select(13)
+	yield(_frames(20), "completed")
+	_save("fusion_1_elegir")
+	fusion.fuse()
+	yield(_frames(30), "completed")
+	_save("fusion_2_hecha")
+	yield(_frames(80), "completed")
+
 
 # Portada del Workshop (512×512): choque de puños, título y las leyendas. Solo
 # piezas dibujadas por el mod, sin recursos del juego.
@@ -268,8 +300,8 @@ func _capture_preview() -> void:
 	canvas.add_child(subtitle)
 
 	var ids: Array = core.get_module_ids()
-	var tile_size := 66.0
-	var gap := 14.0
+	var gap := 12.0
+	var tile_size: float = min(66.0, (512.0 - 36.0 - gap * (ids.size() - 1)) / max(1, ids.size()))
 	var start := (512.0 - ids.size() * tile_size - (ids.size() - 1) * gap) / 2.0
 	for i in ids.size():
 		var definition: Dictionary = core.get_definition(ids[i])
@@ -284,7 +316,7 @@ func _capture_preview() -> void:
 		letter.valign = Label.VALIGN_CENTER
 		letter.rect_size = Vector2(tile_size, tile_size)
 		letter.add_color_override("font_color", UiStyle.INK)
-		var letter_font = UiStyle.font(40)
+		var letter_font = UiStyle.font(int(tile_size * 0.6))
 		if letter_font != null:
 			letter.add_font_override("font", letter_font)
 		tile.add_child(letter)

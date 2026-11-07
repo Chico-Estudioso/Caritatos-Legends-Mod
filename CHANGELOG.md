@@ -4,6 +4,17 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 
 ## [Sin publicar]
 
+### Añadido
+- **La Leyenda de las Cajas** (`crates_legend`): al terminar una oleada, si un jugador tiene cajas normales por abrir, puede fusionarlas en una caja legendaria.
+  - La primera fusión de la partida pide 3 cajas; cada fusión suma 3 más (6, 9), hasta un máximo de 9. Los tres valores se ajustan.
+  - Ventana «¡Fusión de cajas!»: las cajas botan, vuelan juntas, destellan y sale una caja legendaria morada y dorada que se abre con las demás.
+  - El juego se pausa mientras se decide. En cooperativo responde el mando de cada jugador.
+- **La Leyenda de la Fusión** (`fusion_legend`, recreación independiente de Genetically Modified Overkill, de Flabort): al empezar la partida, cada jugador puede fusionarse con otro personaje y sumar todos sus efectos.
+  - Penalizaciones configurables: -10 % de experiencia, +20 % de precios, +20 % de enemigos y +10 % de velocidad enemiga.
+  - Ventana «¡Fusión de bros!» con una cuadrícula de personajes, sus efectos y un choque de puños al confirmar.
+  - Apagada por defecto, con aviso de que es muy fuerte.
+- `docs/CATALOGO_MODS.md`: BroEditor (mojimoon) como alternativa al editor de personajes y objetos propuesto.
+
 ## [1.0.0] - Versión candidata (pendiente de probar en Brotato y de publicar)
 
 ### Corregido (cierre en solitario)

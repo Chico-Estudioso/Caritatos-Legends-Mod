@@ -1,0 +1,63 @@
+{
+	"id": "crates_legend",
+	"version": "1.0.0",
+	"category": "economy",
+	"name_key": "CLC_MOD_CRATES_LEGEND_NAME",
+	"description_key": "CLC_MOD_CRATES_LEGEND_DESC",
+	"short_name_key": "CLC_MOD_CRATES_LEGEND_SHORT",
+	"accent": "#d4a373",
+	"enabled_by_default": true,
+	"requires_dlc": [],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "crates_legend.gd",
+	"extensions": [
+		"extensions/main.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": [
+			"1.2.X.X",
+			"1.1.15.4"
+		]
+	},
+	"origin": {
+		"type": "original",
+		"inspired_by": [
+			"Petición de Mauro: con varias cajas, poder mejorarlas a una legendaria (cada vez pidiendo más cajas)"
+		],
+		"notes": "Código propio. Las cajas por abrir se manipulan con la misma API que usan otros mods de la 1.2 (main._consumables_to_process y UpgradesUI.ConsumableToProcess)."
+	},
+	"settings": [
+		{
+			"key": "first_cost",
+			"type": "int",
+			"default": 3,
+			"min": 2,
+			"max": 10,
+			"step": 1,
+			"label_key": "CLC_CRATES_FIRST",
+			"help_key": "CLC_CRATES_FIRST_HELP"
+		},
+		{
+			"key": "cost_step",
+			"type": "int",
+			"default": 3,
+			"min": 0,
+			"max": 10,
+			"step": 1,
+			"label_key": "CLC_CRATES_STEP",
+			"help_key": "CLC_CRATES_STEP_HELP"
+		},
+		{
+			"key": "max_cost",
+			"type": "int",
+			"default": 9,
+			"min": 2,
+			"max": 30,
+			"step": 1,
+			"label_key": "CLC_CRATES_MAX",
+			"help_key": "CLC_CRATES_MAX_HELP"
+		}
+	]
+}

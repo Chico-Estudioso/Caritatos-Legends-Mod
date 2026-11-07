@@ -25,7 +25,13 @@ Fuentes consultadas el 2026-11-06: repositorios públicos de GitHub y buscadores
 | Leyenda | Origen | Qué hace | Estado |
 |---|---|---|---|
 | **La Leyenda del Regalo** (`gift_legend`) | Petición de Mauro | Regalar objetos y armas entre jugadores en cooperativo | Incluida (sin probar en el juego) |
-| Mejora de cajas a legendaria | Idea de Mauro (pendiente) | Con 3 cajas, opción de convertir una en legendaria; después cada 6 y cada 9 | Pendiente de valorar |
+| **La Leyenda de las Cajas** (`crates_legend`) | Idea de Mauro | Al terminar la oleada, fusionar cajas por abrir en una caja legendaria: la primera fusión pide 3 cajas, después 6 y 9 (configurable) | Incluida (sin probar en el juego) |
+
+## Recuperadas en la fase 5
+
+| Leyenda | Mod original | Autor | Código | Qué hacía | Licencia | Vía | Estado |
+|---|---|---|---|---|---|---|---|
+| **La Leyenda de la Fusión** (`fusion_legend`) | Genetically Modified Overkill (GMO) | Flabort | [GitHub](https://github.com/Flabort/Genetically-Engineered-Overkill) | Jugar con dos personajes a la vez a cambio de penalizaciones. Hecho para Brotato 0.6 y dependiente de ContentLoader y Expanded Challenges | Sin licencia | Recreación independiente | Incluida (sin probar en el juego; apagada por defecto) |
 
 ## Candidatas para siguientes versiones
 
@@ -42,6 +48,7 @@ Fuentes consultadas el 2026-11-06: repositorios públicos de GitHub y buscadores
 | Widescreen support | DawidFrankiewicz | [GitHub](https://github.com/DawidFrankiewicz/brotato-hax-widescreen-support) | Soporte de pantallas panorámicas | **MIT** | Baja | Apto para reutilización |
 | Full-map camera | L1SC | [GitHub](https://github.com/L1SC/brotato-full-map-camera) | Cámara que muestra todo el mapa | **MIT** | Baja | Apto para reutilización |
 | Rolls Left | otDan | [GitHub](https://github.com/otDan/Brotato-RollsLeft) | Contador de rerolls en la tienda | Sin licencia | Baja | Por investigar (recreación) |
+| BroEditor (editor de personajes, objetos y armas; incluye fusión GMO) | mojimoon | [GitHub](https://github.com/mojimoon/BrotatoMods), Workshop 3817655214 | Editor visual dentro del juego: todos los efectos, efectos propios por bloques, iconos importados y códigos para compartir. Compatible con la 1.2 y mantenido | Sin licencia | Alta | Alternativa al editor de Caritatopc; pendiente de decidir con Mauro |
 | Invasion | Darkly77 | [GitHub](https://github.com/BrotatoMods/Brotato-Invasion-Mod) | Gran expansión de contenido (Space Gladiators) | Sin licencia | Alta | Pendiente de permiso |
 
 ## Pruebas por leyenda
@@ -183,3 +190,37 @@ Pruebas manuales (partida cooperativa de 2 jugadores):
 - [ ] Con «Regalos por jugador en cada tienda» = 1, el segundo regalo se rechaza.
 - [ ] Tras regalar, el mando de J1 vuelve al botón de reroll y se puede seguir comprando.
 - [ ] Con 3 o 4 jugadores sale «¿A quién se lo regalas?».
+
+### La Leyenda de las Cajas (`crates_legend`)
+
+Diseño:
+- Al terminar una oleada, antes de abrir las cajas, cada jugador con cajas normales suficientes ve «¡Fusión de cajas!». Las cajas que se fusionan botan; con «¡Fusionar!» vuelan juntas, destellan y sale una caja legendaria morada y dorada. «Ahora no» o Atrás las dejan como estaban.
+- La primera fusión de la partida pide 3 cajas y cada fusión hecha suma 3 (6, 9…), sin pasar del máximo (9). Los tres valores se ajustan. Las fusiones hechas se reinician al empezar una partida nueva; si se cierra el juego a mitad de partida, el contador vuelve a empezar.
+- Se quitan las últimas cajas normales de `main._consumables_to_process[i]` y de su contador en la interfaz y se añade una caja legendaria (`consumable_legendary_item_box_hash`), que se abre con las demás.
+- Mientras la ventana está abierta el juego se pausa para que el personaje no se mueva con el mando. En cooperativo, solo responde el mando de cada jugador.
+
+Pruebas manuales:
+- [ ] Con 2 cajas al terminar la oleada no sale nada; con 3 o más sale la ventana.
+- [ ] Al fusionar, el contador de cajas del final de oleada baja en 3 y aparece una caja legendaria, que da un objeto legendario.
+- [ ] La siguiente fusión de la misma partida pide 6 cajas, y la siguiente 9.
+- [ ] «Ahora no» deja las cajas como estaban y no gasta la fusión.
+- [ ] En cooperativo cada jugador decide con su mando; el personaje no se mueve mientras está la ventana.
+- [ ] Al perder o ganar la partida no sale la ventana.
+
+### La Leyenda de la Fusión (`fusion_legend`)
+
+Diseño:
+- Al aparecer los personajes en la primera oleada de una partida, cada jugador ve «¡Fusión de bros!»: una cuadrícula con los personajes desbloqueados (salvo el suyo), con el icono, el nombre y los efectos del elegido. Se mueve con flechas, stick o ratón.
+- «¡Fusionar!» suma todos los efectos del compañero (`RunData.apply_item_effects`) y aplica las penalizaciones: -10 % de experiencia, +20 % de precios, +20 % de enemigos y +10 % de velocidad de los enemigos. Son las de GMO y se pueden ajustar. Después se actualizan las estadísticas del personaje (`update_player_stats`) y los comportamientos especiales (`EffectBehaviorService.update_active_effect_behaviors`).
+- «Sin fusión» o Atrás siguen la partida como siempre. Apagada por defecto, con aviso de que es muy fuerte.
+- Los efectos y penalizaciones se guardan con la partida porque forman parte de los efectos del jugador.
+- No se fusionan las armas iniciales, los objetos prohibidos ni el aspecto del compañero: solo sus efectos.
+
+Pruebas manuales:
+- [ ] Con la leyenda activa, al empezar una partida sale la ventana y el juego está en pausa.
+- [ ] Al fusionarse con un personaje (por ejemplo, Bull), sus efectos se notan en las estadísticas desde la primera oleada.
+- [ ] Las penalizaciones se ven en las estadísticas (experiencia, precios, número y velocidad de enemigos).
+- [ ] «Sin fusión» no cambia nada.
+- [ ] En cooperativo, cada jugador elige con su mando, uno detrás de otro.
+- [ ] Al continuar una partida guardada no vuelve a salir la ventana y se conserva la fusión.
+
