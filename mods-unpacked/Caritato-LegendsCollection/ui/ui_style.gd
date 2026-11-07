@@ -7,19 +7,22 @@ extends Reference
 
 const THEME_PATH := "res://resources/themes/base_theme.tres"
 
-const BRAND := Color("ff7eb6")
-const BG := Color("14131b")
-const SURFACE := Color("1d1c27")
-const SURFACE_2 := Color("272634")
-const SURFACE_3 := Color("343345")
-const TEXT := Color("f5f2ff")
-const TEXT_SOFT := Color("cfcbe0")
-const MUTED := Color("9a97ad")
+# Morado: el color favorito de Mauro. Las superficies llevan un toque morado.
+const BRAND := Color("a970ff")
+const BRAND_LIGHT := Color("d7bcff")
+const SPARK := Color("ffd166")
+const BG := Color("15121d")
+const SURFACE := Color("1e1a29")
+const SURFACE_2 := Color("292338")
+const SURFACE_3 := Color("372f4a")
+const TEXT := Color("f6f1ff")
+const TEXT_SOFT := Color("d2c8e6")
+const MUTED := Color("9d93b5")
 const OK := Color("7ddc8a")
 const WARN := Color("ffb454")
 const ERROR := Color("ff6b6b")
-const OFF := Color("4b4a5e")
-const INK := Color("1b1522")
+const OFF := Color("4d4560")
+const INK := Color("1a1225")
 
 
 static func game_theme() -> Theme:

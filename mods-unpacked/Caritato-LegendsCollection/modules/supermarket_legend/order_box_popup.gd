@@ -10,7 +10,7 @@ const Sparkles = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widg
 
 const ACCENT := Color("ff8c42")
 const TAPS_TO_OPEN := 3
-const CONFETTI := [Color("ff8c42"), Color("ffc845"), Color("ffffff"), Color("4fc3f7"), Color("ff7eb6")]
+const CONFETTI := [Color("ff8c42"), Color("ffc845"), Color("ffffff"), Color("4fc3f7"), Color("a970ff")]
 
 # [{data, label, tier}]
 var items := []

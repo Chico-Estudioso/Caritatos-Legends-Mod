@@ -1,16 +1,16 @@
 extends Control
 
-# Corazones pequeños que suben despacio alrededor del centro y, con burst(),
+# Estrellas pequeñas que suben despacio alrededor del centro y, con burst(),
 # una explosión. Con shape = "confetti" son papelitos que caen girando. Se
 # dibuja por código; no usa partículas del motor.
 
-const Heart = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/heart.gd")
+const FistBump = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/fist_bump.gd")
 
-const TINTS := [Color("ff7eb6"), Color("ff5c8a"), Color("ffd1e8"), Color("ffffff")]
+const TINTS := [Color("a970ff"), Color("d7bcff"), Color("ffd166"), Color("ffffff")]
 
 var ambient := true
 var spread := Vector2(220, 60)
-var shape := "heart"
+var shape := "star"
 var tints: Array = TINTS
 var gravity := 0.0
 var _particles := []
@@ -59,8 +59,8 @@ func _process(delta: float) -> void:
 				"max": _rng.randf_range(1.6, 2.4),
 				"size": _rng.randf_range(6.0, 12.0),
 				"color": tints[_rng.randi() % tints.size()],
-				"rot": 0.0,
-				"spin": 0.0,
+				"rot": _rng.randf() * TAU,
+				"spin": _rng.randf_range(-1.5, 1.5),
 			})
 
 	var alive := []
@@ -86,7 +86,7 @@ func _draw() -> void:
 		if shape == "confetti":
 			draw_colored_polygon(_confetti_points(particle.pos, size, particle.rot), color, PoolVector2Array(), null, null, true)
 		else:
-			draw_colored_polygon(Heart.heart_points(particle.pos, size, 16), color, PoolVector2Array(), null, null, true)
+			draw_colored_polygon(FistBump.star_points(particle.pos, size * 0.75, size * 0.32, 5, particle.rot), color, PoolVector2Array(), null, null, true)
 
 
 static func _confetti_points(center: Vector2, size: float, rotation: float) -> PoolVector2Array:

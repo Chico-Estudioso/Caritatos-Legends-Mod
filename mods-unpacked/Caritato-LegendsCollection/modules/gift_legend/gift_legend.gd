@@ -5,7 +5,7 @@ extends Node
 # En la tienda cooperativa, al pulsar un arma u objeto propio aparece el menú
 # del juego (Combinar, Reciclar, Cancelar) con un botón más: «Regalar». Si
 # hay varios jugadores se elige a quién; quien recibe lo acepta o lo rechaza
-# en «¡Un regalo de tu Cari!». Las armas se regalan con sus mejoras,
+# en «¡Regalo de tu bro!». Las armas se regalan con sus mejoras,
 # maldición o mecanización. Se respetan las reglas del juego del que recibe
 # (prohibiciones, máximos, huecos de armas, tipo de arma, bando de evolución)
 # y nunca se regalan el personaje, el Tumor, los saltos evolutivos, la torreta

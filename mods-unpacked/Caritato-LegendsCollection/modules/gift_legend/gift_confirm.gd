@@ -1,16 +1,17 @@
 extends "res://mods-unpacked/Caritato-LegendsCollection/ui/legend_popup.gd"
 
-# «¡Un regalo de tu Cari!»: quien recibe acepta o rechaza el regalo.
+# «¡Regalo de tu bro!»: quien recibe acepta o rechaza el regalo.
 #
 # Solo responde el mando o teclado de quien recibe (player_index):
 # izquierda/derecha eligen, aceptar confirma y atrás rechaza. Quien regala
 # puede retirarlo con atrás. El ratón solo vale si quien recibe juega con
-# teclado y ratón. Al aceptar se hace el regalo y sale una lluvia de corazones.
+# teclado y ratón. Arriba, dos puños (uno con el color de cada jugador) chocan
+# sin parar; al aceptar se hace el regalo y chocan fuerte entre estrellas.
 #
 # Resultado («closed»): "accepted", "declined", "withdrawn" o la clave del
 # motivo por el que no se pudo regalar.
 
-const Heart = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/heart.gd")
+const FistBump = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/fist_bump.gd")
 const Sparkles = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/sparkles.gd")
 
 const CELEBRATION_TIME := 1.7
@@ -26,7 +27,7 @@ var offer := {}
 
 var _buttons := []
 var _focus_index := BUTTON_ACCEPT
-var _heart: Control = null
+var _bros: Control = null
 var _sparkles: Control = null
 var _title: Label = null
 var _subtitle: Label = null
@@ -119,9 +120,10 @@ func celebrate() -> void:
 	_subtitle.text = tr("CLC_GIFT_RECEIVED_TEXT") % [player_index + 1, offer.label]
 	_subtitle.add_color_override("font_color", UiStyle.TEXT)
 	_sparkles.burst(46)
-	_heart.rect_pivot_offset = _heart.rect_size / 2.0
-	_tween.interpolate_property(_heart, "rect_scale", Vector2.ONE, Vector2(1.25, 1.25), 0.2, Tween.TRANS_BACK, Tween.EASE_OUT)
-	_tween.interpolate_property(_heart, "rect_scale", Vector2(1.25, 1.25), Vector2(1.08, 1.08), 0.35, Tween.TRANS_SINE, Tween.EASE_IN_OUT, 0.2)
+	_bros.bump()
+	_bros.rect_pivot_offset = _bros.rect_size / 2.0
+	_tween.interpolate_property(_bros, "rect_scale", Vector2.ONE, Vector2(1.18, 1.18), 0.2, Tween.TRANS_BACK, Tween.EASE_OUT)
+	_tween.interpolate_property(_bros, "rect_scale", Vector2(1.18, 1.18), Vector2(1.06, 1.06), 0.35, Tween.TRANS_SINE, Tween.EASE_IN_OUT, 0.2)
 	var _started = _tween.start()
 	close_later(CELEBRATION_TIME, "accepted")
 
@@ -149,23 +151,27 @@ func _build_content(layout: VBoxContainer) -> void:
 	_tween.pause_mode = Node.PAUSE_MODE_PROCESS
 	add_child(_tween)
 
-	# Corazón con brillo y corazones que suben.
-	var heart_area := _stage(190)
-	layout.add_child(heart_area)
+	# Choque de puños (quien regala a la izquierda, quien recibe a la derecha)
+	# con estrellas que suben.
+	var bros_area := _stage(190)
+	layout.add_child(bros_area)
 	_sparkles = _fill(Sparkles.new())
-	heart_area.add_child(_sparkles)
-	_heart = Heart.new()
-	_heart.color = UiStyle.BRAND
-	_heart.pulse = true
-	_heart.rect_min_size = Vector2(170, 170)
-	_heart.rect_size = Vector2(170, 170)
-	_heart.anchor_left = 0.5
-	_heart.anchor_right = 0.5
-	_heart.margin_left = -85
-	_heart.margin_right = 85
-	_heart.margin_top = 10
-	_heart.margin_bottom = 180
-	heart_area.add_child(_heart)
+	_sparkles.tints = [Compat.player_color(giver), Compat.player_color(player_index), UiStyle.SPARK, UiStyle.BRAND_LIGHT]
+	bros_area.add_child(_sparkles)
+	_bros = FistBump.new()
+	_bros.color = Compat.player_color(giver)
+	_bros.color_right = Compat.player_color(player_index)
+	_bros.spark_color = UiStyle.SPARK
+	_bros.animate = true
+	_bros.rect_min_size = Vector2(340, 176)
+	_bros.rect_size = Vector2(340, 176)
+	_bros.anchor_left = 0.5
+	_bros.anchor_right = 0.5
+	_bros.margin_left = -170
+	_bros.margin_right = 170
+	_bros.margin_top = 7
+	_bros.margin_bottom = 183
+	bros_area.add_child(_bros)
 
 	_title = _label(tr("CLC_GIFT_CONFIRM_TITLE"), "title", UiStyle.BRAND)
 	layout.add_child(_title)

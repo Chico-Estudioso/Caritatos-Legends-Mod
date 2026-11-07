@@ -18,7 +18,7 @@ mods-unpacked/Caritato-LegendsCollection/
 ├── i18n/strings.json        # textos CLC_* en español e inglés
 ├── ui/legends_menu.gd       # pantalla «Caritatopc» (biblioteca) construida por código
 ├── ui/ui_style.gd           # paleta, cajas, botones, fuentes e iconos comunes
-├── ui/widgets/              # interruptor, corazón, partículas y caja dibujados por código
+├── ui/widgets/              # interruptor, choque de puños, estrellas y caja dibujados por código
 ├── ui/legend_popup.gd       # base de las ventanas interactivas (minijuegos y sorpresas)
 ├── ui/focus_guard.gd        # pausa los FocusEmulator de la tienda mientras hay una ventana del mod
 ├── extensions/              # extensiones del núcleo (botones de menú)

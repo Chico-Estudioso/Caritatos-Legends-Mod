@@ -214,10 +214,10 @@ func _capture_haggle_and_harvest() -> void:
 	yield(_frames(2), "completed")
 
 
-# Portada del Workshop (512×512): corazón, título y las leyendas. Solo piezas
-# dibujadas por el mod, sin recursos del juego.
+# Portada del Workshop (512×512): choque de puños, título y las leyendas. Solo
+# piezas dibujadas por el mod, sin recursos del juego.
 func _capture_preview() -> void:
-	var Heart = load(MOD_PATH + "ui/widgets/heart.gd")
+	var FistBump = load(MOD_PATH + "ui/widgets/fist_bump.gd")
 	var Sparkles = load(MOD_PATH + "ui/widgets/sparkles.gd")
 	var layer := CanvasLayer.new()
 	layer.layer = 200
@@ -225,7 +225,7 @@ func _capture_preview() -> void:
 	var canvas := Panel.new()
 	canvas.rect_position = Vector2.ZERO
 	canvas.rect_size = Vector2(512, 512)
-	var background := UiStyle.box(Color("1a1424"), 0, Vector2.ZERO)
+	var background := UiStyle.box(Color("1b1329"), 0, Vector2.ZERO)
 	background.border_color = UiStyle.BRAND
 	background.set_border_width_all(6)
 	canvas.add_stylebox_override("panel", background)
@@ -238,11 +238,13 @@ func _capture_preview() -> void:
 	sparkles.rect_size = Vector2(512, 330)
 	sparkles.spread = Vector2(210, 120)
 	canvas.add_child(sparkles)
-	var heart = Heart.new()
-	heart.color = UiStyle.BRAND
-	heart.rect_position = Vector2(156, 34)
-	heart.rect_size = Vector2(200, 200)
-	canvas.add_child(heart)
+	var bros = FistBump.new()
+	bros.color = UiStyle.BRAND
+	bros.color_right = UiStyle.BRAND_LIGHT
+	bros.spark_color = UiStyle.SPARK
+	bros.rect_position = Vector2(46, 30)
+	bros.rect_size = Vector2(420, 216)
+	canvas.add_child(bros)
 
 	var title := Label.new()
 	title.text = "Caritatopc"
