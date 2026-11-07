@@ -35,3 +35,13 @@ static func pick_slot(kinds: Array, locked_count: int) -> int:
 		if kind == KIND_WEAPON and fallback == -1:
 			fallback = index
 	return fallback
+
+
+# Minijuego «¡Pica!»: pulsar antes de que se hunda el corcho asusta al pez,
+# pulsar mientras está hundido lo pesca y después ya se ha escapado.
+static func fishing_result(pressed_at: float, bite_at: float, window: float) -> String:
+	if pressed_at < bite_at:
+		return "early"
+	if pressed_at <= bite_at + window:
+		return "caught"
+	return "missed"

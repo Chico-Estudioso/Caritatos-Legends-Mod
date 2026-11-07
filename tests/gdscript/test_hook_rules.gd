@@ -10,6 +10,7 @@ func _init() -> void:
 	run_case("modo repetir hasta tener uno", "test_until_owned")
 	run_case("respeta prohibidos y máximo de anzuelos", "test_limits")
 	run_case("elige un objeto no bloqueado como hueco", "test_pick_slot")
+	run_case("minijuego «¡Pica!»", "test_fishing_result")
 	finish()
 
 
@@ -40,3 +41,10 @@ func test_pick_slot() -> void:
 	check(HookRules.pick_slot([item, item, item, item], 4) == -1, "todo bloqueado: no hay hueco")
 	check(HookRules.pick_slot([item, "", weapon], 1) == 2, "ignora huecos vacíos")
 	check(HookRules.pick_slot([], 0) == -1, "tienda vacía")
+
+
+func test_fishing_result() -> void:
+	check(HookRules.fishing_result(1.0, 2.0, 0.75) == "early", "antes de que se hunda el corcho")
+	check(HookRules.fishing_result(2.0, 2.0, 0.75) == "caught", "justo al hundirse")
+	check(HookRules.fishing_result(2.75, 2.0, 0.75) == "caught", "al final de la ventana")
+	check(HookRules.fishing_result(2.8, 2.0, 0.75) == "missed", "demasiado tarde")

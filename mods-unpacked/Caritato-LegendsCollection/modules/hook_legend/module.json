@@ -1,13 +1,15 @@
 {
 	"id": "hook_legend",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"category": "shop",
 	"name_key": "CLC_MOD_HOOK_LEGEND_NAME",
 	"description_key": "CLC_MOD_HOOK_LEGEND_DESC",
 	"short_name_key": "CLC_MOD_HOOK_LEGEND_SHORT",
 	"accent": "#4fc3f7",
 	"enabled_by_default": true,
-	"requires_dlc": ["abyssal_terrors"],
+	"requires_dlc": [
+		"abyssal_terrors"
+	],
 	"dependencies": [],
 	"conflicts": [],
 	"runtime": "hook_legend.gd",
@@ -16,7 +18,9 @@
 	],
 	"compatibility": {
 		"status": "untested",
-		"game_versions": ["1.1.15.4"]
+		"game_versions": [
+			"1.1.15.4"
+		]
 	},
 	"origin": {
 		"type": "independent_recreation",
@@ -71,6 +75,14 @@
 			"suffix": " %",
 			"label_key": "CLC_HOOK_CHANCE",
 			"depends_on": "custom_chance_enabled"
+		},
+		{
+			"key": "fishing_minigame",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_HOOK_FISHING",
+			"help_key": "CLC_HOOK_FISHING_HELP",
+			"depends_on": "guaranteed_enabled"
 		}
 	]
 }

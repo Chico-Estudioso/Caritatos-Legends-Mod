@@ -54,6 +54,8 @@ Cómo funciona en el juego (verificado en el código de 1.1.14.5 con Abyssal Ter
 - La leyenda cambia el valor de ese efecto, así que la probabilidad, el «pity» y el texto del objeto usan el valor configurado. Los anzuelos ya comprados conservan el valor con el que se compraron.
 - «Tienda al terminar la oleada N» es la tienda en la que `RunData.current_wave == N` (su botón dice «Ir (Oleada N+1)»).
 
+- **Rasgo propio: «¡Pica!».** En la tienda donde se garantiza el Anzuelo aparece una escena de pesca: el corcho flota entre 1,4 y 3,2 s y se hunde 0,75 s. Pulsar Aceptar (o clic) mientras está hundido pesca y la tienda suma un reroll gratis (`BaseShop._free_rerolls`, que el juego guarda con la partida). Un intento; ajuste «Minijuego «¡Pica!»».
+
 Pruebas manuales (Brotato con Abyssal Terrors activo):
 - [ ] Partida nueva, valores por defecto: en la tienda tras la oleada 4 aparece el Anzuelo sustituyendo un objeto (no un arma ni un artículo bloqueado).
 - [ ] Al rerolear desaparece como cualquier artículo (salvo que se bloquee).
@@ -63,6 +65,8 @@ Pruebas manuales (Brotato con Abyssal Terrors activo):
 - [ ] Al apagar la probabilidad personalizada, el texto vuelve al valor del juego.
 - [ ] Sin el DLC activo, la leyenda no hace nada y la pantalla avisa de que necesita Abyssal Terrors.
 - [ ] Cooperativo: cada jugador recibe su Anzuelo en su tienda.
+- [ ] «¡Pica!»: al aparecer el Anzuelo garantizado sale la escena de pesca; pulsar con el corcho hundido da un reroll gratis (el botón de reroll muestra 0).
+- [ ] Pulsar antes o después no da nada; Atrás cierra sin pescar. Con el ajuste apagado no sale.
 
 ### La Leyenda de la Cosecha Eterna (`endless_harvest`)
 

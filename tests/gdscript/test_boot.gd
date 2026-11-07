@@ -33,6 +33,7 @@ func _initialize() -> void:
 	run_case("los encargos del Supermercado viajan a la siguiente tienda", "test_supermarket_orders")
 	run_case("las ventanas de las leyendas se abren de una en una", "test_popup_queue")
 	run_case("la caja del encargo se abre a toques", "test_order_box")
+	run_case("el minijuego «¡Pica!» premia pescar a tiempo", "test_fishing_popup")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -310,6 +311,43 @@ func test_order_box() -> void:
 	var _stored = core.set_setting("supermarket_legend", "unboxing", false)
 	check(legend.make_arrival_popup([[arrived, 1]], 0) == null, "con el ajuste apagado no hay caja")
 	legend._arriving = {}
+	core.reset_defaults()
+
+
+func test_fishing_popup() -> void:
+	var legend = core.get_runtime("hook_legend")
+	check(legend != null, "falta el runtime del Anzuelo")
+	if legend == null:
+		return
+	check(legend.make_fishing_popup(0) == null, "sin Anzuelo garantizado no hay minijuego")
+
+	legend._fishing_pending[0] = true
+	var popup = legend.make_fishing_popup(0)
+	check(popup != null, "con el Anzuelo garantizado debería salir el minijuego")
+	if popup == null:
+		return
+	check(legend.make_fishing_popup(0) == null, "solo una vez por tienda")
+	core.show_popup(popup)
+	popup._bite_at = 1.0
+	popup._elapsed = 1.2
+	popup._on_accept()
+	check(popup.result == "caught", "pulsar con el corcho hundido debería pescar (%s)" % popup.result)
+	popup.close_popup(popup.result)
+	core._show_next_popup()
+
+	legend._fishing_pending[0] = true
+	popup = legend.make_fishing_popup(0)
+	core.show_popup(popup)
+	popup._bite_at = 1.0
+	popup._elapsed = 0.4
+	popup._on_accept()
+	check(popup.result == "early", "pulsar antes de tiempo asusta al pez")
+	popup.close_popup(popup.result)
+	core._show_next_popup()
+
+	var _stored = core.set_setting("hook_legend", "fishing_minigame", false)
+	legend._fishing_pending[0] = true
+	check(legend.make_fishing_popup(0) == null, "con el ajuste apagado no hay minijuego")
 	core.reset_defaults()
 
 

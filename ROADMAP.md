@@ -41,7 +41,7 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [ ] Supermercado en cooperativo.
 - [x] Supermercado equilibrado: aviso de opción muy fuerte, encargos al derrotar élites o jefes, recargo y entrega en la siguiente tienda.
 - [x] Interfaz Caritatopc con forma de biblioteca y estética común (`ui/ui_style.gd`).
-- [~] Rasgo interactivo distintivo para cada leyenda: Regalo (confirmación con corazones) y Supermercado (caja del encargo) hechos; faltan Anzuelo («¡Pica!»), Mercader (regateo) y Cosecha Eterna (cosecha dorada).
+- [~] Rasgo interactivo distintivo para cada leyenda: Regalo (confirmación con corazones), Supermercado (caja del encargo) y Anzuelo («¡Pica!») hechos; faltan Mercader (regateo) y Cosecha Eterna (cosecha dorada).
 - [x] La Leyenda del Regalo (cooperativo): regalar objetos y armas.
 - [ ] Prueba manual de La Leyenda del Regalo en cooperativo.
 - [ ] Mejora de cajas a legendaria (idea de Mauro: a las 3 cajas, luego cada 6 y cada 9) — pendiente de valorar.

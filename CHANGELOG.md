@@ -5,6 +5,7 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 ## [Sin publicar]
 
 ### Añadido
+- **Anzuelo: minijuego «¡Pica!»**: cuando aparece el Anzuelo garantizado, una escena de pesca (agua, corcho y sedal dibujados) en la que hay que pulsar Aceptar justo cuando el corcho se hunde. Si se pesca, la tienda da un reroll gratis; antes de tiempo el pez se asusta y tarde se escapa. Un intento por tienda; se puede desactivar.
 - **Ventanas interactivas de las leyendas** (`ui/legend_popup.gd`): se abren de una en una (cola en el núcleo), responden al mando del jugador que toca y pausan los `FocusEmulator` de la tienda (`ui/focus_guard.gd`, también usado por el Regalo).
 - **Supermercado: «¡Tu encargo ha llegado!»**: al entrar en la tienda a la que llega un encargo, aparece una caja que se abre a toques (Aceptar o clic, tres veces) con confeti y muestra lo que había dentro. Se puede desactivar.
 - **Supermercado equilibrado**: aviso de opción muy fuerte (apagada por defecto); los encargos se ganan al derrotar a un élite o a un jefe (o en cada tienda, si se configura); cada encargo cuesta un recargo (50 % por defecto) y llega **bloqueado a la siguiente tienda**, guardado con la partida. Catálogo rediseñado en dos columnas con el recargo y el precio de cada artículo, y el botón muestra los encargos disponibles.

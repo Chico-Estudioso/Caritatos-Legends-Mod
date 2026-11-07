@@ -60,6 +60,7 @@ func _run() -> void:
 
 	yield(_capture_gift(), "completed")
 	yield(_capture_supermarket(), "completed")
+	yield(_capture_fishing(), "completed")
 
 	print("Capturas guardadas: %d en %s" % [_saved, _out_dir])
 	quit(0 if _saved > 0 else 1)
@@ -150,6 +151,21 @@ func _capture_supermarket() -> void:
 	yield(_frames(14), "completed")
 	_save("super_5_caja_abierta")
 	box.close_popup("opened")
+	yield(_frames(2), "completed")
+
+
+# «¡Pica!» del Anzuelo: el corcho hundido y el pez pescado.
+func _capture_fishing() -> void:
+	var popup = load(MOD_PATH + "modules/hook_legend/fishing_popup.gd").new()
+	core.show_popup(popup)
+	popup.set_process(false)
+	popup.start_bite()
+	yield(_frames(12), "completed")
+	_save("anzuelo_1_pica")
+	popup.finish_fishing("caught")
+	yield(_frames(24), "completed")
+	_save("anzuelo_2_pescado")
+	popup.close_popup("caught")
 	yield(_frames(2), "completed")
 
 
