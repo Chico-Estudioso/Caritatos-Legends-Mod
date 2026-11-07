@@ -11,6 +11,7 @@ const _CLC_HARVEST_ID := "endless_harvest"
 func _on_HarvestingTimer_timeout() -> void:
 	var legend = _CLC_HARVEST_API.get_runtime(_CLC_HARVEST_ID)
 	var mode: String = legend.get_mode() if legend != null else "vanilla"
+	_CLC_HARVEST_API.trace("Fin de oleada: recolección (%s)" % mode)
 
 	if mode == "grow":
 		# Se reutiliza el crecimiento del juego tratando la oleada actual como

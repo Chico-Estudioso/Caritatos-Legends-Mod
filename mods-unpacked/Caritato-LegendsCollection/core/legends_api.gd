@@ -61,3 +61,11 @@ static func clear_popups() -> void:
 	var core = get_core()
 	if core != null:
 		core.clear_popups()
+
+
+# Marca de diagnóstico en el registro de ModLoader (modloader.log). Ese archivo
+# se escribe línea a línea, así que, si el juego se cierra de golpe, la última
+# marca dice en qué paso estaba el mod. Solo se usa en momentos puntuales
+# (entrar en la tienda, preparar un menú), no en cada fotograma.
+static func trace(text: String) -> void:
+	ModLoaderLog.info("[diag] " + text, "Caritato-LegendsCollection:Diag")

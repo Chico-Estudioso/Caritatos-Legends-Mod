@@ -6,6 +6,14 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 
 ## [1.0.0] - Versión candidata (pendiente de probar en Brotato y de publicar)
 
+### Corregido (cierre en solitario)
+- **El juego se cerraba al entrar en la primera tienda en solitario.** Los registros apuntan a la extensión del menú del objeto (`ItemPopup`) de la versión anterior: era lo único del mod que actuaba en solitario y no en cooperativo, donde nunca llegaba al menú. Esa extensión ya no existe (pendiente de confirmar en el juego). La del menú cooperativo es ahora más prudente:
+  - solo se prepara si el Regalo está activo en una partida cooperativa;
+  - crea un botón nuevo en lugar de copiar el de Cancelar con su script;
+  - cambia los vecinos de foco de Reciclar y Cancelar solo mientras Regalar está visible.
+- **Marcas de diagnóstico** `[diag]` en `modloader.log` al terminar la oleada, al entrar en la tienda y al preparar el menú del Regalo. Ese registro se escribe línea a línea, así que, si el juego se cierra de golpe, la última marca dice dónde.
+- `docs/COMPATIBILIDAD.md`: sección «Otros mods». FoxLab rompe la tienda en la 1.2 al cargarla durante su `_init`; PerfectHook hace lo mismo que la Leyenda del Anzuelo.
+
 ### Publicación
 - Paquete para el Workshop Uploader de Brotato (artefacto `Caritatopc-Workshop` de la CI y `python tools/build.py --workshop`): ZIP con el título como nombre, portada de 512×512 dibujada con piezas del mod y descripciones en `workshop/`. Pasos en `docs/WORKSHOP.md`.
 

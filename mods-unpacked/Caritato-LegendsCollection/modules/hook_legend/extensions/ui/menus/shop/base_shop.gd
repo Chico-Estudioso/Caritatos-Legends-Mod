@@ -14,9 +14,11 @@ func _enter_tree() -> void:
 	var core = _CLC_HOOK_API.get_core()
 	if core == null:
 		return
+	_CLC_HOOK_API.trace("Tienda: entrando (Anzuelo)")
 	var legend = core.get_runtime(_CLC_HOOK_ID)
 	if legend != null:
 		legend.apply_curse_chance()
+		_CLC_HOOK_API.trace("Tienda: probabilidad del Anzuelo aplicada")
 
 
 # En Godot 3, _ready() se ejecuta en todos los niveles de herencia de forma
@@ -24,6 +26,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	if _CLC_HOOK_API.get_runtime(_CLC_HOOK_ID) == null:
 		return
+	_CLC_HOOK_API.trace("Tienda: lista (Anzuelo)")
 	# «¡Pica!» sale un momento después de que se vea la tienda.
 	var _err = get_tree().create_timer(0.4).connect("timeout", self, "_clc_hook_show_fishing")
 
@@ -52,9 +55,12 @@ func _clc_hook_on_fishing(result: String, player_index: int) -> void:
 
 
 func fill_shop_items(player_locked_items: Array, player_index: int, just_entered_shop: bool = false) -> void:
+	if just_entered_shop:
+		_CLC_HOOK_API.trace("Tienda: generando artículos de J%d" % (player_index + 1))
 	.fill_shop_items(player_locked_items, player_index, just_entered_shop)
 	if not just_entered_shop:
 		return
 	var legend = _CLC_HOOK_API.get_runtime(_CLC_HOOK_ID)
 	if legend != null:
 		legend.on_shop_entered(_shop_items[player_index], player_locked_items.size(), player_index)
+	_CLC_HOOK_API.trace("Tienda: artículos de J%d listos" % (player_index + 1))

@@ -20,6 +20,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	if _clc_harvest_resumed or _CLC_HARVEST_API.get_runtime(_CLC_HARVEST_ID) == null:
 		return
+	_CLC_HARVEST_API.trace("Tienda: lista (Cosecha Eterna)")
 	var _err = get_tree().create_timer(0.4).connect("timeout", self, "_clc_harvest_show_golden")
 
 

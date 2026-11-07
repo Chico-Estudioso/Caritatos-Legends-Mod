@@ -56,6 +56,13 @@ Abre Brotato y revisa `%APPDATA%\Brotato\logs\modloader.log`. Debe aparecer:
 
 Si el menú «Mods» sale vacío, el ZIP no está en una carpeta que el juego lea: revisa la tabla de arriba y el log.
 
+### Si el juego se cierra
+
+- Pulsa **Windows + R**, escribe `%APPDATA%\Brotato\logs` y pulsa Enter.
+- Envía `modloader.log` y los `godot*.log` más recientes. Cada vez que se abre el juego, el registro anterior se guarda con la fecha y la hora de ese arranque en el nombre.
+- `godot.log` se escribe por bloques y puede cortarse justo antes del cierre. `modloader.log` se escribe línea a línea: sus marcas `[diag]` (al terminar la oleada, al entrar en la tienda, al preparar el menú del Regalo…) dicen en qué paso estaba el mod.
+- Comprueba qué otros mods se cargaron (`mod_load_order` en el log) y revisa «Otros mods» en `docs/COMPATIBILIDAD.md`.
+
 La configuración se guarda en `%APPDATA%\Brotato\caritato_legends\settings.json`. Si se borra, el mod vuelve a los valores por defecto. Si está dañada, se guarda una copia `settings.json.invalido.bak` y se arranca con los valores por defecto.
 
 ## Prueba rápida recomendada (15 minutos)
