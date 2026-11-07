@@ -1,6 +1,6 @@
 {
 	"id": "endless_harvest",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"category": "economy",
 	"name_key": "CLC_MOD_ENDLESS_HARVEST_NAME",
 	"description_key": "CLC_MOD_ENDLESS_HARVEST_DESC",
@@ -13,11 +13,14 @@
 	"runtime": "endless_harvest.gd",
 	"extensions": [
 		"extensions/main.gd",
-		"extensions/singletons/item_service.gd"
+		"extensions/singletons/item_service.gd",
+		"extensions/ui/menus/shop/base_shop.gd"
 	],
 	"compatibility": {
 		"status": "untested",
-		"game_versions": ["1.1.15.4"]
+		"game_versions": [
+			"1.1.15.4"
+		]
 	},
 	"origin": {
 		"type": "independent_recreation",
@@ -55,6 +58,13 @@
 			"default": false,
 			"label_key": "CLC_HARVEST_PIGGY",
 			"help_key": "CLC_HARVEST_PIGGY_HELP"
+		},
+		{
+			"key": "golden_harvest",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_HARVEST_GOLDEN",
+			"help_key": "CLC_HARVEST_GOLDEN_HELP"
 		}
 	]
 }

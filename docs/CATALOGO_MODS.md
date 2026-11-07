@@ -76,6 +76,13 @@ Cómo funciona en el juego (verificado en el código de 1.1.15.4):
 - La leyenda: con «Seguir creciendo» ejecuta el crecimiento del propio juego tratando la oleada como la última normal; con un porcentaje distinto del 20 % quita ese porcentaje en lugar del del juego; con la Hucha activada, da el interés al empezar cada oleada posterior a la 20. Con 20 % y sin crecer, deja actuar al juego tal cual.
 - La Hucha y la Corona figuran en `ItemService.banned_items_for_endless`; la leyenda las retira de esa lista cuando vuelven a servir.
 
+- **Rasgo propio: «Cosecha dorada».** En cada tienda del modo infinito aparece un campo de trigo que madura despacio y se pasa deprisa. Al pulsar Aceptar se cosecha:
+  - Dorado: +10 % de la recolección en materiales (`RunData.add_gold`).
+  - Casi dorado: +5 %.
+  - Verde: nada.
+  - Al continuar una partida guardada en la tienda no se repite (`RunData.resumed_from_state_in_shop`), para que salir y volver no dé el premio otra vez.
+  - Ajuste «Cosecha dorada en el modo infinito».
+
 Pruebas manuales (modo infinito, pasando de la oleada 20):
 - [ ] Por defecto (0 %): tras la oleada 21 la recolección no baja; el texto de la estadística dice que se mantiene.
 - [ ] Con 10 %: baja aproximadamente la mitad que en el juego base.
@@ -84,6 +91,8 @@ Pruebas manuales (modo infinito, pasando de la oleada 20):
 - [ ] Antes de la oleada 21, todo funciona exactamente como en el juego base.
 - [ ] Desactivar la leyenda en pausa: en la siguiente oleada vuelve el 20 % del juego.
 - [ ] Cooperativo: se aplica a cada jugador con su propia recolección y su Hucha.
+- [ ] Cosecha dorada: sale en las tiendas del modo infinito (no antes); cosechar en dorado suma el 10 % de la recolección en materiales.
+- [ ] Guardar y salir en esa tienda y continuar: no vuelve a salir.
 
 ### La Leyenda del Mercader (`merchant_legend`)
 
@@ -92,6 +101,12 @@ Cómo funciona en el juego (verificado en el código de 1.1.15.4):
 - El del reroll, de `ItemService.get_reroll_price(oleada, rerolls, …)`, que sube con la oleada y con cada reroll de la misma tienda.
 - La leyenda calcula esos precios con la oleada 1 si se eligen precios fijos y aplica después el porcentaje configurado. El reciclaje usa `get_value`, así que cambia en la misma proporción.
 
+- **Rasgo propio: «¡A regatear!».** Botón **Regatear** junto al reroll de cada jugador. Una aguja va y viene por una barra con una zona verde (en un sitio distinto cada vez):
+  - Al pulsar Aceptar se para. En verde, −10 % (configurable) en los artículos de esa tienda; en amarillo, la mitad; en rojo, nada.
+  - Un intento por tienda; cancelar no lo gasta.
+  - El descuento se aplica en `ItemService.get_value` solo a los artículos de la tienda (los que llevan id), así que el reciclaje no cambia.
+  - La tienda refresca sus precios con `ShopItemsContainer.reload_shop_items()`.
+
 Pruebas manuales:
 - [ ] Con los valores por defecto, los precios coinciden con los del juego.
 - [ ] Artículos al 50 %: los precios de la tienda se reducen a la mitad y se cobra ese precio.
@@ -99,6 +114,9 @@ Pruebas manuales:
 - [ ] «Los artículos no se encarecen»: en la oleada 15 cuestan lo mismo que en la 1.
 - [ ] «Los rerolls no se encarecen»: el primer reroll de cada tienda cuesta lo mismo que en la oleada 1.
 - [ ] Cambiar los valores desde la pausa se refleja en la siguiente tienda.
+- [ ] Regatear: parar en verde baja un 10 % los precios de la tienda al momento; el botón queda como «Regateado: −10 %».
+- [ ] Reciclar en esa tienda da lo mismo que sin regatear.
+- [ ] En la siguiente tienda los precios vuelven a la normalidad y se puede regatear otra vez. En cooperativo, cada jugador tiene su botón.
 
 ### La Leyenda del Supermercado (`supermarket_legend`)
 

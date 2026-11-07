@@ -5,6 +5,8 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 ## [Sin publicar]
 
 ### Añadido
+- **Mercader: «¡A regatear!»**: botón Regatear junto al reroll; parar la aguja en la zona verde rebaja un 10 % (configurable) los artículos de esa tienda, la mitad en la amarilla. Un intento por tienda; el reciclaje no cambia.
+- **Cosecha Eterna: «Cosecha dorada»**: en cada tienda del modo infinito, cosechar el trigo cuando está dorado da un 10 % de la recolección en materiales (5 % si casi). No se repite al continuar una partida guardada.
 - **Anzuelo: minijuego «¡Pica!»**: cuando aparece el Anzuelo garantizado, una escena de pesca (agua, corcho y sedal dibujados) en la que hay que pulsar Aceptar justo cuando el corcho se hunde. Si se pesca, la tienda da un reroll gratis; antes de tiempo el pez se asusta y tarde se escapa. Un intento por tienda; se puede desactivar.
 - **Ventanas interactivas de las leyendas** (`ui/legend_popup.gd`): se abren de una en una (cola en el núcleo), responden al mando del jugador que toca y pausan los `FocusEmulator` de la tienda (`ui/focus_guard.gd`, también usado por el Regalo).
 - **Supermercado: «¡Tu encargo ha llegado!»**: al entrar en la tienda a la que llega un encargo, aparece una caja que se abre a toques (Aceptar o clic, tres veces) con confeti y muestra lo que había dentro. Se puede desactivar.

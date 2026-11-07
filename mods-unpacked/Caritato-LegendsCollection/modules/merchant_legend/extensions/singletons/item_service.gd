@@ -12,7 +12,11 @@ func get_value(wave: int, base_value: int, player_index: int, affected_by_items_
 	if legend == null:
 		return .get_value(wave, base_value, player_index, affected_by_items_price_stat, is_weapon, item_id)
 	var value: int = .get_value(legend.item_price_wave(wave), base_value, player_index, affected_by_items_price_stat, is_weapon, item_id)
-	return legend.scale_item_price(value)
+	value = legend.scale_item_price(value)
+	# El regateo solo rebaja los artículos de la tienda (llevan su id).
+	if affected_by_items_price_stat and item_id != Keys.empty_hash:
+		value = legend.apply_haggle(value, player_index)
+	return value
 
 
 func get_reroll_price(wave: int, reroll_count: int, player_index: int) -> Array:
