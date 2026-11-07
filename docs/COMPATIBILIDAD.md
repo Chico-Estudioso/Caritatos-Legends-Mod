@@ -56,6 +56,9 @@ Pendiente: verificar dentro de Brotato 1.2 las firmas de `BaseShop.fill_shop_ite
 | Catálogo del Supermercado | `ItemService.get_pool(tier, TierData)`, `ItemService.item_groups`, `RunData.get_remaining_max_nb_item()`, efectos `no_melee_weapons`, `no_ranged_weapons`, `min/max_weapon_tier`, `remove_shop_items`, `EntityService.is_weapon_spawning_structure()` | `singletons/item_service.gd`, `singletons/run_data.gd`, `singletons/entity_service.gd` | Supermercado |
 | Colocar artículos en la tienda | `BaseShop._get_reroll_button()`, `_get_shop_items_container()`, `ShopItemsContainer.set_shop_items()`, `is_shop_item_locked_visually()`, `unlock_all_shop_items_visually()`, `BaseShop._update_visual_locks()`, `set_reroll_button_price()`, `ItemService.NB_SHOP_ITEMS` | `ui/menus/shop/base_shop.gd`, `ui/menus/shop/shop_items_container.gd` | Supermercado |
 | Cobro en la moneda del jugador | `RunData.get_player_currency()`, `RunData.remove_currency()` | `singletons/run_data.gd` | Supermercado |
+| Tienda cooperativa | `CoopShop._get_coop_player_container(i)` (`reroll_button`), `_get_gear_container(i).set_items_data()/set_weapons_data()`, `_update_stats(i)`, `ShopItemsContainer.reload_shop_items()`, `set_reroll_button_price(i)` | `ui/menus/shop/coop_shop.gd`, `coop_shop_player_container.gd`, `player_gear_container.gd` | Regalo |
+| Transferir objetos y armas | `RunData.remove_item(item, p)` / `add_item(item, p)`, `remove_weapon_by_index(i, p)` / `add_weapon(w, p)` (confirmadas en 1.2 por QuickEquip), `get_remaining_max_nb_item()`, efectos `weapon_slot`, `lock_current_weapons`, `meca_only`, `mutant_only` | `singletons/run_data.gd` | Regalo |
+| Foco por jugador en cooperativo | Nodos `FocusEmulator1..4` de la escena (se ocultan y dejan de leer la entrada mientras la ventana está abierta, como hace el juego al pausar), `Utils.focus_player_control()` | `ui/menus/global/focus_emulator.gd`, `singletons/utils.gd` | Regalo |
 | Tema y fuentes de la interfaz | `res://resources/themes/base_theme.tres`, `res://resources/fonts/actual/base/*.tres` (opcionales) | recursos del juego | 0.1.0 |
 
 `tools/game_scripts.txt` contiene las rutas de scripts del juego que existen en la versión objetivo; la validación falla si una extensión apunta a otra ruta. Para regenerarlo tras una actualización, con una copia local descompilada del juego (fuera del repositorio):
@@ -72,6 +75,7 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 | La Leyenda de la Cosecha Eterna | 1.1.15.4 | Verificado en código; no probado en el juego |
 | La Leyenda del Mercader | 1.1.15.4 | Verificado en código; no probado en el juego |
 | La Leyenda del Supermercado | 1.1.15.4 | Verificado en código; no probado en el juego; solo tienda de un jugador |
+| La Leyenda del Regalo | 1.1.15.4; API de transferencia confirmada en 1.2 | Verificado en código; no probado en el juego |
 
 ## Historial de pruebas
 

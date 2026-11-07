@@ -39,6 +39,9 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] La Leyenda del Mercader (FreeRerolls + SIFD's Mod).
 - [x] La Leyenda del Supermercado (Supermarket), versión de un jugador.
 - [ ] Supermercado en cooperativo.
+- [x] La Leyenda del Regalo (cooperativo): regalar objetos y armas.
+- [ ] Prueba manual de La Leyenda del Regalo en cooperativo.
+- [ ] Mejora de cajas a legendaria (idea de Mauro: a las 3 cajas, luego cada 6 y cada 9) — pendiente de valorar.
 - [ ] Siguientes candidatas: Rainbow Crate (Apache-2.0), Second Chance (MIT), contador de rerolls, medidor de daño.
 - [ ] Una leyenda por PR, con procedencia y pruebas.
 

@@ -20,6 +20,13 @@ Fuentes consultadas el 2026-11-06: repositorios públicos de GitHub y buscadores
 | | Endless-less | dami | Workshop 2938652633 | Hucha/recolección en infinito y deslizadores de escalado infinito | — | Recreación independiente | Referencia |
 | | Stronger Harvesting | CommanderAstern | [GitHub](https://github.com/CommanderAstern/brotato-stronger-harvesting), Workshop 3780496839 | Crecimiento base de recolección configurable y crecimiento en infinito | Sin licencia | Referencia | Referencia |
 
+## Leyendas propias
+
+| Leyenda | Origen | Qué hace | Estado |
+|---|---|---|---|
+| **La Leyenda del Regalo** (`gift_legend`) | Petición de Mauro | Regalar objetos y armas entre jugadores en cooperativo | Incluida (sin probar en el juego) |
+| Mejora de cajas a legendaria | Idea de Mauro (pendiente) | Con 3 cajas, opción de convertir una en legendaria; después cada 6 y cada 9 | Pendiente de valorar |
+
 ## Candidatas para siguientes versiones
 
 | Mod | Autor | Workshop / código | Qué hace | Licencia | Dificultad | Estado |
@@ -105,3 +112,24 @@ Pruebas manuales:
 - [ ] Con coste del encargo al 50 % se descuenta al encargar y se avisa si no hay materiales.
 - [ ] Un personaje sin armas cuerpo a cuerpo no ve armas cuerpo a cuerpo; los objetos prohibidos no aparecen.
 - [ ] «Atrás» cierra el catálogo sin abrir la pausa.
+
+### La Leyenda del Regalo (`gift_legend`)
+
+Diseño:
+- Botón **Regalar** en la fila superior del panel de cada jugador de la tienda cooperativa (junto al reroll). Solo aparece con 2 o más jugadores.
+- La ventana lista armas y objetos del jugador, con un botón por cada posible receptor; si no se puede, el botón aparece desactivado con el motivo.
+- Transferencia con la API del juego: `RunData.remove_item` + `add_item` (retiran y aplican efectos) y `remove_weapon_by_index` + `add_weapon` (el arma conserva mejoras, maldición, mecanización y daño acumulado).
+- Nunca se regalan: el personaje (figura como objeto), `item_tumor`, `item_meca_evolved_leap`, `item_mut_evolved_leap`, `item_builder_turret*` y los objetos con `replaced_by` (quitarlos dejaría su sustituto a quien regala).
+- Reglas de quien recibe: huecos de arma libres, máximo por objeto, objetos prohibidos y grupos vetados de su personaje (las prohibiciones de tienda que elige cada jugador no impiden recibir regalos), sin cuerpo a cuerpo / sin distancia, tier de armas, armas bloqueadas (`lock_current_weapons`), y bando de evolución (no se da un arma meca a un personaje `mutant_only` ni un objeto mutado a uno `meca_only`).
+- Mientras la ventana está abierta, se pausan los `FocusEmulator` de la tienda (igual que hace el juego al pausar) y la ventana gestiona la navegación: arriba/izquierda y abajo/derecha recorren los botones, aceptar regala y atrás cierra.
+
+Pruebas manuales (partida cooperativa de 2 jugadores):
+- [ ] Cada jugador ve su botón **Regalar** en la tienda.
+- [ ] J1 regala un objeto a J2: desaparece de J1, aparece en J2 y las estadísticas de ambos cambian.
+- [ ] J1 regala un arma a J2 con hueco libre; con J2 sin huecos, el botón aparece desactivado con el motivo.
+- [ ] Un arma mecanizada (Primal Dread) conserva su mecanización al regalarla.
+- [ ] El Tumor y el propio personaje no aparecen en la lista.
+- [ ] Un objeto con máximo (por ejemplo, el Anzuelo con 3) no se puede regalar a quien ya tiene el máximo.
+- [ ] Con «Regalos por jugador en cada tienda» = 1, el segundo regalo se rechaza.
+- [ ] La ventana se maneja con mando (arriba/abajo, aceptar, atrás) y con ratón; al cerrar, el mando vuelve a la tienda.
+- [ ] Al pasar a la siguiente oleada, las armas regaladas aparecen equipadas en quien las recibió.
