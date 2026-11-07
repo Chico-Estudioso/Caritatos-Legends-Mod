@@ -47,7 +47,10 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] La Leyenda de las Cajas: fusionar cajas en una legendaria (3, luego 6 y 9; configurable).
 - [x] La Leyenda de la Fusión (recreación de GMO): fusionarse con otro personaje al empezar, con penalizaciones.
 - [ ] Prueba manual de las Cajas y la Fusión.
-- [ ] Editor de personajes y objetos («Tus tatos»): decidir con Mauro entre BroEditor (mojimoon, ya existe y es compatible con la 1.2) o un editor propio.
+- [x] Editor de personajes y objetos: opción B elegida por Mauro, BroEditor (Mojimoon) para crear y editar, con aviso y enlace de descarga.
+- [x] El Taller de los Tatos: «Tus tatos» (editor de píxeles, PNG, iconos para BroEditor y llevarlo puesto) y medidor de poder.
+- [ ] Pack de efectos nuevos para bros (registrar contenido en la 1.2), en su propia PR.
+- [ ] Probar Caritatopc junto a BroEditor dentro del juego.
 - [ ] Siguientes candidatas: Rainbow Crate (Apache-2.0), Second Chance (MIT), contador de rerolls, medidor de daño.
 - [ ] Una leyenda por PR, con procedencia y pruebas.
 

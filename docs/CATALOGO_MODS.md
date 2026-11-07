@@ -224,3 +224,30 @@ Pruebas manuales:
 - [ ] En cooperativo, cada jugador elige con su mando, uno detrás de otro.
 - [ ] Al continuar una partida guardada no vuelve a salir la ventana y se conserva la fusión.
 
+### El Taller de los Tatos (`studio_legend`)
+
+Diseño (opción B elegida por Mauro: BroEditor para crear y editar, y Caritatopc añade lo que BroEditor no tiene):
+- **BroEditor es necesario** para crear personajes y objetos. La ficha lo avisa siempre y tiene el botón «Descargar BroEditor» (Workshop 3817655214). Se detecta con `ModLoaderStore.mod_data["Mojimoon-BroEditor"]`.
+- **«Tus tatos»** (botón de la ficha):
+  - Editor de píxeles de 50 × 50 encima de la patata del juego (`res://entities/units/player/potato.png`, 150 × 150). Cada píxel son 3 × 3 sobre la patata.
+  - Herramientas: lápiz, goma, relleno, cuentagotas, deshacer, borrar todo y rejilla. Paleta de 16 colores con morados, más «Otro color».
+  - Ratón para pintar; con teclado o mando, las flechas mueven el cursor y Aceptar pinta. En el borde del lienzo el foco pasa a los botones.
+  - **Importar PNG** desde el ordenador (se ajusta a 50 × 50 sin perder proporción).
+  - Se guardan en `user://caritato_legends/tatos/` (PNG de 50 × 50 + JSON con el nombre).
+  - Con BroEditor, al guardar también se crea `user://Mojimoon-BroEditor/icons/caritato_<id>.png` (96 × 96, patata + dibujo), que aparece entre los iconos de BroEditor para sus personajes y objetos.
+  - **Llevarlo puesto**: J1–J4 eligen un tato y, en las partidas, se dibuja encima de su patata como un aspecto más (un `Sprite` dentro de `Animation/Sprite`, igual que los aspectos del juego).
+- **Medidor de poder** (botón de la ficha):
+  - Lista personajes u objetos (del juego, de los DLC y los de BroEditor) de más a menos fuerte, con barra y etiqueta: Equilibrado, Fuerte, Muy fuerte o Roto.
+  - La puntuación suma los efectos con un peso por estadística (`power_rules.gd`). El signo es el que da el juego al efecto (verde o rojo).
+  - Cada personaje se compara con todos los personajes; cada objeto, con los de su rareza.
+  - Hasta el percentil 75 es equilibrado; hasta el más fuerte, fuerte; hasta un 50 % más, muy fuerte; por encima, roto.
+- Pendiente para la siguiente PR: el **pack de efectos nuevos para bros**. Toca el contenido del juego (registrar objetos o efectos en la 1.2), que es lo más delicado, y va aparte para probarlo solo.
+
+Pruebas manuales:
+- [ ] Sin BroEditor, la ficha avisa y «Descargar BroEditor» abre su página.
+- [ ] «Tus tatos»: dibujar, deshacer, rellenar, importar un PNG, guardar y volver a abrir.
+- [ ] Con BroEditor, el tato guardado aparece entre los iconos de BroEditor (`caritato_<id>.png`).
+- [ ] J1 se pone un tato y lo ve encima de su patata en la partida; en cooperativo, cada jugador el suyo.
+- [ ] «Atrás» cierra el editor o el medidor y no el menú Caritatopc.
+- [ ] El medidor muestra los personajes del juego y los de BroEditor, y marca como «Roto» uno con estadísticas exageradas.
+

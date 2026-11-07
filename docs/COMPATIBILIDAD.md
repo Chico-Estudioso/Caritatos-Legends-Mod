@@ -72,6 +72,9 @@ Para probar en Steam sin publicar, el ZIP se copia en la carpeta de un objeto su
 | Foco por jugador en cooperativo | Nodos `FocusEmulator1..4` de la escena (se ocultan y dejan de leer la entrada mientras la ventana está abierta, como hace el juego al pausar), `Utils.focus_player_control()` | `ui/menus/global/focus_emulator.gd`, `singletons/utils.gd` | Regalo |
 | Cajas por abrir al terminar la oleada | `Main._on_EndWaveTimer_timeout()`, `_is_run_lost`, `_is_run_won`, `_is_wave_failed`, `_consumables_to_process[i]` (lista de `UpgradesUI.ConsumableToProcess` con `consumable_data` y `player_index`), `_things_to_process_player_containers[i].consumables.add_element()/remove_element()`, `ItemService.consumables` + `get_element()`, `Keys.consumable_item_box_hash`, `Keys.consumable_legendary_item_box_hash` (confirmadas en mods de la 1.2: BroEditor, NewContentLoader) | `main.gd`, `ui/menus/upgrades/upgrades_ui.gd` | Cajas |
 | Fusión de personajes | `RunData.apply_item_effects(item, i)`, `RunData.get_player_character(i)`, `RunData.get_player_effects(i)[hash] += valor`, `Utils.reset_stat_cache(i)`, `ItemService.characters`, `ProgressData.characters_unlocked`, `ItemParentData.get_effects_text(i)`, `Player.update_player_stats(reset)`, `EffectBehaviorService.update_active_effect_behaviors()`, `Main._players`, efectos `xp_gain`, `items_price`, `number_of_enemies`, `enemy_speed` | `singletons/run_data.gd`, `main.gd`, `entities/units/player/player.gd` | Fusión |
+| Tus tatos en la partida | `Player` → nodo `Animation/Sprite` (los aspectos del juego son `Sprite` hijos de él, de 150 × 150), `res://entities/units/player/potato.png` | `entities/units/player/player.tscn`, `player.gd` | Taller |
+| Otros mods cargados | `ModLoaderStore.mod_data[id]` (`is_loadable`, `is_active`) | `addons/mod_loader/mod_loader_store.gd` | Taller |
+| Iconos de BroEditor | Carpeta `user://Mojimoon-BroEditor/icons/` (PNG que BroEditor ofrece como iconos) | BroEditor | Taller |
 | Tema y fuentes de la interfaz | `res://resources/themes/base_theme.tres`, `res://resources/fonts/actual/base/*.tres` (opcionales) | recursos del juego | 0.1.0 |
 
 `tools/game_scripts.txt` contiene las rutas de scripts del juego que existen en la versión objetivo; la validación falla si una extensión apunta a otra ruta. Para regenerarlo tras una actualización, con una copia local descompilada del juego (fuera del repositorio):
@@ -91,12 +94,14 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 | La Leyenda del Regalo | 1.2.0.1 | Probado en el juego por Mauro (cooperativo) |
 | La Leyenda de las Cajas | 1.1.15.4; API confirmada en mods de la 1.2 | Verificado en código; no probado en el juego |
 | La Leyenda de la Fusión | 1.1.15.4; API confirmada en mods de la 1.2 | Verificado en código; no probado en el juego |
+| El Taller de los Tatos | 1.2 (con BroEditor 3.0.6) | Verificado en código; no probado en el juego |
 
 ## Otros mods
 
 | Mod | Qué pasa | Qué hacer |
 |---|---|---|
 | FoxLab (JonathanFox, Primal Dread) | Carga `base_shop.gd` durante su `_init`. En la 1.2 eso rompe la compilación de la tienda (`base_shop.gdc:212`, «the variable type can't be inferred») y la tienda deja de funcionar, con o sin Caritatopc. | No usarlo junto a este mod hasta que su autor lo corrija. |
+| BroEditor (Mojimoon, Workshop 3817655214) | Compatible y recomendado: es el editor de personajes, objetos y armas que usa El Taller de los Tatos. Extiende `main.gd`, `RunData`, `ItemService`, la selección de personaje, arma y dificultad y las tiendas. Coincide con Caritatopc en `Main._on_EntitySpawner_players_spawned` (las dos extensiones llaman a la del juego, así que se encadenan) y en las tiendas (BroEditor cambia reroll y compra; Caritatopc, otras funciones). No hay miembros con el mismo nombre (`_be_*` frente a `_clc_*`). Su fusión de personajes (GMO) y nuestra Leyenda de la Fusión se suman si se usan las dos. | Instalarlo para crear personajes y objetos. Probar juntos en el juego. |
 | PerfectHook (AzazelRabbit) | Cambia el Anzuelo y la tienda, igual que nuestra Leyenda del Anzuelo, y está hecho para versiones anteriores. | Usar solo uno de los dos: la Leyenda del Anzuelo ya da la probabilidad configurable y el Anzuelo garantizado. |
 
 ## Historial de pruebas

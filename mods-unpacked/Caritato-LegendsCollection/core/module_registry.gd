@@ -177,6 +177,7 @@ func _normalize(raw: Dictionary, errors: Array) -> Dictionary:
 		"compatibility": {"status": "untested", "game_versions": []},
 		"origin": raw.get("origin", {}) if raw.get("origin", {}) is Dictionary else {},
 		"settings": [],
+		"actions": [],
 	}
 
 	if definition.name_key == "":
@@ -222,7 +223,40 @@ func _normalize(raw: Dictionary, errors: Array) -> Dictionary:
 		seen_keys[setting.key] = true
 		definition.settings.append(setting)
 
+	# Acciones: botones de la ficha que llaman a un método del runtime
+	# (abrir un editor, un enlace…). No guardan ningún valor.
+	var raw_actions = raw.get("actions", [])
+	if not raw_actions is Array:
+		errors.append("actions debe ser una lista")
+		raw_actions = []
+	for index in raw_actions.size():
+		var action := _normalize_action(raw_actions[index], index, errors)
+		if not action.empty():
+			definition.actions.append(action)
+
 	return definition
+
+
+func _normalize_action(raw, index: int, errors: Array) -> Dictionary:
+	if not raw is Dictionary:
+		errors.append("la acción #%d no es un objeto" % index)
+		return {}
+	var method = raw.get("method", "")
+	var label_key = raw.get("label_key", "")
+	if not method is String or _key_regex.search(method) == null:
+		errors.append("la acción #%d tiene un método inválido (%s)" % [index, str(method)])
+		return {}
+	if not label_key is String or label_key == "":
+		errors.append("la acción '%s' no tiene label_key" % method)
+		return {}
+	var help_key = raw.get("help_key", "")
+	var style = raw.get("style", "primary")
+	return {
+		"method": method,
+		"label_key": label_key,
+		"help_key": help_key if help_key is String else "",
+		"style": style if style is String and ["primary", "ghost"].has(style) else "primary",
+	}
 
 
 func _normalize_setting(raw, index: int, errors: Array) -> Dictionary:
