@@ -135,13 +135,16 @@ func celebrate() -> void:
 	_title.text = tr("CLC_GIFT_RECEIVED_TITLE")
 	_subtitle.text = tr("CLC_GIFT_RECEIVED_TEXT") % [recipient + 1, offer.label]
 	_subtitle.add_color_override("font_color", UiStyle.TEXT)
-	_question.visible = false
-	_buttons_box.visible = false
-	_hints.visible = false
+	# Se ocultan sin cambiar el tamaño de la tarjeta, para que nada salte.
+	for control in [_question, _buttons_box, _hints]:
+		control.modulate.a = 0.0
+	for button in _buttons:
+		button.disabled = true
+		button.focus_mode = Control.FOCUS_NONE
 	_sparkles.burst(46)
 	_heart.rect_pivot_offset = _heart.rect_size / 2.0
-	_tween.interpolate_property(_heart, "rect_scale", Vector2.ONE, Vector2(1.45, 1.45), 0.22, Tween.TRANS_BACK, Tween.EASE_OUT)
-	_tween.interpolate_property(_heart, "rect_scale", Vector2(1.45, 1.45), Vector2(1.15, 1.15), 0.35, Tween.TRANS_SINE, Tween.EASE_IN_OUT, 0.22)
+	_tween.interpolate_property(_heart, "rect_scale", Vector2.ONE, Vector2(1.25, 1.25), 0.2, Tween.TRANS_BACK, Tween.EASE_OUT)
+	_tween.interpolate_property(_heart, "rect_scale", Vector2(1.25, 1.25), Vector2(1.08, 1.08), 0.35, Tween.TRANS_SINE, Tween.EASE_IN_OUT, 0.2)
 	var _started = _tween.start()
 	_finish_later(CELEBRATION_TIME)
 
@@ -151,8 +154,11 @@ func _show_error(error_key: String) -> void:
 	_result = error_key
 	_question.text = tr(error_key)
 	_question.add_color_override("font_color", UiStyle.ERROR)
-	_buttons_box.visible = false
-	_hints.visible = false
+	for control in [_buttons_box, _hints]:
+		control.modulate.a = 0.0
+	for button in _buttons:
+		button.disabled = true
+		button.focus_mode = Control.FOCUS_NONE
 	_finish_later(ERROR_TIME)
 
 

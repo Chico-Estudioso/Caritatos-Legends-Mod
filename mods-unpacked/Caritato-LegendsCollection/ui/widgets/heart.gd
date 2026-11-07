@@ -37,8 +37,10 @@ func _draw() -> void:
 	var center := rect_size / 2.0
 	var size: float = min(rect_size.x, rect_size.y) * 0.5 * beat
 	if glow:
-		var halo := Color(color.r, color.g, color.b, 0.22)
-		draw_colored_polygon(heart_points(center, size * 1.22), halo, PoolVector2Array(), null, null, true)
+		# Dos halos claros y translúcidos: brillo, no sombra.
+		var light := color.lightened(0.45)
+		draw_colored_polygon(heart_points(center, size * 1.3), Color(light.r, light.g, light.b, 0.1), PoolVector2Array(), null, null, true)
+		draw_colored_polygon(heart_points(center, size * 1.14), Color(light.r, light.g, light.b, 0.2), PoolVector2Array(), null, null, true)
 	draw_colored_polygon(heart_points(center, size), color, PoolVector2Array(), null, null, true)
 	var shine := Color(1, 1, 1, 0.35)
 	draw_circle(center + Vector2(-size * 0.42, -size * 0.32), size * 0.13, shine)

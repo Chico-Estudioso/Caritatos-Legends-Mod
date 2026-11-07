@@ -172,7 +172,7 @@ func test_gift_confirm() -> void:
 	confirm = _open_confirm(script, legend, offer, results)
 	confirm.accept()
 	check(confirm._result == "CLC_GIFT_REASON_INACTIVE", "sin partida el regalo no debería hacerse (%s)" % confirm._result)
-	check(not confirm._buttons_box.visible, "tras responder no deberían quedar botones")
+	check(confirm._buttons_box.modulate.a == 0.0 and confirm._buttons[1].disabled, "tras responder no deberían quedar botones")
 	confirm._finish(confirm._result)
 	check(results.back() == "CLC_GIFT_REASON_INACTIVE", "el motivo debería llegar a la ventana de regalos")
 
