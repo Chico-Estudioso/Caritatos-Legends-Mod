@@ -5,6 +5,7 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 ## [Sin publicar]
 
 ### Añadido
+- **Supermercado equilibrado**: aviso de opción muy fuerte (apagada por defecto); los encargos se ganan al derrotar a un élite o a un jefe (o en cada tienda, si se configura); cada encargo cuesta un recargo (50 % por defecto) y llega **bloqueado a la siguiente tienda**, guardado con la partida. Catálogo rediseñado en dos columnas con el recargo y el precio de cada artículo, y el botón muestra los encargos disponibles.
 - **Regalo: quien recibe confirma.** Ventana «¡Un regalo de tu Cari!» con corazón que late, corazones que suben y lluvia de corazones al aceptar. Solo responde el mando de quien recibe; quien regala puede retirarlo. La ventana «Regalar» adopta el estilo nuevo (tarjetas por objeto, botones con el color de cada jugador).
 - **Nueva pantalla de configuración con forma de biblioteca**: tarjetas por leyenda con su color, inicial y estado a la izquierda; ficha de la leyenda a la derecha con interruptores dibujados (en lugar de casillas), deslizadores con estilo propio y un recuadro que explica el ajuste seleccionado. Paleta, botones y corazón animado comunes en `ui/ui_style.gd` y `ui/widgets/`.
 - Campos opcionales en `module.json`: `short_name_key`, `accent` y `warning_key`.

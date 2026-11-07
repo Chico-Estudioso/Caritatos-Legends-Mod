@@ -39,6 +39,9 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] La Leyenda del Mercader (FreeRerolls + SIFD's Mod).
 - [x] La Leyenda del Supermercado (Supermarket), versión de un jugador.
 - [ ] Supermercado en cooperativo.
+- [x] Supermercado equilibrado: aviso de opción muy fuerte, encargos al derrotar élites o jefes, recargo y entrega en la siguiente tienda.
+- [x] Interfaz Caritatopc con forma de biblioteca y estética común (`ui/ui_style.gd`).
+- [~] Rasgo visual distintivo para cada leyenda: Regalo hecho (confirmación con corazones); faltan Anzuelo, Cosecha Eterna, Mercader y Supermercado.
 - [x] La Leyenda del Regalo (cooperativo): regalar objetos y armas.
 - [ ] Prueba manual de La Leyenda del Regalo en cooperativo.
 - [ ] Mejora de cajas a legendaria (idea de Mauro: a las 3 cajas, luego cada 6 y cada 9) — pendiente de valorar.

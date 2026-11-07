@@ -1,12 +1,13 @@
 {
 	"id": "supermarket_legend",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"category": "shop",
 	"name_key": "CLC_MOD_SUPERMARKET_LEGEND_NAME",
 	"description_key": "CLC_MOD_SUPERMARKET_LEGEND_DESC",
 	"short_name_key": "CLC_MOD_SUPERMARKET_LEGEND_SHORT",
 	"accent": "#ff8c42",
-	"enabled_by_default": true,
+	"warning_key": "CLC_SUPER_WARNING",
+	"enabled_by_default": false,
 	"requires_dlc": [],
 	"dependencies": [],
 	"conflicts": [],
@@ -16,7 +17,9 @@
 	],
 	"compatibility": {
 		"status": "untested",
-		"game_versions": ["1.1.15.4"]
+		"game_versions": [
+			"1.1.15.4"
+		]
 	},
 	"origin": {
 		"type": "independent_recreation",
@@ -27,25 +30,36 @@
 	},
 	"settings": [
 		{
+			"key": "order_mode",
+			"type": "enum",
+			"default": "boss",
+			"options": [
+				"boss",
+				"every_shop"
+			],
+			"label_key": "CLC_SUPER_MODE",
+			"help_key": "CLC_SUPER_MODE_HELP"
+		},
+		{
 			"key": "orders_per_shop",
 			"type": "int",
 			"default": 1,
 			"min": 1,
-			"max": 20,
+			"max": 5,
 			"step": 1,
 			"label_key": "CLC_SUPER_ORDERS",
 			"help_key": "CLC_SUPER_ORDERS_HELP"
 		},
 		{
-			"key": "order_fee_percent",
+			"key": "order_markup_percent",
 			"type": "int",
-			"default": 0,
+			"default": 50,
 			"min": 0,
 			"max": 200,
 			"step": 5,
 			"suffix": " %",
-			"label_key": "CLC_SUPER_FEE",
-			"help_key": "CLC_SUPER_FEE_HELP"
+			"label_key": "CLC_SUPER_MARKUP",
+			"help_key": "CLC_SUPER_MARKUP_HELP"
 		},
 		{
 			"key": "max_tier",

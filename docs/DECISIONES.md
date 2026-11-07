@@ -19,4 +19,8 @@
 | 2026-11-07 | Versión objetivo principal: Brotato 1.2.x (con Primal Dread), manteniendo 1.1.15.4 | La 1.2 es la versión actual; no hay código público de la 1.2, así que se usa la guía de migración de mojimoon y mods actualizados como referencia | Aprobada |
 | 2026-11-07 | Extensiones de autoloads en `_init`; extensiones de escenas en `_ready` (`base_shop.gd` primero) | En 1.2.0.1 cargar `base_shop.gd` en `_init` rompe el juego y desactiva todos los mods; las de autoloads tienen que instalarse antes de que existan | Aprobada |
 | 2026-11-07 | Las extensiones replican la ruta del script que extienden | El núcleo y la validación deciden por la ruta cuándo instalar cada una | Aprobada |
+| 2026-11-07 | Supermercado: apagado por defecto, encargos ganados al derrotar élites o jefes, recargo del 50 % y entrega en la siguiente tienda | Petición de Mauro para equilibrarlo; elegir artículos quita gran parte del azar | Aprobada |
+| 2026-11-07 | Los encargos viajan como artículos bloqueados del juego (`RunData.lock_player_shop_item`) | Se guardan con la partida sin archivos propios; la tienda ya sabe colocarlos al entrar | Aprobada |
+| 2026-11-07 | Regalo: quien recibe confirma en una ventana propia que solo responde a su mando | Rasgo distintivo pedido por Mauro; evita regalos no deseados | Aprobada |
+| 2026-11-07 | El botón y la pantalla pasan a llamarse «Caritatopc»; la pantalla tiene forma de biblioteca | Petición de Mauro: más espacio, menos texto y mejor estética | Aprobada |
 | Pendiente | Uso de ContentLoader para leyendas de contenido (personajes, armas, objetos) | Su repositorio no publica licencia; decidir integración o recreación al llegar la primera leyenda de contenido | Por decidir |
