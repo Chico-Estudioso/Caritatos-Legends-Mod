@@ -15,7 +15,7 @@ extends Node
 
 const MOD_ID := "Caritato-LegendsCollection"
 const LOG_NAME := "Caritato-LegendsCollection:Main"
-const VERSION := "0.2.0"
+const VERSION := "1.0.0"
 
 # Accesos a la pantalla de configuración (menú principal y menú de pausa).
 const CORE_EXTENSIONS := [

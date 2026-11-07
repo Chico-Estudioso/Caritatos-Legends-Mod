@@ -30,12 +30,19 @@ jobs:
         run: python -m unittest discover -s tests/python -v
 
       - name: Empaquetar
-        run: python tools/build.py
+        run: python tools/build.py --workshop dist/workshop
 
       - uses: actions/upload-artifact@v4
         with:
           name: Caritato-LegendsCollection
           path: dist/Caritato-LegendsCollection.zip
+          if-no-files-found: error
+
+      # Lo que pide el Workshop Uploader de Brotato: ZIP con el nombre del título, portada y descripciones.
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Caritatopc-Workshop
+          path: dist/workshop/
           if-no-files-found: error
 
   gdscript:

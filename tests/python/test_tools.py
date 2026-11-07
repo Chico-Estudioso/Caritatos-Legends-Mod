@@ -160,6 +160,18 @@ class BuildTests(unittest.TestCase):
             self.assertIn(prefix + "mod_main.gd", names)
             self.assertTrue(all(name.startswith(prefix) for name in names))
 
+    def test_workshop_package(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            zip_path = Path(tmp) / "mod.zip"
+            folder = Path(tmp) / "workshop"
+            with redirect_stdout(io.StringIO()):
+                build.build(zip_path)
+                target = build.build_workshop(zip_path, folder)
+            self.assertEqual(target.name, f"{build.WORKSHOP_TITLE}.zip", "el uploader usa el nombre del ZIP como título")
+            self.assertEqual(target.read_bytes(), zip_path.read_bytes())
+            for name in ("description_es.txt", "description_en.txt"):
+                self.assertTrue((folder / name).is_file(), f"falta {name}")
+
 
 if __name__ == "__main__":
     unittest.main()

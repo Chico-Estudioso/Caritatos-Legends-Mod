@@ -13,7 +13,11 @@ El ZIP es reproducible: orden fijo de archivos y fecha fija, de modo que el
 mismo código produce exactamente el mismo paquete. Para Steam Workshop y para
 la carpeta mods/ de Brotato se usa este mismo ZIP.
 
-Uso: python tools/build.py [--output RUTA]
+Con --workshop CARPETA prepara además lo que pide el Workshop Uploader de
+Brotato: el ZIP con el nombre del título (el uploader usa el nombre del
+archivo como título), la portada y las descripciones de workshop/.
+
+Uso: python tools/build.py [--output RUTA] [--workshop CARPETA]
 """
 
 from __future__ import annotations
@@ -21,6 +25,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 import sys
 import zipfile
 from pathlib import Path
@@ -30,6 +35,9 @@ MOD_ID = "Caritato-LegendsCollection"
 MOD_DIR = ROOT / "mods-unpacked" / MOD_ID
 DEFAULT_OUTPUT = ROOT / "dist" / f"{MOD_ID}.zip"
 FIXED_DATE = (2024, 1, 1, 0, 0, 0)
+WORKSHOP_DIR = ROOT / "workshop"
+WORKSHOP_TITLE = "Caritatopc - Brotato Legends Collection"
+WORKSHOP_FILES = ("preview.png", "description_es.txt", "description_en.txt")
 EXCLUDED_NAMES = {".DS_Store", "Thumbs.db", "desktop.ini"}
 EXCLUDED_SUFFIXES = {".tmp", ".bak", ".orig"}
 
@@ -79,11 +87,29 @@ def verify(output: Path) -> None:
             raise SystemExit("ERROR: el ZIP está dañado")
 
 
+def build_workshop(zip_path: Path, folder: Path) -> Path:
+    """Carpeta lista para el Workshop Uploader: ZIP con el título, portada y descripciones."""
+    folder.mkdir(parents=True, exist_ok=True)
+    target = folder / f"{WORKSHOP_TITLE}.zip"
+    shutil.copyfile(zip_path, target)
+    for name in WORKSHOP_FILES:
+        source = WORKSHOP_DIR / name
+        if source.is_file():
+            shutil.copyfile(source, folder / name)
+        else:
+            print(f"AVISO: falta workshop/{name}")
+    print(f"Paquete del Workshop: {folder.relative_to(ROOT) if folder.is_relative_to(ROOT) else folder}")
+    return target
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="ruta del ZIP a generar")
+    parser.add_argument("--workshop", type=Path, help="carpeta donde preparar el paquete del Workshop")
     args = parser.parse_args()
-    build(args.output.resolve())
+    zip_path = build(args.output.resolve())
+    if args.workshop:
+        build_workshop(zip_path, args.workshop.resolve())
     return 0
 
 

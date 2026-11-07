@@ -31,7 +31,7 @@ func _initialize() -> void:
 	core = load(MOD_PATH + "core/legends_core.gd").new()
 	core.name = "LegendsCore"
 	root.add_child(core)
-	core.boot(MOD_PATH.trim_suffix("/"), "0.3.0")
+	core.boot(MOD_PATH.trim_suffix("/"), "1.0.0")
 	_run()
 
 
@@ -62,6 +62,7 @@ func _run() -> void:
 	yield(_capture_supermarket(), "completed")
 	yield(_capture_fishing(), "completed")
 	yield(_capture_haggle_and_harvest(), "completed")
+	yield(_capture_preview(), "completed")
 
 	print("Capturas guardadas: %d en %s" % [_saved, _out_dir])
 	quit(0 if _saved > 0 else 1)
@@ -210,6 +211,91 @@ func _capture_haggle_and_harvest() -> void:
 	yield(_frames(10), "completed")
 	_save("cosecha_2_dorada")
 	harvest.close_popup("gold")
+	yield(_frames(2), "completed")
+
+
+# Portada del Workshop (512×512): corazón, título y las leyendas. Solo piezas
+# dibujadas por el mod, sin recursos del juego.
+func _capture_preview() -> void:
+	var Heart = load(MOD_PATH + "ui/widgets/heart.gd")
+	var Sparkles = load(MOD_PATH + "ui/widgets/sparkles.gd")
+	var layer := CanvasLayer.new()
+	layer.layer = 200
+	root.add_child(layer)
+	var canvas := Panel.new()
+	canvas.rect_position = Vector2.ZERO
+	canvas.rect_size = Vector2(512, 512)
+	var background := UiStyle.box(Color("1a1424"), 0, Vector2.ZERO)
+	background.border_color = UiStyle.BRAND
+	background.set_border_width_all(6)
+	canvas.add_stylebox_override("panel", background)
+	layer.add_child(canvas)
+	var theme := UiStyle.game_theme()
+	if theme != null:
+		canvas.theme = theme
+
+	var sparkles = Sparkles.new()
+	sparkles.rect_size = Vector2(512, 330)
+	sparkles.spread = Vector2(210, 120)
+	canvas.add_child(sparkles)
+	var heart = Heart.new()
+	heart.color = UiStyle.BRAND
+	heart.rect_position = Vector2(156, 34)
+	heart.rect_size = Vector2(200, 200)
+	canvas.add_child(heart)
+
+	var title := Label.new()
+	title.text = "Caritatopc"
+	title.align = Label.ALIGN_CENTER
+	title.rect_position = Vector2(0, 236)
+	title.rect_size = Vector2(512, 80)
+	title.add_color_override("font_color", UiStyle.BRAND)
+	var title_font = UiStyle.font(76, 3)
+	if title_font != null:
+		title.add_font_override("font", title_font)
+	canvas.add_child(title)
+	var subtitle := Label.new()
+	subtitle.text = "Brotato Legends Collection"
+	subtitle.align = Label.ALIGN_CENTER
+	subtitle.rect_position = Vector2(0, 322)
+	subtitle.rect_size = Vector2(512, 40)
+	subtitle.add_color_override("font_color", UiStyle.TEXT_SOFT)
+	var subtitle_font = UiStyle.font(30)
+	if subtitle_font != null:
+		subtitle.add_font_override("font", subtitle_font)
+	canvas.add_child(subtitle)
+
+	var ids: Array = core.get_module_ids()
+	var tile_size := 66.0
+	var gap := 14.0
+	var start := (512.0 - ids.size() * tile_size - (ids.size() - 1) * gap) / 2.0
+	for i in ids.size():
+		var definition: Dictionary = core.get_definition(ids[i])
+		var tile := Panel.new()
+		tile.rect_position = Vector2(start + i * (tile_size + gap), 404)
+		tile.rect_size = Vector2(tile_size, tile_size)
+		tile.add_stylebox_override("panel", UiStyle.box(Color(definition.accent), 18, Vector2.ZERO))
+		canvas.add_child(tile)
+		var letter := Label.new()
+		letter.text = tr(definition.short_name_key).substr(0, 1).to_upper()
+		letter.align = Label.ALIGN_CENTER
+		letter.valign = Label.VALIGN_CENTER
+		letter.rect_size = Vector2(tile_size, tile_size)
+		letter.add_color_override("font_color", UiStyle.INK)
+		var letter_font = UiStyle.font(40)
+		if letter_font != null:
+			letter.add_font_override("font", letter_font)
+		tile.add_child(letter)
+
+	yield(_frames(90), "completed")
+	var image: Image = root.get_texture().get_data()
+	image.flip_y()
+	var preview := image.get_rect(Rect2(0, 0, 512, 512))
+	var path := _out_dir.plus_file("preview.png")
+	if preview.save_png(path) == OK:
+		_saved += 1
+		print("Portada: %s" % path)
+	layer.queue_free()
 	yield(_frames(2), "completed")
 
 

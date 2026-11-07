@@ -4,6 +4,11 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 
 ## [Sin publicar]
 
+## [1.0.0] - Versión candidata (pendiente de probar en Brotato y de publicar)
+
+### Publicación
+- Paquete para el Workshop Uploader de Brotato (artefacto `Caritatopc-Workshop` de la CI y `python tools/build.py --workshop`): ZIP con el título como nombre, portada de 512×512 dibujada con piezas del mod y descripciones en `workshop/`. Pasos en `docs/WORKSHOP.md`.
+
 ### Corregido
 - **Pantalla Caritatopc en cooperativo**: en la pausa de una partida cooperativa no respondía al teclado ni al mando, porque los `FocusEmulator` del juego se comían la entrada. Ahora se pausan mientras la pantalla está abierta, y las acciones de cada mando (`ui_up_3`…) se reenvían como las normales.
 
