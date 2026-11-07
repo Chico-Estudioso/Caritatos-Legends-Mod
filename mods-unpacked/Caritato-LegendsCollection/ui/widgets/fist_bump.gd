@@ -82,7 +82,7 @@ static func pose(time: float, animated: bool) -> Vector2:
 
 
 func _draw() -> void:
-	var state := pose(_time, animate or _boost > 0.0)
+	var state: Vector2 = pose(_time, animate or _boost > 0.0)
 	var unit: float = min(rect_size.x / 240.0, rect_size.y / 124.0)
 	var center := rect_size / 2.0
 	var spark: float = state.y * (1.0 + _boost)
@@ -97,7 +97,7 @@ func _draw_spark(center: Vector2, unit: float, scale: float) -> void:
 	tint.a = clamp(scale, 0.0, 1.0)
 	draw_colored_polygon(star_points(center, 44.0 * unit * scale, 20.0 * unit * scale, 8), tint, PoolVector2Array(), null, null, true)
 	for angle in [-62.0, -90.0, -118.0, 62.0, 90.0, 118.0]:
-		var direction := Vector2(cos(deg2rad(angle)), sin(deg2rad(angle)))
+		var direction: Vector2 = Vector2(cos(deg2rad(angle)), sin(deg2rad(angle)))
 		draw_line(center + direction * 50.0 * unit * scale, center + direction * 62.0 * unit * scale, tint, max(2.0, 4.5 * unit), true)
 
 
@@ -120,7 +120,7 @@ func _draw_fist(center: Vector2, unit: float, gap: float, side: float, tint: Col
 
 
 func _piece_points(shape: Array, grow: float, center: Vector2, unit: float, gap: float, side: float) -> PoolVector2Array:
-	var local := rounded_rect_points(shape[0] - grow, shape[1] - grow, shape[2] + grow, shape[3] + grow, shape[4] + grow)
+	var local: PoolVector2Array = rounded_rect_points(shape[0] - grow, shape[1] - grow, shape[2] + grow, shape[3] + grow, shape[4] + grow)
 	var points := PoolVector2Array()
 	for point in local:
 		points.append(center + Vector2(side * (point.x - gap), point.y) * unit)
@@ -131,9 +131,9 @@ static func rounded_rect_points(x0: float, y0: float, x1: float, y1: float, radi
 	var points := PoolVector2Array()
 	var corners := [Vector2(x1 - radius, y0 + radius), Vector2(x1 - radius, y1 - radius), Vector2(x0 + radius, y1 - radius), Vector2(x0 + radius, y0 + radius)]
 	for i in corners.size():
-		var start := -90.0 + 90.0 * i
+		var start: float = -90.0 + 90.0 * i
 		for step in steps + 1:
-			var angle := deg2rad(start + 90.0 * step / steps)
+			var angle: float = deg2rad(start + 90.0 * step / steps)
 			points.append(corners[i] + Vector2(cos(angle), sin(angle)) * radius)
 	return points
 
@@ -142,6 +142,6 @@ static func star_points(center: Vector2, outer: float, inner: float, tips: int =
 	var points := PoolVector2Array()
 	for i in tips * 2:
 		var radius: float = outer if i % 2 == 0 else inner
-		var angle := rotation + PI * i / tips - PI / 2.0
+		var angle: float = rotation + PI * i / tips - PI / 2.0
 		points.append(center + Vector2(cos(angle), sin(angle)) * radius)
 	return points

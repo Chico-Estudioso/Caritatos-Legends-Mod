@@ -197,7 +197,7 @@ func _build_header() -> Control:
 	bros.color_right = UiStyle.BRAND_LIGHT
 	bros.spark_color = UiStyle.SPARK
 	bros.animate = true
-	bros.rect_min_size = Vector2(124, 64)
+	bros.rect_min_size = Vector2(150, 78)
 	bros.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	header.add_child(bros)
 
