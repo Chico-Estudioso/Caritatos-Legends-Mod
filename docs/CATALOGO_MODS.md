@@ -159,7 +159,7 @@ Pruebas manuales (Peligro 2 o más):
 Diseño:
 - **Dónde se regala**: en la tienda cooperativa, al pulsar un arma u objeto propio aparece el menú del juego (Combinar, Reciclar, Cancelar) con un botón más, **Regalar**. Es una extensión de `CoopItemPopup` (el menú de la tienda cooperativa; extender `ItemPopup` no llega a él porque se compila antes de que se instalen las extensiones). En el juego, ese menú solo tiene botones para las armas, así que para los objetos muestra Regalar y Cancelar. Con mando se llega como a Reciclar: Reciclar → Regalar → Cancelar.
 - **A quién**: con dos jugadores, va directo a la confirmación. Con más, o si no se puede regalar a nadie, sale «¿A quién se lo regalas?», con un botón por jugador; los que no pueden recibirlo aparecen desactivados con el motivo.
-- **Quién confirma**: quien recibe, en «¡Un regalo de tu Cari!» (corazón que late, corazones que suben y lluvia de corazones al aceptar).
+- **Quién confirma**: quien recibe, en «¡Regalo de tu bro!»: dos puños con el color de cada jugador chocan sin parar entre estrellas; al aceptar («¡Choca!») chocan fuerte y sale «¡Bros para siempre!».
   - Solo responde su mando o teclado: el juego crea acciones por dispositivo (`ui_accept_<dispositivo>`), que se leen con `CoopService.get_remapped_player_device`.
   - El ratón solo vale si quien recibe juega con teclado y ratón.
   - Quien regala puede retirarlo con Atrás.
@@ -176,7 +176,7 @@ Pruebas manuales (partida cooperativa de 2 jugadores):
 - [ ] Al pulsar un arma propia en la tienda, el menú muestra Reciclar, **Regalar** y Cancelar; con mando se llega a Regalar.
 - [ ] Al pulsar un objeto propio, el menú muestra Regalar y Cancelar (el personaje y el Tumor no).
 - [ ] Regalar abre la confirmación; solo el mando de J2 puede aceptar o rechazar.
-- [ ] Al aceptar sale la lluvia de corazones, el objeto desaparece de J1, aparece en J2 y las estadísticas de ambos cambian.
+- [ ] Al aceptar los puños chocan fuerte entre estrellas, el objeto desaparece de J1, aparece en J2 y las estadísticas de ambos cambian.
 - [ ] Al rechazar, o si J1 lo retira con Atrás, no cambia nada y la ventana lo indica.
 - [ ] Con J2 sin huecos de arma, Regalar un arma muestra el motivo en vez de la confirmación.
 - [ ] Un arma mecanizada (Primal Dread) conserva su mecanización al regalarla.

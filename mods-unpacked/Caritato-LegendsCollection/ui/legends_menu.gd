@@ -13,7 +13,7 @@ signal closed
 const Compat = preload("res://mods-unpacked/Caritato-LegendsCollection/core/compat.gd")
 const UiStyle = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/ui_style.gd")
 const Switch = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/switch.gd")
-const Heart = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/heart.gd")
+const FistBump = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/fist_bump.gd")
 const FocusGuard = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/focus_guard.gd")
 
 const NAV_ACTIONS := ["ui_up", "ui_down", "ui_left", "ui_right", "ui_accept"]
@@ -192,12 +192,14 @@ func _build_header() -> Control:
 	var header := HBoxContainer.new()
 	header.add_constant_override("separation", 18)
 
-	var heart := Heart.new()
-	heart.color = UiStyle.BRAND
-	heart.pulse = true
-	heart.rect_min_size = Vector2(58, 58)
-	heart.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	header.add_child(heart)
+	var bros := FistBump.new()
+	bros.color = UiStyle.BRAND
+	bros.color_right = UiStyle.BRAND_LIGHT
+	bros.spark_color = UiStyle.SPARK
+	bros.animate = true
+	bros.rect_min_size = Vector2(124, 64)
+	bros.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	header.add_child(bros)
 
 	var titles := VBoxContainer.new()
 	titles.add_constant_override("separation", 0)

@@ -7,7 +7,7 @@ Un único mod que recupera mods clásicos de Brotato («leyendas»), los equilib
 [*][b]La Leyenda de la Cosecha Eterna[/b]: en el modo infinito la recolección deja de perderse (o sigue creciendo) y la Hucha sigue dando interés. [i]Cosecha dorada: recoge el trigo en su punto y ganas materiales.[/i]
 [*][b]La Leyenda del Mercader[/b]: precio de artículos y rerolls a tu gusto (0 % = rerolls gratis), con o sin inflación por oleada. [i]Regateo: para la aguja en la zona verde y la tienda te hace descuento.[/i]
 [*][b]La Leyenda del Supermercado[/b] (muy fuerte, apagada por defecto): encarga el objeto o arma que quieras. Los encargos se ganan derrotando élites o jefes, cuestan un 50 % más y llegan bloqueados a la siguiente tienda. [i]Abre la caja del encargo a toques.[/i]
-[*][b]La Leyenda del Regalo[/b] (cooperativo): en la tienda, pulsa un arma u objeto tuyo → [b]Regalar[/b] (junto a Reciclar). El otro jugador lo acepta con su mando en una ventana con corazones: «¡Un regalo de tu Cari!». Las armas mecanizadas o malditas también se regalan; el Tumor no.
+[*][b]La Leyenda del Regalo[/b] (cooperativo): en la tienda, pulsa un arma u objeto tuyo → [b]Regalar[/b] (junto a Reciclar). El otro jugador lo acepta con su mando en «¡Regalo de tu bro!», con un choque de puños de colegas. Las armas mecanizadas o malditas también se regalan; el Tumor no.
 [/list]
 
 [h2]Configuración[/h2]
