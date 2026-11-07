@@ -351,6 +351,55 @@ static func remove_currency(amount: int, player_index: int) -> void:
 		run_data.remove_currency(amount, player_index)
 
 
+# --- Élites, jefes y artículos bloqueados -----------------------------------------
+
+# EliteType del juego: 0 = élite, 1 = horda.
+const ELITE_TYPE_ELITE := 0
+
+
+# Élites y jefes derrotados en lo que va de partida.
+static func elite_and_boss_kills() -> int:
+	var run_data = _singleton("RunData")
+	if run_data == null:
+		return 0
+	var total := 0
+	for list_name in ["elites_killed_this_run", "bosses_killed_this_run"]:
+		if list_name in run_data and run_data.get(list_name) is Array:
+			total += run_data.get(list_name).size()
+	return total
+
+
+# La oleada tenía un élite (no una horda) o era la del jefe.
+static func was_elite_or_boss_wave(wave: int) -> bool:
+	var run_data = _singleton("RunData")
+	if run_data == null:
+		return false
+	if "elites_spawn" in run_data:
+		for entry in run_data.elites_spawn:
+			# [oleada, tipo, id]
+			if entry is Array and entry.size() >= 2 and int(entry[0]) == wave and int(entry[1]) == ELITE_TYPE_ELITE:
+				return true
+	return wave == normal_wave_count()
+
+
+static func nb_shop_items() -> int:
+	return int(_script_constant(_singleton("ItemService"), "NB_SHOP_ITEMS", 4))
+
+
+# Lista viva de bloqueados del jugador ([[ItemParentData, oleada], ...]).
+static func locked_shop_items(player_index: int) -> Array:
+	var run_data = _singleton("RunData")
+	if run_data == null or not "locked_shop_items" in run_data or player_index >= run_data.locked_shop_items.size():
+		return []
+	return run_data.locked_shop_items[player_index]
+
+
+static func lock_shop_item(item, wave: int, player_index: int) -> void:
+	var run_data = _singleton("RunData")
+	if run_data != null and run_data.has_method("lock_player_shop_item"):
+		run_data.lock_player_shop_item(item, wave, player_index)
+
+
 # --- Jugadores en cooperativo --------------------------------------------------
 
 const FALLBACK_PLAYER_COLORS := [Color("4fc3f7"), Color("ff6b6b"), Color("7ddc8a"), Color("ffc845")]

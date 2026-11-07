@@ -59,6 +59,7 @@ func _run() -> void:
 	yield(_frames(3), "completed")
 
 	yield(_capture_gift(), "completed")
+	yield(_capture_supermarket(), "completed")
 
 	print("Capturas guardadas: %d en %s" % [_saved, _out_dir])
 	quit(0 if _saved > 0 else 1)
@@ -100,3 +101,68 @@ func _save(name: String) -> void:
 		print("Captura: %s" % path)
 	else:
 		print("No se pudo guardar %s (error %d)" % [path, err])
+
+
+# Catálogo del Supermercado con artículos inventados (sin Brotato no hay objetos).
+func _capture_supermarket() -> void:
+	var fake := GDScript.new()
+	fake.source_code = "extends Resource\nvar my_id := \"\"\nvar name := \"\"\nvar value := 0\nvar icon = null\n"
+	var _reloaded = fake.reload()
+	var legend := FakeSupermarket.new()
+	var samples := [["Ojo de gato", 0, 18, false], ["Pala", 0, 22, true], ["Hucha", 1, 35, false], ["Lanzallamas", 1, 48, true], ["Corona", 2, 70, false], ["Láser médico", 3, 120, true]]
+	for sample in samples:
+		var item = fake.new()
+		item.my_id = sample[0]
+		item.name = sample[0]
+		item.value = sample[2]
+		item.icon = UiStyle.circle_texture(64, Color("ffd166").darkened(0.15 * sample[1]), Color("ff8c42"), 6.0)
+		legend.entries.append({"item": item, "label": sample[0], "tier": sample[1], "is_weapon": sample[3]})
+
+	var menu = load(MOD_PATH + "modules/supermarket_legend/supermarket_menu.gd").new()
+	root.add_child(menu)
+	menu.open(legend, null, 0, null)
+	yield(_frames(8), "completed")
+	_save("super_1_catalogo")
+	menu._on_order_pressed(legend.entries[2])
+	yield(_frames(4), "completed")
+	_save("super_2_encargado")
+	menu.close()
+	legend.unlocked = false
+	legend.left = 0
+	menu = load(MOD_PATH + "modules/supermarket_legend/supermarket_menu.gd").new()
+	root.add_child(menu)
+	menu.open(legend, null, 0, null)
+	yield(_frames(8), "completed")
+	_save("super_3_sin_encargos")
+	menu.close()
+	yield(_frames(2), "completed")
+
+
+class FakeSupermarket:
+	extends Reference
+
+	var entries := []
+	var unlocked := true
+	var left := 1
+
+	func get_setting(key: String, fallback):
+		return 50 if key == "order_markup_percent" else fallback
+
+	func get_catalog(_player_index: int) -> Array:
+		return entries
+
+	func price_of(item, _player_index: int) -> int:
+		return item.value
+
+	func fee_of(item, _player_index: int) -> int:
+		return int(ceil(item.value * 0.5))
+
+	func orders_left(_player_index: int) -> int:
+		return left
+
+	func is_unlocked() -> bool:
+		return unlocked
+
+	func order(_shop, _item, _player_index: int) -> String:
+		left -= 1
+		return ""

@@ -1,12 +1,20 @@
 extends "res://ui/menus/shop/base_shop.gd"
 
-# La Leyenda del Supermercado: botón en la tienda y colocación del encargo.
+# La Leyenda del Supermercado: botón en la tienda y viaje de los encargos
+# hasta la tienda siguiente (como artículos bloqueados).
 
 const _CLC_SUPER_API = preload("res://mods-unpacked/Caritato-LegendsCollection/core/legends_api.gd")
-const _CLC_SUPER_RULES = preload("res://mods-unpacked/Caritato-LegendsCollection/modules/supermarket_legend/supermarket_rules.gd")
 const _CLC_SUPER_ID := "supermarket_legend"
 
 var _clc_super_button: Button = null
+
+
+# _enter_tree se ejecuta antes que el _ready de la tienda, donde el juego la
+# rellena: así la leyenda ya sabe qué encargos llegan a esta tienda.
+func _enter_tree() -> void:
+	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
+	if legend != null:
+		legend.on_shop_opened()
 
 
 # En Godot 3, _ready() se ejecuta en todos los niveles de herencia de forma
@@ -15,11 +23,33 @@ func _ready() -> void:
 	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
 	if legend == null:
 		return
-	legend.on_shop_opened()
+	var relocked := false
+	for player_index in RunData.get_player_count():
+		if legend.relock_arrivals(_shop_items[player_index], player_index):
+			relocked = true
+	if relocked:
+		_update_visual_locks()
 	# Versión inicial: solo en la tienda de un jugador.
 	if RunData.is_coop_run:
 		return
 	_clc_super_add_button()
+
+
+func _exit_tree() -> void:
+	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
+	if legend != null:
+		legend.on_shop_closed()
+
+
+func fill_shop_items(player_locked_items: Array, player_index: int, just_entered_shop: bool = false) -> void:
+	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
+	var locked := player_locked_items
+	if legend != null:
+		if just_entered_shop:
+			locked = legend.fit_entering_locked(player_locked_items, player_index)
+		else:
+			locked = legend.filter_reroll_locked(player_locked_items, player_index)
+	.fill_shop_items(locked, player_index, just_entered_shop)
 
 
 func _clc_super_add_button() -> void:
@@ -28,12 +58,20 @@ func _clc_super_add_button() -> void:
 		return
 	var button := Button.new()
 	button.name = "CaritatoSupermarketButton"
-	button.text = tr("CLC_SUPER_BUTTON")
 	button.size_flags_vertical = reroll_button.size_flags_vertical
 	button.rect_min_size = Vector2(0, reroll_button.rect_min_size.y)
 	reroll_button.get_parent().add_child_below_node(reroll_button, button)
 	var _err = button.connect("pressed", self, "_clc_super_on_button_pressed")
 	_clc_super_button = button
+	_clc_super_update_button()
+
+
+func _clc_super_update_button() -> void:
+	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
+	if _clc_super_button == null or not is_instance_valid(_clc_super_button) or legend == null:
+		return
+	var left: int = legend.orders_left(0)
+	_clc_super_button.text = tr("CLC_SUPER_BUTTON_COUNT") % left if left > 0 else tr("CLC_SUPER_BUTTON")
 
 
 func _clc_super_on_button_pressed() -> void:
@@ -42,28 +80,7 @@ func _clc_super_on_button_pressed() -> void:
 		legend.open_catalog(self, 0, _clc_super_button)
 
 
-# Coloca el artículo en un hueco vacío o en el último no bloqueado y refresca
-# la tienda igual que hace el juego al rerolear.
-func _clc_super_place_item(item, player_index: int) -> bool:
-	var container = _get_shop_items_container(player_index)
-	var items: Array = _shop_items[player_index]
-	var locked := []
-	for index in items.size():
-		locked.append(container.is_shop_item_locked_visually(index))
-
-	var slot: int = _CLC_SUPER_RULES.target_slot(locked, ItemService.NB_SHOP_ITEMS)
-	if slot < 0:
-		return false
-
-	var entry := [ItemService.apply_item_effect_modifications(item, player_index), RunData.current_wave]
-	if slot >= items.size():
-		items.append(entry)
-	else:
-		items[slot] = entry
-
-	container.unlock_all_shop_items_visually()
-	container.set_shop_items(items)
-	_update_visual_locks()
-	_has_bonus_free_reroll[player_index] = items.empty()
+# Tras encargar: el recargo ya se ha cobrado.
+func _clc_super_on_ordered(player_index: int) -> void:
+	_clc_super_update_button()
 	set_reroll_button_price(player_index)
-	return true

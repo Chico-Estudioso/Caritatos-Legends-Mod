@@ -15,6 +15,9 @@ var core = null
 # de _init), necesario para añadir el núcleo y la pantalla a la raíz.
 func _initialize() -> void:
 	_remove_config()
+	# Algunas leyendas vienen apagadas por defecto (el Supermercado); para
+	# probarlas todas se arranca con todas encendidas.
+	_write_all_enabled_config()
 	core = load(MOD_PATH + "core/legends_core.gd").new()
 	core.name = "LegendsCore"
 	root.add_child(core)
@@ -27,6 +30,7 @@ func _initialize() -> void:
 	run_case("la pantalla de configuración se construye y cancela", "test_menu")
 	run_case("la ventana de regalos se construye y se cierra", "test_gift_menu")
 	run_case("la confirmación del regalo acepta, rechaza y celebra", "test_gift_confirm")
+	run_case("los encargos del Supermercado viajan a la siguiente tienda", "test_supermarket_orders")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -210,6 +214,72 @@ func test_disabled_not_loaded() -> void:
 	second.free()
 	core.set_module_enabled(id, true)
 	var _saved = core.save_config()
+
+
+func test_supermarket_orders() -> void:
+	# reset_defaults() de otras pruebas la deja apagada (viene así por defecto).
+	core.set_module_enabled("supermarket_legend", true)
+	var legend = core.get_runtime("supermarket_legend")
+	check(legend != null, "falta el runtime del Supermercado")
+	if legend == null:
+		return
+	var fake := GDScript.new()
+	fake.source_code = "extends Resource\nvar my_id := \"item_test\"\nvar name := \"ITEM_TEST\"\nvar tier := 0\nvar value := 10\nvar icon = null\n"
+	var _reloaded = fake.reload()
+	var ordered = fake.new()
+
+	# Por defecto hay que derrotar a un élite o a un jefe.
+	legend.on_shop_opened()
+	check(legend.block_reason(0) == "CLC_SUPER_ERROR_LOCKED", "sin élite ni jefe no debería poder encargarse")
+
+	# En el modo «en cada tienda» se puede encargar una vez.
+	var _stored = core.set_setting("supermarket_legend", "order_mode", "every_shop")
+	legend.on_shop_opened()
+	check(legend.orders_left(0) == 1, "debería quedar un encargo")
+	check(legend.order(null, ordered, 0) == "", "el encargo debería aceptarse")
+	check(legend.orders_left(0) == 0, "el encargo debería gastarse")
+	check(legend.block_reason(0) == "CLC_SUPER_ERROR_NO_ORDERS", "no debería haber más encargos")
+
+	# Al rerolear, el encargo no aparece en la tienda en la que se hizo.
+	var other = fake.new()
+	other.my_id = "item_other"
+	var locked := [[other, 1], [ordered, 1]]
+	var rerolled: Array = legend.filter_reroll_locked(locked, 0)
+	check(rerolled.size() == 1 and rerolled[0][0] == other, "el encargo no debería salir al rerolear")
+
+	# En la siguiente tienda llega; si sobran bloqueados, se conserva el encargo.
+	legend.on_shop_closed()
+	legend.on_shop_opened()
+	check(legend.arrivals(0) == 1, "el encargo debería llegar a la siguiente tienda")
+	var crowded := []
+	for index in 4:
+		var extra = fake.new()
+		extra.my_id = "item_extra_%d" % index
+		crowded.append([extra, 1])
+	crowded.append([ordered, 1])
+	var fitted: Array = legend.fit_entering_locked(crowded, 0)
+	check(fitted.size() == 4, "no debería haber más bloqueados que huecos")
+	var kept_order := false
+	for entry in fitted:
+		if entry[0] == ordered:
+			kept_order = true
+	check(kept_order, "el encargo pagado debería conservarse")
+	core.reset_defaults()
+
+
+func _write_all_enabled_config() -> void:
+	var file := File.new()
+	if file.open(MOD_PATH + "modules/modules.json", File.READ) != OK:
+		return
+	var index = parse_json(file.get_as_text())
+	file.close()
+	var modules := {}
+	for id in index.modules:
+		modules[id] = {"enabled": true, "settings": {}}
+	var _err = Directory.new().make_dir_recursive(CONFIG_PATH.get_base_dir())
+	if file.open(CONFIG_PATH, File.WRITE) == OK:
+		file.store_string(to_json({"format_version": 1, "modules": modules}))
+		file.close()
 
 
 func _remove_config() -> void:
