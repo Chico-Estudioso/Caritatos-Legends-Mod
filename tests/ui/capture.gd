@@ -61,6 +61,7 @@ func _run() -> void:
 	yield(_capture_gift(), "completed")
 	yield(_capture_supermarket(), "completed")
 	yield(_capture_fishing(), "completed")
+	yield(_capture_haggle_and_harvest(), "completed")
 
 	print("Capturas guardadas: %d en %s" % [_saved, _out_dir])
 	quit(0 if _saved > 0 else 1)
@@ -166,6 +167,35 @@ func _capture_fishing() -> void:
 	yield(_frames(24), "completed")
 	_save("anzuelo_2_pescado")
 	popup.close_popup("caught")
+	yield(_frames(2), "completed")
+
+
+# Regateo del Mercader y cosecha dorada de la Cosecha Eterna.
+func _capture_haggle_and_harvest() -> void:
+	var haggle = load(MOD_PATH + "modules/merchant_legend/haggle_popup.gd").new()
+	haggle.max_percent = 10
+	core.show_popup(haggle)
+	haggle._meter.position = 0.2
+	yield(_frames(8), "completed")
+	_save("mercader_1_regateo")
+	haggle.stop_at("green")
+	yield(_frames(10), "completed")
+	_save("mercader_2_trato")
+	haggle.close_popup("green")
+	yield(_frames(2), "completed")
+
+	var harvest = load(MOD_PATH + "modules/endless_harvest/harvest_popup.gd").new()
+	harvest.harvesting = 150
+	harvest.full_reward = 15
+	harvest.near_reward = 7
+	core.show_popup(harvest)
+	harvest._field._time = 1.55
+	yield(_frames(6), "completed")
+	_save("cosecha_1_trigo")
+	harvest.harvest_at("gold")
+	yield(_frames(10), "completed")
+	_save("cosecha_2_dorada")
+	harvest.close_popup("gold")
 	yield(_frames(2), "completed")
 
 

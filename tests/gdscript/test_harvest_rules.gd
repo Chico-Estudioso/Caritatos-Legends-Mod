@@ -10,6 +10,7 @@ func _init() -> void:
 	run_case("pérdida de recolección redondeada hacia arriba", "test_decay_amount")
 	run_case("interés de la Hucha", "test_piggy_bank")
 	run_case("objetos permitidos de nuevo en el modo infinito", "test_filter_bans")
+	run_case("cosecha dorada: zona y premio", "test_golden")
 	finish()
 
 
@@ -43,3 +44,13 @@ func test_filter_bans() -> void:
 	check(HarvestRules.filter_bans(bans, [], [1234]) == ["item_piggy_bank", "item_crown"], "quita por hash")
 	check(HarvestRules.filter_bans(bans, [], []).size() == 3, "sin permisos, la lista no cambia")
 	check(bans.size() == 3, "no modifica la lista original")
+
+
+func test_golden() -> void:
+	check(HarvestRules.golden_zone(0.95) == "gold", "trigo dorado")
+	check(HarvestRules.golden_zone(0.7) == "near", "casi dorado")
+	check(HarvestRules.golden_zone(0.3) == "none", "trigo verde")
+	check(HarvestRules.golden_reward(150, "gold", 10) == 15, "10 % de la recolección")
+	check(HarvestRules.golden_reward(150, "near", 10) == 7, "la mitad, redondeada hacia abajo")
+	check(HarvestRules.golden_reward(150, "none", 10) == 0, "sin premio")
+	check(HarvestRules.golden_reward(0, "gold", 10) == 0, "sin recolección no hay premio")

@@ -18,6 +18,9 @@ const PIGGY_BANK_EFFECT := "gain_pct_gold_start_wave"
 const PIGGY_BANK_ID := "item_piggy_bank"
 const CROWN_ID := "item_crown"
 const LOG_NAME := "Caritato-LegendsCollection:EndlessHarvest"
+const GOLDEN_POPUP_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/endless_harvest/harvest_popup.gd"
+# Premio de la cosecha dorada: porcentaje de la recolección en materiales.
+const GOLDEN_PERCENT := 10
 
 var core = null
 var module_id := ""
@@ -133,3 +136,40 @@ func apply_endless_shop_rules() -> void:
 		allowed_hashes.append(Compat.generate_hash(item_id))
 
 	Compat.set_endless_banned_items(HarvestRules.filter_bans(_original_endless_bans, allowed_ids, allowed_hashes))
+
+
+# --- Cosecha dorada --------------------------------------------------------------
+# En cada tienda del modo infinito, el jugador recoge el trigo cuando está
+# dorado y gana un 10 % de su recolección en materiales (un 5 % si casi).
+
+func golden_harvest_enabled() -> bool:
+	return is_active() and bool(get_setting("golden_harvest", true)) and Compat.is_after_last_normal_wave()
+
+
+func golden_reward(player_index: int, zone: String) -> int:
+	return HarvestRules.golden_reward(int(Compat.get_player_stat(HARVESTING_STAT, player_index)), zone, GOLDEN_PERCENT)
+
+
+func grant_golden_reward(player_index: int, zone: String) -> int:
+	var amount := golden_reward(player_index, zone)
+	if amount > 0:
+		Compat.add_gold(amount, player_index)
+		ModLoaderLog.info("Cosecha dorada: +%d materiales (jugador %d)" % [amount, player_index + 1], LOG_NAME)
+	return amount
+
+
+func make_golden_popup(player_index: int) -> Node:
+	if not golden_harvest_enabled():
+		return null
+	var harvesting := int(Compat.get_player_stat(HARVESTING_STAT, player_index))
+	if harvesting <= 0:
+		return null
+	var popup_script = load(GOLDEN_POPUP_PATH)
+	if popup_script == null:
+		return null
+	var popup = popup_script.new()
+	popup.player_index = player_index if Compat.is_coop_run() else -1
+	popup.harvesting = harvesting
+	popup.full_reward = golden_reward(player_index, HarvestRules.ZONE_GOLD)
+	popup.near_reward = golden_reward(player_index, HarvestRules.ZONE_NEAR)
+	return popup

@@ -14,8 +14,14 @@ extends Node
 
 const MerchantRules = preload("res://mods-unpacked/Caritato-LegendsCollection/modules/merchant_legend/merchant_rules.gd")
 
+const Compat = preload("res://mods-unpacked/Caritato-LegendsCollection/core/compat.gd")
+const HAGGLE_POPUP_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/merchant_legend/haggle_popup.gd"
+
 var core = null
 var module_id := ""
+# Regateo de la tienda actual: jugador -> descuento conseguido / ya intentado.
+var _haggle := {}
+var _haggle_used := {}
 
 
 func setup(p_core, p_module_id: String) -> void:
@@ -53,3 +59,57 @@ func scale_reroll_result(result: Array) -> Array:
 	var scaled := result.duplicate()
 	scaled[0] = MerchantRules.scale_reroll_price(int(result[0]), int(get_setting("reroll_price_percent", 100)))
 	return scaled
+
+
+# --- Regateo -------------------------------------------------------------------
+# Una vez por tienda, el jugador intenta parar una aguja en la zona verde. El
+# descuento se aplica a los artículos de esa tienda (no al reciclaje: el juego
+# calcula el valor de reciclaje sin el id del artículo).
+
+func on_shop_opened() -> void:
+	_haggle.clear()
+	_haggle_used.clear()
+
+
+func on_shop_closed() -> void:
+	_haggle.clear()
+	_haggle_used.clear()
+
+
+func haggle_enabled() -> bool:
+	return is_active() and bool(get_setting("haggle", true))
+
+
+func can_haggle(player_index: int) -> bool:
+	return haggle_enabled() and not _haggle_used.has(player_index)
+
+
+func haggle_max_percent() -> int:
+	return int(get_setting("haggle_max_percent", 10))
+
+
+func haggle_discount(player_index: int) -> int:
+	return int(_haggle.get(player_index, 0)) if is_active() else 0
+
+
+func set_haggle_result(player_index: int, zone: String) -> int:
+	var percent: int = MerchantRules.haggle_percent(zone, haggle_max_percent())
+	_haggle[player_index] = percent
+	_haggle_used[player_index] = true
+	return percent
+
+
+func apply_haggle(value: int, player_index: int) -> int:
+	return MerchantRules.apply_discount(value, haggle_discount(player_index))
+
+
+func make_haggle_popup(player_index: int) -> Node:
+	if not can_haggle(player_index):
+		return null
+	var popup_script = load(HAGGLE_POPUP_PATH)
+	if popup_script == null:
+		return null
+	var popup = popup_script.new()
+	popup.player_index = player_index if Compat.is_coop_run() else -1
+	popup.max_percent = haggle_max_percent()
+	return popup

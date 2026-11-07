@@ -34,6 +34,8 @@ func _initialize() -> void:
 	run_case("las ventanas de las leyendas se abren de una en una", "test_popup_queue")
 	run_case("la caja del encargo se abre a toques", "test_order_box")
 	run_case("el minijuego «¡Pica!» premia pescar a tiempo", "test_fishing_popup")
+	run_case("el regateo rebaja los artículos de la tienda", "test_haggle")
+	run_case("la cosecha dorada solo sale en el modo infinito", "test_golden_harvest")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -349,6 +351,50 @@ func test_fishing_popup() -> void:
 	legend._fishing_pending[0] = true
 	check(legend.make_fishing_popup(0) == null, "con el ajuste apagado no hay minijuego")
 	core.reset_defaults()
+
+
+func test_haggle() -> void:
+	var legend = core.get_runtime("merchant_legend")
+	check(legend != null, "falta el runtime del Mercader")
+	if legend == null:
+		return
+	legend.on_shop_opened()
+	check(legend.can_haggle(0), "debería poder regatearse una vez")
+	var popup = legend.make_haggle_popup(0)
+	check(popup != null, "debería crearse la ventana del regateo")
+	if popup == null:
+		return
+	core.show_popup(popup)
+	popup.stop_at("green")
+	check(popup.result == "green", "parar en verde debería dar «green»")
+	popup.close_popup(popup.result)
+	core._show_next_popup()
+	check(legend.set_haggle_result(0, "green") == 10, "verde da el descuento máximo")
+	check(legend.apply_haggle(40, 0) == 36, "el descuento se aplica al precio")
+	check(not legend.can_haggle(0), "solo un intento por tienda")
+	check(legend.make_haggle_popup(0) == null, "sin intentos no hay ventana")
+	legend.on_shop_closed()
+	check(legend.apply_haggle(40, 0) == 40, "al salir de la tienda se acaba el descuento")
+
+
+func test_golden_harvest() -> void:
+	var legend = core.get_runtime("endless_harvest")
+	check(legend != null, "falta el runtime de la Cosecha Eterna")
+	if legend == null:
+		return
+	# Sin partida no es el modo infinito: no hay cosecha dorada.
+	check(not legend.golden_harvest_enabled(), "fuera del modo infinito no hay cosecha dorada")
+	check(legend.make_golden_popup(0) == null, "fuera del modo infinito no hay ventana")
+	var popup = load(MOD_PATH + "modules/endless_harvest/harvest_popup.gd").new()
+	popup.harvesting = 150
+	popup.full_reward = 15
+	popup.near_reward = 7
+	core.show_popup(popup)
+	popup.harvest_at("gold")
+	check(popup.result == "gold", "cosechar dorado debería dar «gold»")
+	check(popup._hint.text == tr("CLC_HARVEST_GOLDEN_GAIN") % 15, "debería mostrar el premio")
+	popup.close_popup(popup.result)
+	core._show_next_popup()
 
 
 func _write_all_enabled_config() -> void:

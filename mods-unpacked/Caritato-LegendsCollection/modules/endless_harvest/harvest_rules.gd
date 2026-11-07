@@ -45,3 +45,29 @@ static func filter_bans(bans: Array, allowed_ids: Array, allowed_hashes: Array) 
 			continue
 		result.append(entry)
 	return result
+
+
+# --- Cosecha dorada --------------------------------------------------------------
+
+const ZONE_GOLD := "gold"
+const ZONE_NEAR := "near"
+const ZONE_NONE := "none"
+
+
+static func golden_zone(ripeness: float) -> String:
+	if ripeness >= 0.85:
+		return ZONE_GOLD
+	if ripeness >= 0.65:
+		return ZONE_NEAR
+	return ZONE_NONE
+
+
+# Materiales del premio: un porcentaje de la recolección (la mitad si «casi»).
+static func golden_reward(harvesting: int, zone: String, percent: int) -> int:
+	if harvesting <= 0 or percent <= 0:
+		return 0
+	if zone == ZONE_GOLD:
+		return int(floor(harvesting * percent / 100.0))
+	if zone == ZONE_NEAR:
+		return int(floor(harvesting * percent / 200.0))
+	return 0
