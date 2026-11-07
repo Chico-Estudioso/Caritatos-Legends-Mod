@@ -47,6 +47,10 @@ var _fonts := {}
 var _dots := {}
 
 
+# Pantalla que una acción de leyenda ha abierto encima del menú.
+var overlay: Node = null
+
+
 func _init() -> void:
 	layer = 110
 	pause_mode = Node.PAUSE_MODE_PROCESS
@@ -89,7 +93,12 @@ func _input(event: InputEvent) -> void:
 		if event.is_action(action):
 			get_tree().set_input_as_handled()
 			if event.is_action_released(action):
-				_on_cancel_pressed()
+				# Con una pantalla de una leyenda encima (editor, medidor…),
+				# «atrás» cierra esa pantalla y no el menú.
+				if overlay != null and is_instance_valid(overlay) and overlay.has_method("close_screen"):
+					overlay.close_screen()
+				else:
+					_on_cancel_pressed()
 			return
 	# En cooperativo, cada mando o teclado manda acciones propias («ui_up_3»)
 	# que la interfaz no entiende: se reenvían como la acción normal.
@@ -360,6 +369,22 @@ func _build_detail(id: String) -> void:
 		for setting in definition.settings:
 			controls.append(_build_setting(list, id, setting, accent))
 
+	var actions := []
+	if not definition.actions.empty():
+		var action_box := HBoxContainer.new()
+		action_box.add_constant_override("separation", 12)
+		_detail_box.add_child(action_box)
+		for action in definition.actions:
+			var button := Button.new()
+			button.text = tr(action.label_key)
+			button.rect_min_size = Vector2(0, 56)
+			UiStyle.style_button(button, action.style, accent, 24)
+			_err = button.connect("pressed", self, "_on_action_pressed", [id, action.method])
+			if action.help_key != "":
+				_connect_hint(button, tr(action.help_key))
+			action_box.add_child(button)
+			actions.append(button)
+
 	var hint_box := PanelContainer.new()
 	hint_box.add_stylebox_override("panel", UiStyle.box(UiStyle.SURFACE_2, 12, Vector2(18, 12)))
 	hint_box.rect_min_size = Vector2(0, 76)
@@ -368,7 +393,7 @@ func _build_detail(id: String) -> void:
 	hint_box.add_child(_hint_label)
 	_detail_box.add_child(hint_box)
 
-	_detail = {"id": id, "toggle": toggle, "status": status, "controls": controls}
+	_detail = {"id": id, "toggle": toggle, "status": status, "controls": controls, "actions": actions}
 
 
 func _build_setting(parent: VBoxContainer, id: String, setting: Dictionary, accent: Color) -> Dictionary:
@@ -489,6 +514,8 @@ func _link_focus() -> void:
 	for entry in _detail.controls:
 		if not entry.control is Slider:
 			entry.control.focus_neighbour_left = entry.control.get_path_to(card)
+	for button in _detail.get("actions", []):
+		button.focus_neighbour_left = button.get_path_to(card)
 
 
 # --- Estado ------------------------------------------------------------------
@@ -547,6 +574,12 @@ func _refresh_detail() -> void:
 				usable = usable and (bool(values[parent_key]) != inverted)
 		_set_control_enabled(control, usable)
 		entry.row.modulate = Color(1, 1, 1, 1) if usable else Color(1, 1, 1, 0.4)
+
+	# Las acciones necesitan la leyenda cargada y activa (su runtime).
+	var active: bool = core.is_module_active(id)
+	for button in _detail.get("actions", []):
+		_set_control_enabled(button, active)
+		button.modulate = Color(1, 1, 1, 1) if active else Color(1, 1, 1, 0.4)
 
 
 # [texto, color, punto] para la tarjeta.
@@ -631,6 +664,13 @@ func _on_enum_selected(index: int, id: String, key: String, options: Array) -> v
 		return
 	var _stored = core.set_setting(id, key, options[index])
 	_refresh_all()
+
+
+# Las acciones reciben la pantalla para abrir encima sus propias ventanas.
+func _on_action_pressed(id: String, method: String) -> void:
+	var runtime = core.get_runtime(id)
+	if runtime != null and runtime.has_method(method):
+		runtime.call(method, self)
 
 
 func _on_reset_pressed() -> void:

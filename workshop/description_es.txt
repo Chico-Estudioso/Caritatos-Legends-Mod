@@ -10,6 +10,7 @@ Un único mod que recupera mods clásicos de Brotato («leyendas»), los equilib
 [*][b]La Leyenda del Regalo[/b] (cooperativo): en la tienda, pulsa un arma u objeto tuyo → [b]Regalar[/b] (junto a Reciclar). El otro jugador lo acepta con su mando en «¡Regalo de tu bro!», con un choque de puños de colegas. Las armas mecanizadas o malditas también se regalan; el Tumor no.
 [*][b]La Leyenda de las Cajas[/b]: al terminar la oleada, fusiona cajas por abrir en una caja legendaria. La primera fusión pide 3 cajas, después 6 y 9. [i]Las cajas se juntan, destellan y sale la legendaria.[/i]
 [*][b]La Leyenda de la Fusión[/b] (muy fuerte, apagada por defecto): al empezar la partida, fusiónate con otro personaje y suma sus efectos, a cambio de menos experiencia, precios más altos y más enemigos. [i]«¡Fusión de bros!» con choque de puños.[/i]
+[*][b]El Taller de los Tatos[/b]: «Tus tatos», un editor de píxeles para dibujar el aspecto de tu patata (o importar un PNG) y llevarlo puesto en las partidas; y un medidor de poder que avisa si un personaje u objeto es demasiado fuerte. Para crear personajes y objetos necesitas [url=https://steamcommunity.com/sharedfiles/filedetails/?id=3817655214]BroEditor[/url] (de Mojimoon): tus tatos aparecen entre sus iconos.
 [/list]
 
 [h2]Configuración[/h2]

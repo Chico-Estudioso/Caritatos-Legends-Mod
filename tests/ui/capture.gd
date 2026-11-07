@@ -42,7 +42,7 @@ func _run() -> void:
 	yield(_frames(8), "completed")
 	_save("menu_1_anzuelo")
 
-	for id in ["supermarket_legend", "gift_legend", "endless_harvest"]:
+	for id in ["supermarket_legend", "gift_legend", "endless_harvest", "studio_legend"]:
 		menu._select(id)
 		yield(_frames(6), "completed")
 		_save("menu_%d_%s" % [_saved + 1, id])
@@ -62,6 +62,7 @@ func _run() -> void:
 	yield(_capture_supermarket(), "completed")
 	yield(_capture_fishing(), "completed")
 	yield(_capture_haggle_and_harvest(), "completed")
+	yield(_capture_studio(), "completed")
 	yield(_capture_preview(), "completed")
 
 	print("Capturas guardadas: %d en %s" % [_saved, _out_dir])
@@ -244,6 +245,77 @@ func _capture_haggle_and_harvest() -> void:
 	yield(_frames(30), "completed")
 	_save("fusion_2_hecha")
 	yield(_frames(80), "completed")
+
+
+# El Taller: «Tus tatos» con un tato de ejemplo dibujado por código y el
+# medidor de poder con personajes inventados.
+func _capture_studio() -> void:
+	var studio = core.get_runtime("studio_legend")
+	if studio == null:
+		return
+	studio.store = load(MOD_PATH + "modules/studio_legend/tato_store.gd").new("user://caritato_capture_tatos/")
+	for entry in studio.store.list():
+		studio.store.delete(entry.id)
+	var editor = studio.open_tatos(null)
+	var canvas = editor.canvas()
+	_paint_example(canvas)
+	editor._name_edit.text = "Bro Morado"
+	editor.save_tato()
+	_paint_rect(canvas, Rect2(13, 12, 24, 4), Color("ffd166"))
+	editor._name_edit.text = "Bro Dorado"
+	editor._current_id = ""
+	editor.save_tato()
+	editor.toggle_worn(0)
+	canvas.cursor = Vector2(25, 33)
+	canvas.grab_focus()
+	yield(_frames(12), "completed")
+	_save("taller_1_tatos")
+	editor.close_screen()
+	yield(_frames(2), "completed")
+
+	var meter = studio.open_power_meter(null)
+	var names := ["Bro Morado", "Toro", "Fantasma", "Caballero", "Mago", "Granjero", "Cazador", "Soldado", "Suertudo", "Doctor"]
+	var scores := [61.0, 44.0, 38.0, 31.0, 27.0, 22.0, 18.0, 14.0, 9.0, 5.0]
+	var ratings := [3, 1, 1, 0, 0, 0, 0, 0, 0, 0]
+	var tints := [Color("a970ff"), Color("ff6b6b"), Color("4fc3f7"), Color("ffc845"), Color("7ddc8a")]
+	var entries := []
+	for index in names.size():
+		entries.append({
+			"name": names[index],
+			"icon": UiStyle.circle_texture(48, tints[index % tints.size()], Color("1b1225"), 3.0),
+			"score": scores[index],
+			"rating": ratings[index],
+			"tier": 0,
+		})
+	meter.entries_override = {"characters": entries}
+	meter.show_kind("characters")
+	yield(_frames(10), "completed")
+	_save("taller_2_medidor")
+	meter.close_screen()
+	yield(_frames(2), "completed")
+
+
+func _paint_rect(canvas, rect: Rect2, color: Color) -> void:
+	canvas.color = color
+	canvas.tool = "pencil"
+	for y in range(int(rect.position.y), int(rect.end.y)):
+		for x in range(int(rect.position.x), int(rect.end.x)):
+			canvas.apply_at(Vector2(x, y), false)
+
+
+# Una cara de bro: cinta morada, ojos con brillo y sonrisa.
+func _paint_example(canvas) -> void:
+	_paint_rect(canvas, Rect2(13, 12, 24, 4), Color("a970ff"))
+	_paint_rect(canvas, Rect2(36, 13, 4, 2), Color("a970ff"))
+	_paint_rect(canvas, Rect2(38, 15, 3, 2), Color("5a32a8"))
+	for eye in [Vector2(18, 21), Vector2(28, 21)]:
+		_paint_rect(canvas, Rect2(eye, Vector2(4, 5)), Color("ffffff"))
+		_paint_rect(canvas, Rect2(eye + Vector2(1, 2), Vector2(2, 3)), Color("1a1225"))
+	_paint_rect(canvas, Rect2(19, 32, 12, 2), Color("1a1225"))
+	_paint_rect(canvas, Rect2(17, 30, 2, 2), Color("1a1225"))
+	_paint_rect(canvas, Rect2(31, 30, 2, 2), Color("1a1225"))
+	_paint_rect(canvas, Rect2(14, 27, 3, 2), Color("ff8fd8"))
+	_paint_rect(canvas, Rect2(33, 27, 3, 2), Color("ff8fd8"))
 
 
 # Portada del Workshop (512×512): choque de puños, título y las leyendas. Solo

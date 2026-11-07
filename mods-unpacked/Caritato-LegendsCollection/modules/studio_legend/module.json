@@ -1,0 +1,66 @@
+{
+	"id": "studio_legend",
+	"version": "1.0.0",
+	"category": "content",
+	"name_key": "CLC_MOD_STUDIO_LEGEND_NAME",
+	"description_key": "CLC_MOD_STUDIO_LEGEND_DESC",
+	"short_name_key": "CLC_MOD_STUDIO_LEGEND_SHORT",
+	"accent": "#b98cff",
+	"warning_key": "CLC_STUDIO_NEEDS_BROEDITOR",
+	"enabled_by_default": true,
+	"requires_dlc": [],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "studio_legend.gd",
+	"extensions": [
+		"extensions/main.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": [
+			"1.2.X.X"
+		]
+	},
+	"origin": {
+		"type": "original",
+		"inspired_by": [
+			"Petición de Mauro: editor de personajes y objetos con «Tus tatos», indicador de poder y efectos extra",
+			"Complementa a BroEditor (Mojimoon, Workshop 3817655214), que se usa para crear personajes y objetos y no se incluye"
+		],
+		"notes": "Código propio. Los tatos se guardan en user://caritato_legends/tatos/ y, con BroEditor, también como iconos en su carpeta user://Mojimoon-BroEditor/icons/."
+	},
+	"settings": [
+		{
+			"key": "wear_in_runs",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_STUDIO_WEAR_IN_RUNS",
+			"help_key": "CLC_STUDIO_WEAR_IN_RUNS_HELP"
+		},
+		{
+			"key": "export_broeditor",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_STUDIO_EXPORT",
+			"help_key": "CLC_STUDIO_EXPORT_HELP"
+		}
+	],
+	"actions": [
+		{
+			"method": "open_tatos",
+			"label_key": "CLC_STUDIO_OPEN_TATOS",
+			"help_key": "CLC_STUDIO_OPEN_TATOS_HELP"
+		},
+		{
+			"method": "open_power_meter",
+			"label_key": "CLC_STUDIO_OPEN_METER",
+			"help_key": "CLC_STUDIO_OPEN_METER_HELP"
+		},
+		{
+			"method": "open_broeditor_page",
+			"label_key": "CLC_STUDIO_DOWNLOAD",
+			"help_key": "CLC_STUDIO_DOWNLOAD_HELP",
+			"style": "ghost"
+		}
+	]
+}

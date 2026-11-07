@@ -14,6 +14,12 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
   - Ventana «¡Fusión de bros!» con una cuadrícula de personajes, sus efectos y un choque de puños al confirmar.
   - Apagada por defecto, con aviso de que es muy fuerte.
 - `docs/CATALOGO_MODS.md`: BroEditor (mojimoon) como alternativa al editor de personajes y objetos propuesto.
+- **El Taller de los Tatos** (`studio_legend`), para usar junto a **BroEditor** (Mojimoon), que es quien crea y edita personajes y objetos. La ficha avisa de que hace falta y tiene un botón para descargarlo.
+  - **«Tus tatos»**: editor de píxeles de 50 × 50 sobre la patata del juego, con lápiz, goma, relleno, cuentagotas, deshacer y rejilla, paleta morada y color libre, e importación de PNG.
+  - Los tatos se guardan, se pueden llevar puestos en las partidas (J1–J4) y, con BroEditor, se guardan también como iconos en su carpeta.
+  - **Medidor de poder**: personajes y objetos (también los de BroEditor) de más a menos fuerte, con etiquetas Equilibrado, Fuerte, Muy fuerte o Roto frente a los del juego.
+- Campo `actions` en `module.json`: botones en la ficha de una leyenda que llaman a su runtime. «Atrás» cierra la ventana que abren sin cerrar el menú.
+- `docs/COMPATIBILIDAD.md`: BroEditor es compatible. Se documenta dónde coincide con Caritatopc.
 
 ## [1.0.0] - Versión candidata (pendiente de probar en Brotato y de publicar)
 

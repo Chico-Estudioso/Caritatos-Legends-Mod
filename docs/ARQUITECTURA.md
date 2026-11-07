@@ -103,6 +103,8 @@ Reglas de Godot 3 que hay que respetar:
 }
 ```
 
+Acciones (opcional): `"actions": [{"method": "open_editor", "label_key": "CLC_...", "help_key": "CLC_...", "style": "primary"}]` añade botones a la ficha de la leyenda. Cada botón llama a ese método del runtime con la pantalla Caritatopc como argumento (para abrir encima sus propias ventanas y guardarlas en `overlay`: «atrás» cierra la ventana con `close_screen()` y no el menú). Solo funcionan con la leyenda activa y no guardan ningún valor. La validación comprueba que el método exista en el runtime.
+
 Campos opcionales de la biblioteca: `short_name_key` (nombre de la tarjeta; si falta, se usa `name_key`), `accent` (color `#rrggbb` de la tarjeta, el icono y los controles) y `warning_key` (aviso destacado en la ficha, por ejemplo para una opción muy fuerte). La descripción debe ser breve (una o dos frases): las explicaciones largas van en el `help_key` de cada ajuste, que se muestra al seleccionarlo.
 
 - `category`: `mechanics`, `shop`, `economy`, `balance`, `content` o `quality_of_life`.

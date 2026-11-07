@@ -592,3 +592,57 @@ static func item_effects_text(item, player_index: int) -> String:
 	if item == null or not item.has_method("get_effects_text"):
 		return ""
 	return str(item.get_effects_text(player_index))
+
+
+# --- Otros mods y contenido ----------------------------------------------------------
+
+# ¿Está cargado (y activo) otro mod? Se pregunta a ModLoaderStore en tiempo de
+# ejecución, no al arrancar.
+static func is_mod_loaded(mod_id: String) -> bool:
+	var store = _singleton("ModLoaderStore")
+	if store == null or not "mod_data" in store or not store.mod_data is Dictionary:
+		return false
+	if not store.mod_data.has(mod_id):
+		return false
+	var data = store.mod_data[mod_id]
+	if data == null:
+		return false
+	if "is_loadable" in data and not data.is_loadable:
+		return false
+	if "is_active" in data and not data.is_active:
+		return false
+	return true
+
+
+# Objetos del juego (incluidos los de los DLC activos y los que crea BroEditor).
+static func get_items() -> Array:
+	var item_service = _singleton("ItemService")
+	if item_service == null or not "items" in item_service:
+		return []
+	var items = item_service.items
+	return items if items is Array else []
+
+
+# [[clave, valor, signo]] de los efectos de un objeto o personaje.
+static func effect_summaries(item) -> Array:
+	var result := []
+	if item == null or not "effects" in item or not item.effects is Array:
+		return result
+	for effect in item.effects:
+		if effect == null:
+			continue
+		var key: String = str(effect.key) if "key" in effect else ""
+		var value: int = int(effect.value) if "value" in effect and (effect.value is int or effect.value is float) else 0
+		var sign_value: int = int(effect.effect_sign) if "effect_sign" in effect else 3
+		result.append([key, value, sign_value])
+	return result
+
+
+# Textura del cuerpo de la patata del juego (150 × 150), si existe.
+static func potato_texture() -> Texture:
+	var path := "res://entities/units/player/potato.png"
+	if ResourceLoader.exists(path):
+		var texture = load(path)
+		if texture is Texture:
+			return texture
+	return null

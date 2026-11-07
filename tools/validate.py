@@ -290,6 +290,28 @@ def validate_modules(report: Report, game_scripts: set[str]) -> tuple[list[str],
             if isinstance(setting, dict) and setting.get("depends_on") and setting["depends_on"].lstrip("!") not in seen:
                 report.error(f"[{module_id}] ajuste '{setting.get('key')}' depende de un ajuste inexistente")
 
+        actions = definition.get("actions", [])
+        if not isinstance(actions, list):
+            report.error(f"[{module_id}] actions debe ser una lista")
+            actions = []
+        runtime_source = (base / runtime).read_text(encoding="utf-8") if runtime and (base / runtime).is_file() else ""
+        for i, action in enumerate(actions):
+            if not isinstance(action, dict):
+                report.error(f"[{module_id}] la acción #{i} no es un objeto")
+                continue
+            method = action.get("method", "")
+            if not isinstance(method, str) or not re.fullmatch(r"[a-z][a-z0-9_]*", method):
+                report.error(f"[{module_id}] la acción #{i} tiene un método inválido")
+                continue
+            if f"func {method}(" not in runtime_source:
+                report.error(f"[{module_id}] la acción '{method}' no existe en el runtime")
+            for field in ("label_key", "help_key"):
+                key = action.get(field, "")
+                if key:
+                    text_keys.append(key)
+            if not action.get("label_key"):
+                report.error(f"[{module_id}] la acción '{method}' no tiene label_key")
+
     for module_id, definition in definitions.items():
         for dependency in definition.get("dependencies", []) or []:
             if dependency == module_id:

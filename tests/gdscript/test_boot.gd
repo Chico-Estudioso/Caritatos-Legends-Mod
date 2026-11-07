@@ -39,6 +39,7 @@ func _initialize() -> void:
 	run_case("la cosecha dorada solo sale en el modo infinito", "test_golden_harvest")
 	run_case("la fusión de cajas se ofrece y se celebra", "test_crates_popup")
 	run_case("la fusión de bros elige compañero o ninguno", "test_fusion_popup")
+	run_case("el Taller abre «Tus tatos» y el medidor desde sus acciones", "test_studio_screens")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -516,3 +517,37 @@ func test_fusion_popup() -> void:
 	empty.choose_none()
 	check(empty.result == "none", "«Sin fusión» devuelve «none»")
 	core._show_next_popup()
+
+
+func test_studio_screens() -> void:
+	var definition: Dictionary = core.get_definition("studio_legend")
+	check(definition.actions.size() == 3, "el Taller tiene tres acciones")
+	var legend = core.get_runtime("studio_legend")
+	check(legend != null, "falta el runtime del Taller")
+	if legend == null:
+		return
+	check(not legend.broeditor_loaded(), "sin BroEditor en las pruebas")
+	var menu = core.open_menu("title")
+	menu._select("studio_legend")
+	check(menu._detail.actions.size() == 3, "la ficha muestra las tres acciones")
+	menu._on_action_pressed("studio_legend", "open_tatos")
+	var editor = menu.overlay
+	check(editor != null and editor.has_method("save_tato"), "se abre «Tus tatos»")
+	if editor != null:
+		legend.store = load(MOD_PATH + "modules/studio_legend/tato_store.gd").new("user://caritato_test_boot_tatos/")
+		editor.store = legend.store
+		editor.canvas().apply_at(Vector2(10, 10))
+		var id: String = editor.save_tato()
+		check(id != "" and legend.store.list().size() == 1, "se guarda el tato")
+		editor.toggle_worn(0)
+		check(legend.worn_texture(0) != null, "J1 lo lleva puesto en las partidas")
+		editor.delete_tato()
+		check(legend.store.list().empty(), "se borra el tato")
+		editor.close_screen()
+	menu._on_action_pressed("studio_legend", "open_power_meter")
+	var meter = menu.overlay
+	check(meter != null and meter.has_method("show_kind"), "se abre el medidor de poder")
+	if meter != null:
+		check(meter.entries_for("characters").empty(), "sin juego no hay personajes que medir")
+		meter.close_screen()
+	menu.close()
