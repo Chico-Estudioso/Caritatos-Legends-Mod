@@ -89,6 +89,8 @@ class ValidateTests(unittest.TestCase):
             "category": "nope",
             "name_key": "CLC_MISSING_NAME",
             "description_key": "CLC_MISSING_DESC",
+            "short_name_key": "CLC_MISSING_SHORT",
+            "accent": "rosa",
             "dependencies": ["ghost_legend"],
             "extensions": ["extensions/missing.gd"],
             "settings": [{"key": "x", "type": "int", "default": 99, "min": 0, "max": 10, "label_key": "CLC_MISSING"}],
@@ -96,7 +98,8 @@ class ValidateTests(unittest.TestCase):
         code, output = run_validate(self.mod_dir)
         self.assertEqual(code, 1)
         for expected in ("categoría desconocida", "dependencia inexistente", "falta la extensión",
-                         "default fuera de rango", "origin.type", "CLC_MISSING_NAME"):
+                         "default fuera de rango", "origin.type", "CLC_MISSING_NAME",
+                         "CLC_MISSING_SHORT", "accent debe ser un color"):
             self.assertIn(expected, output)
 
     def test_extension_members_need_prefix(self) -> None:

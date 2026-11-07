@@ -4,6 +4,8 @@
 	"category": "mechanics",
 	"name_key": "CLC_MOD_GIFT_LEGEND_NAME",
 	"description_key": "CLC_MOD_GIFT_LEGEND_DESC",
+	"short_name_key": "CLC_MOD_GIFT_LEGEND_SHORT",
+	"accent": "#ff5c8a",
 	"enabled_by_default": true,
 	"requires_dlc": [],
 	"dependencies": [],

@@ -35,7 +35,7 @@ Evidencia en `docs/COMPATIBILIDAD.md` («Cómo se carga un mod»).
 2. Suscríbete en el Workshop a un mod pequeño de Brotato que no toque la tienda, la recolección ni los menús (o usa uno al que ya estés suscrito). Abre Brotato una vez para que Steam lo descargue y ciérralo.
 3. Abre `<biblioteca de Steam>\steamapps\workshop\content\1942280\`. Hay una carpeta numérica por cada objeto del Workshop; la del mod elegido lleva el número que aparece en su página (`steamcommunity.com/sharedfiles/filedetails/?id=<número>`). Las carpetas de mods a los que ya no estás suscrito no se cargan.
 4. Copia `Caritato-LegendsCollection.zip` sin descomprimir dentro de esa carpeta, junto al ZIP del otro mod. Si no quieres que ese mod se cargue, puedes borrar su ZIP (Steam puede volver a ponerlo cuando se actualice).
-5. Abre Brotato. En «Mods» debe aparecer **LegendsCollection** y en el menú principal, el botón **Leyendas**.
+5. Abre Brotato. En «Mods» debe aparecer **LegendsCollection** y en el menú principal, el botón **Caritatopc**.
 6. En cada versión nueva, sobrescribe el ZIP. Si Steam actualiza el mod de esa carpeta puede borrar el nuestro: vuelve a copiarlo.
 7. Cuando el mod esté publicado en el Workshop (aunque sea oculto), basta con suscribirse; quita entonces la copia manual para no cargar dos.
 
@@ -61,10 +61,10 @@ La configuración se guarda en `%APPDATA%\Brotato\caritato_legends\settings.json
 ## Prueba rápida recomendada (15 minutos)
 
 1. Instala el ZIP como se indica arriba y abre Brotato.
-2. Menú principal → **Leyendas**: deben aparecer 5 leyendas activas. Cierra con «Guardar y cerrar».
+2. Menú principal → **Caritatopc**: deben aparecer 5 tarjetas con el punto verde «Activa». Cierra con «Guardar».
 3. Partida nueva con Abyssal Terrors: al terminar la oleada 4, el Anzuelo debe estar en la tienda.
 4. En esa tienda, botón **Supermercado** → encarga un objeto → aparece en la tienda y se puede comprar.
-5. Pausa → **Leyendas** → Mercader: rerolls al 0 % → al volver a la tienda, el reroll cuesta 0.
+5. Pausa → **Caritatopc** → Mercader: rerolls al 0 % → al volver a la tienda, el reroll cuesta 0.
 6. Si tienes una partida infinita guardada pasada la oleada 20: la recolección ya no baja.
 7. Envía `%APPDATA%\Brotato\logs\modloader.log` si algo falla.
 
@@ -72,12 +72,14 @@ La configuración se guarda en `%APPDATA%\Brotato\caritato_legends\settings.json
 
 Núcleo (cada versión):
 - [ ] El mod aparece en el menú «Mods» del juego y el log muestra «Caritatos Legends listo».
-- [ ] El menú principal muestra el botón **Leyendas** debajo de «Mods»; abre la pantalla.
+- [ ] El menú principal muestra el botón **Caritatopc** debajo de «Mods»; abre la pantalla.
 - [ ] Ratón, teclado y mando: se puede navegar, cambiar valores y cerrar con «atrás».
-- [ ] «Cancelar» descarta los cambios; «Guardar y cerrar» los conserva tras reiniciar el juego.
-- [ ] «Restaurar valores por defecto» deja todas las leyendas en su estado inicial.
+- [ ] «Cancelar» descarta los cambios; «Guardar» los conserva tras reiniciar el juego.
+- [ ] «Restaurar» deja todas las leyendas en su estado inicial.
+- [ ] Biblioteca: al moverse por las tarjetas (ratón, teclado o mando) la ficha de la derecha cambia; «derecha» o «aceptar» entra en la ficha e «izquierda» vuelve a la tarjeta.
+- [ ] Al pasar por un ajuste, su explicación aparece en el recuadro de abajo.
 - [ ] Activar una leyenda desactivada muestra el aviso de reinicio; tras reiniciar aparece como activa.
-- [ ] Durante una partida: pausa → **Leyendas**; al cerrar con «atrás» se vuelve al menú de pausa sin reanudar la partida.
+- [ ] Durante una partida: pausa → **Caritatopc**; al cerrar con «atrás» se vuelve al menú de pausa sin reanudar la partida.
 - [ ] Un `settings.json` con texto basura no impide arrancar y genera la copia `.invalido.bak`.
 
 Cada leyenda tiene su propia lista en `docs/CATALOGO_MODS.md`.

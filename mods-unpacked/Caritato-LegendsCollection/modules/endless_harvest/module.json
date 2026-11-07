@@ -4,6 +4,8 @@
 	"category": "economy",
 	"name_key": "CLC_MOD_ENDLESS_HARVEST_NAME",
 	"description_key": "CLC_MOD_ENDLESS_HARVEST_DESC",
+	"short_name_key": "CLC_MOD_ENDLESS_HARVEST_SHORT",
+	"accent": "#8bd450",
 	"enabled_by_default": true,
 	"requires_dlc": [],
 	"dependencies": [],

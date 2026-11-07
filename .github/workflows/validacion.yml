@@ -56,3 +56,51 @@ jobs:
 
       - name: Ejecutar pruebas del núcleo
         run: python tools/run_gdscript_tests.py --godot ./Godot_v3.6-stable_linux_headless.64
+
+  capturas:
+    name: Capturas de la interfaz (Godot 3.6)
+    runs-on: ubuntu-latest
+    # Solo sirve para revisar el diseño: si falla, no bloquea la PR.
+    continue-on-error: true
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Preparar Godot 3.6 y una pantalla virtual
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq xvfb libgl1-mesa-dri libglu1-mesa > /dev/null
+          curl -sSfL -o godot.zip https://github.com/godotengine/godot/releases/download/3.6-stable/Godot_v3.6-stable_x11.64.zip
+          unzip -q godot.zip
+          chmod +x Godot_v3.6-stable_x11.64
+          # Anybody (OFL), la familia tipográfica de Brotato, para que las capturas se parezcan al juego.
+          curl -sSfL -o Anybody.ttf "https://github.com/google/fonts/raw/main/ofl/anybody/Anybody%5Bwdth,wght%5D.ttf" || echo "Sin fuente Anybody"
+
+      - name: Sacar capturas
+        run: xvfb-run -a -s "-screen 0 1920x1080x24" python tools/capture_ui.py --godot ./Godot_v3.6-stable_x11.64 --out capturas --font Anybody.ttf
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: capturas-interfaz
+          path: capturas/
+          if-no-files-found: error
+
+      - name: Publicar las capturas en la rama capturas-ui
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd capturas
+          git init -q
+          git checkout -q -b capturas-ui
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Capturas de ${HEAD_SHA}"
+          git push -q -f "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" capturas-ui

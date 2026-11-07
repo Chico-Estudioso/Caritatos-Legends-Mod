@@ -23,7 +23,7 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] Registro de leyendas con ids únicos y validación de definiciones.
 - [x] Dependencias, conflictos y ciclos.
 - [x] Activación/desactivación persistente y recuperación de configuración inválida.
-- [x] Pantalla **Leyendas** en el menú principal y en el de pausa.
+- [x] Pantalla de configuración en el menú principal y en el de pausa (botón **Caritatopc**, formato biblioteca).
 - [x] Aviso de reinicio y estado por leyenda.
 - [x] Pruebas del núcleo (GDScript en CI) y de herramientas (Python).
 - [ ] Prueba manual de la pantalla con ratón, teclado y mando.

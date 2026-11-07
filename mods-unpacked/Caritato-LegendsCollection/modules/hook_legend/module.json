@@ -4,6 +4,8 @@
 	"category": "shop",
 	"name_key": "CLC_MOD_HOOK_LEGEND_NAME",
 	"description_key": "CLC_MOD_HOOK_LEGEND_DESC",
+	"short_name_key": "CLC_MOD_HOOK_LEGEND_SHORT",
+	"accent": "#4fc3f7",
 	"enabled_by_default": true,
 	"requires_dlc": ["abyssal_terrors"],
 	"dependencies": [],

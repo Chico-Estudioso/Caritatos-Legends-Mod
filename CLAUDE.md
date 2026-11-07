@@ -4,7 +4,7 @@ Lee también `AGENTS.md`. Los documentos de `docs/` contienen el alcance, las de
 
 ## Objetivo
 
-Caritatos Legends es **un único mod de Brotato** distribuido desde Steam Workshop. Reúne «leyendas»: mods clásicos de la comunidad recuperados, recreados o adaptados, organizados en módulos internos que el jugador activa, desactiva y ajusta desde el propio juego (botón **Leyendas** del menú principal y del menú de pausa).
+Caritatos Legends es **un único mod de Brotato** distribuido desde Steam Workshop. Reúne «leyendas»: mods clásicos de la comunidad recuperados, recreados o adaptados, organizados en módulos internos que el jugador activa, desactiva y ajusta desde el propio juego (botón **Caritatopc** del menú principal y del menú de pausa).
 
 ## Forma de trabajar acordada con Mauro (propietario)
 
