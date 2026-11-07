@@ -165,6 +165,9 @@ func _normalize(raw: Dictionary, errors: Array) -> Dictionary:
 		"category": _string_field(raw, "category", "mechanics", errors),
 		"name_key": _string_field(raw, "name_key", "", errors),
 		"description_key": _string_field(raw, "description_key", "", errors),
+		"short_name_key": _string_field(raw, "short_name_key", "", errors),
+		"warning_key": _string_field(raw, "warning_key", "", errors),
+		"accent": _string_field(raw, "accent", "", errors),
 		"enabled_by_default": _bool_field(raw, "enabled_by_default", true, errors),
 		"dependencies": _string_array_field(raw, "dependencies", errors),
 		"conflicts": _string_array_field(raw, "conflicts", errors),
@@ -182,6 +185,11 @@ func _normalize(raw: Dictionary, errors: Array) -> Dictionary:
 		errors.append("falta description_key")
 	if not VALID_CATEGORIES.has(definition.category):
 		errors.append("categoría desconocida '%s'" % definition.category)
+	if definition.short_name_key == "":
+		definition.short_name_key = definition.name_key
+	if definition.accent != "" and not _is_hex_color(definition.accent):
+		errors.append("accent debe ser un color #rrggbb ('%s')" % definition.accent)
+		definition.accent = ""
 
 	var compatibility = raw.get("compatibility", {})
 	if compatibility is Dictionary:
@@ -293,6 +301,12 @@ func _normalize_setting(raw, index: int, errors: Array) -> Dictionary:
 			setting["default"] = default_value
 
 	return setting
+
+
+static func _is_hex_color(value: String) -> bool:
+	if value.length() != 7 or not value.begins_with("#"):
+		return false
+	return value.substr(1).is_valid_hex_number()
 
 
 static func _is_number(value) -> bool:

@@ -100,9 +100,25 @@ func test_menu() -> void:
 	if menu == null:
 		return
 	check(core.is_menu_open(), "el núcleo no registra la pantalla abierta")
-	check(menu._rows.size() == core.get_module_ids().size(), "falta alguna leyenda en la pantalla")
+	var ids: Array = core.get_module_ids()
+	check(menu._cards.size() == ids.size(), "falta alguna leyenda en la biblioteca")
+	check(menu._detail.id == ids[0], "al abrir debería mostrarse la primera leyenda")
 
-	var id: String = core.get_module_ids()[0]
+	# Cada ficha se construye con un control por ajuste.
+	for module_id in ids:
+		menu._select(module_id)
+		check(menu._detail.id == module_id, "no se abrió la ficha de %s" % module_id)
+		check(menu._detail.controls.size() == core.get_definition(module_id).settings.size(), "%s: faltan ajustes en la ficha" % module_id)
+
+	# Apagar desde el interruptor de la ficha se aplica al momento.
+	menu._select(ids[0])
+	menu._detail.toggle.pressed = false
+	check(not core.is_module_enabled(ids[0]), "el interruptor de la ficha no apaga la leyenda")
+	check(menu._cards[ids[0]].label.text == tr("CLC_CARD_OFF"), "la tarjeta no refleja que está apagada")
+	menu._detail.toggle.pressed = true
+	check(core.is_module_enabled(ids[0]), "el interruptor de la ficha no enciende la leyenda")
+
+	var id: String = ids[0]
 	var setting: Dictionary = {}
 	for candidate in core.get_definition(id).settings:
 		if candidate.type == "int":

@@ -36,6 +36,7 @@ NAME_RE = re.compile(r"^[a-zA-Z0-9_]{3,}$")
 SEMVER_RE = re.compile(r"^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
 MODULE_ID_RE = re.compile(r"^[a-z][a-z0-9_]{2,47}$")
 SETTING_KEY_RE = re.compile(r"^[a-z][a-z0-9_]{0,47}$")
+HEX_COLOR_RE = re.compile(r"^#[0-9a-fA-F]{6}$")
 TEXT_KEY_RE = re.compile(r"\bCLC_[A-Z0-9_]+\b")
 EXTENDS_RE = re.compile(r'^extends\s+"(res://[^"]+)"', re.MULTILINE)
 RES_PATH_RE = re.compile(r'"(res://mods-unpacked/[^"]+)"')
@@ -237,6 +238,15 @@ def validate_modules(report: Report, game_scripts: set[str]) -> tuple[list[str],
                 report.error(f"[{module_id}] falta {field}")
             else:
                 text_keys.append(value)
+        for field in ("short_name_key", "warning_key"):
+            value = definition.get(field, "")
+            if not isinstance(value, str):
+                report.error(f"[{module_id}] {field} debe ser texto")
+            elif value:
+                text_keys.append(value)
+        accent = definition.get("accent", "")
+        if not isinstance(accent, str) or (accent and not HEX_COLOR_RE.match(accent)):
+            report.error(f"[{module_id}] accent debe ser un color #rrggbb ({accent!r})")
         if definition.get("category") not in VALID_CATEGORIES:
             report.error(f"[{module_id}] categoría desconocida ({definition.get('category')!r})")
         version = definition.get("version", "")

@@ -16,7 +16,9 @@ mods-unpacked/Caritato-LegendsCollection/
 │   ├── compat.gd            # capa de compatibilidad con la API interna de Brotato
 │   └── i18n.gd              # registra los textos en el TranslationServer
 ├── i18n/strings.json        # textos CLC_* en español e inglés
-├── ui/legends_menu.gd       # pantalla «Leyendas» construida por código
+├── ui/legends_menu.gd       # pantalla «Caritatopc» (biblioteca) construida por código
+├── ui/ui_style.gd           # paleta, cajas, botones, fuentes e iconos comunes
+├── ui/widgets/              # interruptor y corazón dibujados por código
 ├── extensions/              # extensiones del núcleo (botones de menú)
 └── modules/
     ├── modules.json         # índice de leyendas en orden
@@ -80,6 +82,9 @@ Reglas de Godot 3 que hay que respetar:
   "category": "mechanics",
   "name_key": "CLC_MOD_MI_LEYENDA_NAME",
   "description_key": "CLC_MOD_MI_LEYENDA_DESC",
+  "short_name_key": "CLC_MOD_MI_LEYENDA_SHORT",
+  "accent": "#ff7eb6",
+  "warning_key": "",
   "enabled_by_default": true,
   "requires_dlc": [],
   "dependencies": [],
@@ -95,6 +100,8 @@ Reglas de Godot 3 que hay que respetar:
   ]
 }
 ```
+
+Campos opcionales de la biblioteca: `short_name_key` (nombre de la tarjeta; si falta, se usa `name_key`), `accent` (color `#rrggbb` de la tarjeta, el icono y los controles) y `warning_key` (aviso destacado en la ficha, por ejemplo para una opción muy fuerte). La descripción debe ser breve (una o dos frases): las explicaciones largas van en el `help_key` de cada ajuste, que se muestra al seleccionarlo.
 
 - `category`: `mechanics`, `shop`, `economy`, `balance`, `content` o `quality_of_life`.
 - Tipos de ajuste: `bool`, `int`, `float` y `enum` (`options` + textos `<label_key>_<OPCION>`).

@@ -5,6 +5,9 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 ## [Sin publicar]
 
 ### Añadido
+- **Nueva pantalla de configuración con forma de biblioteca**: tarjetas por leyenda con su color, inicial y estado a la izquierda; ficha de la leyenda a la derecha con interruptores dibujados (en lugar de casillas), deslizadores con estilo propio y un recuadro que explica el ajuste seleccionado. Paleta, botones y corazón animado comunes en `ui/ui_style.gd` y `ui/widgets/`.
+- Campos opcionales en `module.json`: `short_name_key`, `accent` y `warning_key`.
+- CI: trabajo «Capturas de la interfaz» que abre las ventanas con Godot 3.6 en una pantalla virtual y guarda capturas (artefacto y rama `capturas-ui`).
 - **La Leyenda del Regalo** (`gift_legend`, cooperativo): botón «Regalar» en el panel de cada jugador de la tienda cooperativa. Abre una ventana con sus armas y objetos y deja dárselos a otro jugador; las armas conservan mejoras, maldición o mecanización. Respeta huecos de arma, máximos por objeto, prohibiciones y restricciones del personaje que recibe, armas bloqueadas y el bando de evolución (solo meca / solo mutante). Nunca se regalan el personaje, el Tumor, los saltos evolutivos, la torreta del Constructor ni los objetos que se transforman al quitarlos. Ajustes: objetos, armas, última arma, malditos y regalos por tienda. La ventana se maneja con ratón, teclado o cualquier mando.
 
 ### Corregido
@@ -14,6 +17,8 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 - Instrucciones de instalación local: la versión de Steam no lee la carpeta `mods`; el ZIP de prueba va en la carpeta de un mod del Workshop al que se esté suscrito (`README.md`, `docs/PRUEBAS.md`, `docs/COMPATIBILIDAD.md`).
 
 ### Cambiado
+- El botón del menú principal y del de pausa pasa a llamarse **Caritatopc**.
+- Descripciones de las leyendas más breves; las explicaciones de cada ajuste aparecen al seleccionarlo.
 - `compatible_game_version`: 1.2.X.X y 1.1.15.4.
 - Validación: las extensiones deben replicar la ruta del script que extienden.
 
