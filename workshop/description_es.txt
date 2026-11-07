@@ -1,0 +1,22 @@
+[h1]Caritatopc — Brotato Legends Collection[/h1]
+Un único mod que recupera mods clásicos de Brotato («leyendas»), los equilibra y les da un toque propio e interactivo. Eliges desde el propio juego cuáles activas y con qué valores. No necesita ningún otro mod.
+
+[h2]Leyendas[/h2]
+[list]
+[*][b]La Leyenda del Anzuelo[/b] (Abyssal Terrors): el Anzuelo aparece seguro en la tienda de la oleada que elijas (por defecto, la 4) y tú decides cuánto maldice cada uno. [i]Minijuego «¡Pica!»: pulsa justo cuando se hunda el corcho y ganas un reroll gratis.[/i]
+[*][b]La Leyenda de la Cosecha Eterna[/b]: en el modo infinito la recolección deja de perderse (o sigue creciendo) y la Hucha sigue dando interés. [i]Cosecha dorada: recoge el trigo en su punto y ganas materiales.[/i]
+[*][b]La Leyenda del Mercader[/b]: precio de artículos y rerolls a tu gusto (0 % = rerolls gratis), con o sin inflación por oleada. [i]Regateo: para la aguja en la zona verde y la tienda te hace descuento.[/i]
+[*][b]La Leyenda del Supermercado[/b] (muy fuerte, apagada por defecto): encarga el objeto o arma que quieras. Los encargos se ganan derrotando élites o jefes, cuestan un 50 % más y llegan bloqueados a la siguiente tienda. [i]Abre la caja del encargo a toques.[/i]
+[*][b]La Leyenda del Regalo[/b] (cooperativo): en la tienda, pulsa un arma u objeto tuyo → [b]Regalar[/b] (junto a Reciclar). El otro jugador lo acepta con su mando en una ventana con corazones: «¡Un regalo de tu Cari!». Las armas mecanizadas o malditas también se regalan; el Tumor no.
+[/list]
+
+[h2]Configuración[/h2]
+Menú principal → [b]Caritatopc[/b] (también desde la pausa). Una biblioteca con una tarjeta por leyenda: interruptor, ajustes y una explicación de cada ajuste. Los valores se aplican al momento; activar una leyenda que estaba apagada al abrir el juego requiere reiniciar Brotato. Funciona con ratón, teclado y mando.
+
+[h2]Compatibilidad[/h2]
+Brotato 1.2 (con Primal Dread) y su ModLoader 6.3.0. Puede chocar con mods que cambien las mismas mecánicas (tienda, precios, recolección del modo infinito).
+
+[h2]Créditos[/h2]
+Recreaciones independientes, con código propio, inspiradas en: Supermarket (duyang97), FreeRerolls, SIFD's Mod (SIFD), No Harvesting Decay (Windows98), Infinite Bank and Harvesting (Hypermarine_AuT), Piggy Bank And Harvest Work After 20 Waves (dreadhead), Endless-less (dami), Stronger Harvesting (CommanderAstern), Guaranteed Curse (Xterionix), ImperfectHook (mojimoon) y los mods del Anzuelo de la comunidad. Gracias a todos sus autores.
+
+Código: https://github.com/Chico-Estudioso/Caritatos-Legends-Mod

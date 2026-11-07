@@ -55,6 +55,7 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 
 ## Fase 6 — Publicación
 - [x] Versión candidata 0.2.0 y borrador de la página de Workshop (`docs/WORKSHOP.md`).
+- [x] Versión candidata 1.0.0: paquete del Workshop en la CI (ZIP con el título, portada propia y descripciones) y pasos de publicación con el Workshop Uploader.
 - [ ] Revisar créditos y licencias de todo lo incluido.
 - [ ] Prueba de instalación limpia.
 - [ ] Descripción, imágenes e instrucciones de Workshop.

@@ -1,19 +1,29 @@
 {
 	"name": "LegendsCollection",
 	"namespace": "Caritato",
-	"version_number": "0.2.0",
-	"description": "Caritatos Legends: una colección de leyendas (mods clásicos recuperados) configurables desde el propio juego.",
+	"version_number": "1.0.0",
+	"description": "Caritatopc (Caritatos Legends): leyendas de Brotato (mods clásicos recuperados, equilibrados y con un toque interactivo) configurables desde el propio juego.",
 	"website_url": "https://github.com/Chico-Estudioso/Caritatos-Legends-Mod",
 	"dependencies": [],
 	"extra": {
 		"godot": {
-			"authors": ["Chico-Estudioso"],
+			"authors": [
+				"Chico-Estudioso"
+			],
 			"optional_dependencies": [],
-			"compatible_game_version": ["1.2.X.X", "1.1.15.4"],
-			"compatible_mod_loader_version": ["6.3.0"],
+			"compatible_game_version": [
+				"1.2.X.X",
+				"1.1.15.4"
+			],
+			"compatible_mod_loader_version": [
+				"6.3.0"
+			],
 			"incompatibilities": [],
 			"load_before": [],
-			"tags": ["Utilities", "Gameplay"],
+			"tags": [
+				"Utilities",
+				"Gameplay"
+			],
 			"config_schema": {},
 			"description_rich": ""
 		}

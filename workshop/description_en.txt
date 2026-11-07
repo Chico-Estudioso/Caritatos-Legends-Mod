@@ -1,0 +1,9 @@
+[h1]Caritatopc — Brotato Legends Collection[/h1]
+One mod that brings back classic Brotato mods ("legends"), balances them and gives each one its own interactive touch. Toggle and tune them from the in-game Caritatopc menu. No other mods required.
+[list]
+[*][b]Fish Hook[/b] (Abyssal Terrors): guaranteed Fish Hook in the shop of your chosen wave and custom curse chance. [i]"It bites!" fishing minigame: catch it for a free reroll.[/i]
+[*][b]Eternal Harvest[/b]: no harvesting decay in endless (or keep it growing), Piggy Bank keeps working. [i]Golden harvest: reap the wheat at its peak for materials.[/i]
+[*][b]Merchant[/b]: item and reroll prices (0% = free rerolls), optional no per-wave inflation. [i]Haggling: stop the needle in the green zone for a shop discount.[/i]
+[*][b]Supermarket[/b] (very strong, off by default): order the item or weapon you want. Orders are earned by defeating elites or bosses, cost 50% more and arrive locked in the next shop. [i]Open the order box by tapping.[/i]
+[*][b]Gift[/b] (co-op): in the shop, press one of your weapons or items → [b]Gift[/b] (next to Recycle). The other player accepts it with their controller in a heart-filled window. Mechanized and cursed weapons can be gifted; the Tumor can't.
+[/list]

@@ -9,6 +9,6 @@
 7. Generar el paquete ZIP final.
 8. Preparar changelog y descripción de Workshop.
 9. Solicitar aprobación del propietario.
-10. Publicar manualmente en Workshop después de la aprobación.
+10. Publicar manualmente en Workshop después de la aprobación, siguiendo `docs/WORKSHOP.md`.
 
 Claude puede preparar los archivos y las instrucciones, pero no debe publicar ni actualizar el Workshop sin autorización expresa.
