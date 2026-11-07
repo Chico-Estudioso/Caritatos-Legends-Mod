@@ -2,7 +2,7 @@ extends "res://ui/menus/shop/coop_shop.gd"
 
 # La Leyenda del Regalo: contador de regalos por tienda y refresco de la
 # interfaz tras un regalo. El botón «Regalar» está en el menú de cada arma u
-# objeto (extensión de item_popup.gd).
+# objeto (extensión de coop_item_popup.gd).
 
 const _CLC_GIFT_API = preload("res://mods-unpacked/Caritato-LegendsCollection/core/legends_api.gd")
 const _CLC_GIFT_ID := "gift_legend"
@@ -14,6 +14,16 @@ func _ready() -> void:
 	var legend = _CLC_GIFT_API.get_runtime(_CLC_GIFT_ID)
 	if legend != null:
 		legend.on_shop_opened()
+		_clc_gift_check_popups()
+
+
+# Si el menú del arma u objeto no tiene la extensión, «Regalar» no saldrá:
+# se deja constancia en el log de ModLoader para poder diagnosticarlo.
+func _clc_gift_check_popups() -> void:
+	for player_index in RunData.get_player_count():
+		var popup = _get_item_popup(player_index)
+		if popup != null and not popup.has_method("_clc_gift_on_pressed"):
+			ModLoaderLog.error("El menú del objeto de J%d no tiene el botón Regalar (%s)." % [player_index + 1, popup.get_script().resource_path if popup.get_script() != null else "?"], "Caritato-LegendsCollection:Gift")
 
 
 func _exit_tree() -> void:

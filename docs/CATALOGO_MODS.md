@@ -157,7 +157,7 @@ Pruebas manuales (Peligro 2 o más):
 ### La Leyenda del Regalo (`gift_legend`)
 
 Diseño:
-- **Dónde se regala**: en la tienda cooperativa, al pulsar un arma u objeto propio aparece el menú del juego (Combinar, Reciclar, Cancelar) con un botón más, **Regalar**. Es una extensión de `ItemPopup`: en el juego, ese menú solo tiene botones para las armas, así que para los objetos muestra Regalar y Cancelar. Con mando se llega como a Reciclar: Reciclar → Regalar → Cancelar.
+- **Dónde se regala**: en la tienda cooperativa, al pulsar un arma u objeto propio aparece el menú del juego (Combinar, Reciclar, Cancelar) con un botón más, **Regalar**. Es una extensión de `CoopItemPopup` (el menú de la tienda cooperativa; extender `ItemPopup` no llega a él porque se compila antes de que se instalen las extensiones). En el juego, ese menú solo tiene botones para las armas, así que para los objetos muestra Regalar y Cancelar. Con mando se llega como a Reciclar: Reciclar → Regalar → Cancelar.
 - **A quién**: con dos jugadores, va directo a la confirmación. Con más, o si no se puede regalar a nadie, sale «¿A quién se lo regalas?», con un botón por jugador; los que no pueden recibirlo aparecen desactivados con el motivo.
 - **Quién confirma**: quien recibe, en «¡Un regalo de tu Cari!» (corazón que late, corazones que suben y lluvia de corazones al aceptar).
   - Solo responde su mando o teclado: el juego crea acciones por dispositivo (`ui_accept_<dispositivo>`), que se leen con `CoopService.get_remapped_player_device`.
