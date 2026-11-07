@@ -28,6 +28,7 @@ func _initialize() -> void:
 	run_case("los valores por defecto se guardan en disco", "test_defaults_saved")
 	run_case("los ajustes se sanean y desactivar es inmediato", "test_settings_and_toggle")
 	run_case("la pantalla de configuración se construye y cancela", "test_menu")
+	run_case("la pantalla entiende los mandos de cada jugador", "test_menu_coop_actions")
 	run_case("el regalo empieza desde el menú del objeto", "test_gift_start")
 	run_case("la confirmación del regalo acepta, rechaza y celebra", "test_gift_confirm")
 	run_case("los encargos del Supermercado viajan a la siguiente tienda", "test_supermarket_orders")
@@ -149,6 +150,23 @@ func _fake_gift_item():
 	fake.source_code = "extends Resource\nvar my_id := \"item_test\"\nvar name := \"ITEM_TEST\"\nvar tier := 1\nvar icon = null\n"
 	var _reloaded = fake.reload()
 	return fake.new()
+
+
+func test_menu_coop_actions() -> void:
+	# Como en cooperativo: una acción por dispositivo («ui_down_3»).
+	if not InputMap.has_action("ui_down_3"):
+		InputMap.add_action("ui_down_3")
+	var menu = core.open_menu("ingame")
+	var device_action := InputEventAction.new()
+	device_action.action = "ui_down_3"
+	device_action.pressed = true
+	check(menu.forwardable_action(device_action) == "ui_down", "«ui_down_3» debería reenviarse como «ui_down»")
+	var normal := InputEventAction.new()
+	normal.action = "ui_down"
+	normal.pressed = true
+	check(menu.forwardable_action(normal) == "", "la acción normal no se reenvía (la interfaz ya la entiende)")
+	menu._on_cancel_pressed()
+	InputMap.erase_action("ui_down_3")
 
 
 func test_gift_start() -> void:

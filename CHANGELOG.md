@@ -4,6 +4,9 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 
 ## [Sin publicar]
 
+### Corregido
+- **Pantalla Caritatopc en cooperativo**: en la pausa de una partida cooperativa no respondía al teclado ni al mando, porque los `FocusEmulator` del juego se comían la entrada. Ahora se pausan mientras la pantalla está abierta, y las acciones de cada mando (`ui_up_3`…) se reenvían como las normales.
+
 ### Cambiado
 - **Regalo desde el menú del objeto**: el botón Regalar pasa al menú que sale al pulsar un arma u objeto propio en la tienda (junto a Reciclar y Cancelar), al que se llega bien con mando. Los objetos, que en el juego no tienen botones, muestran Regalar y Cancelar. Con más de dos jugadores se elige a quién en una ventana nueva. Se quitan el botón suelto del panel (no se alcanzaba con mando) y la ventana «Regalar» con la lista.
 
