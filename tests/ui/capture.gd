@@ -137,6 +137,21 @@ func _capture_supermarket() -> void:
 	menu.close()
 	yield(_frames(2), "completed")
 
+	# La caja del encargo: cerrada (tras un toque) y abierta con confeti.
+	var box = load(MOD_PATH + "modules/supermarket_legend/order_box_popup.gd").new()
+	box.items = [{"data": legend.entries[4].item, "label": "Corona", "tier": 2}]
+	core.show_popup(box)
+	yield(_frames(10), "completed")
+	box._on_accept()
+	yield(_frames(4), "completed")
+	_save("super_4_caja_cerrada")
+	box._on_accept()
+	box._on_accept()
+	yield(_frames(14), "completed")
+	_save("super_5_caja_abierta")
+	box.close_popup("opened")
+	yield(_frames(2), "completed")
+
 
 class FakeSupermarket:
 	extends Reference

@@ -18,7 +18,9 @@ mods-unpacked/Caritato-LegendsCollection/
 ├── i18n/strings.json        # textos CLC_* en español e inglés
 ├── ui/legends_menu.gd       # pantalla «Caritatopc» (biblioteca) construida por código
 ├── ui/ui_style.gd           # paleta, cajas, botones, fuentes e iconos comunes
-├── ui/widgets/              # interruptor y corazón dibujados por código
+├── ui/widgets/              # interruptor, corazón, partículas y caja dibujados por código
+├── ui/legend_popup.gd       # base de las ventanas interactivas (minijuegos y sorpresas)
+├── ui/focus_guard.gd        # pausa los FocusEmulator de la tienda mientras hay una ventana del mod
 ├── extensions/              # extensiones del núcleo (botones de menú)
 └── modules/
     ├── modules.json         # índice de leyendas en orden
@@ -123,3 +125,13 @@ Campos opcionales de la biblioteca: `short_name_key` (nombre de la tarjeta; si f
 - **Mod Options** (`dami-ModOptions`, MIT): añade una pestaña de configuración. Obligaría a instalar otro mod de Workshop, así que no se usa como dependencia. La pantalla propia es independiente y no copia su código.
 - **ModLoaderConfig** (configs con `config_schema`): no se usa porque la configuración por leyenda con validación propia es más sencilla de mantener y de probar sin el juego.
 - **ContentLoader** (`Darkly77-ContentLoader`): útil para registrar personajes, armas y objetos nuevos. Sin licencia publicada en su repositorio; se evaluará cuando llegue la primera leyenda de contenido (ver `docs/DECISIONES.md`).
+
+## Ventanas interactivas de las leyendas
+
+Los rasgos propios de cada leyenda (minijuegos, sorpresas) extienden `ui/legend_popup.gd`:
+
+- La subclase construye su contenido en `_build_content(layout)` y reacciona a `_on_accept()`, `_on_cancel()` y `_on_direction(paso)`.
+- `player_index` indica qué jugador responde en cooperativo (con `-1`, cualquiera); el ratón vale si ese jugador juega con teclado y ratón.
+- Se muestran con `LegendsAPI.show_popup(ventana)`: el núcleo las abre de una en una y descarta las pendientes con `clear_popups()` al salir de la tienda.
+- Mientras hay una abierta se pausan los `FocusEmulator` de la tienda (`ui/focus_guard.gd`).
+- Cada rasgo tiene un ajuste para apagarlo y una captura en `tests/ui/capture.gd`.

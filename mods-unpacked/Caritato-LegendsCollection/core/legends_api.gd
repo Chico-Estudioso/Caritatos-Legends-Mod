@@ -44,3 +44,20 @@ static func open_menu(context: String = "title", return_focus: Control = null) -
 	if core == null:
 		return null
 	return core.open_menu(context, return_focus)
+
+
+# Muestra una ventana de leyenda cuando no haya otra abierta. Si no hay
+# núcleo, la ventana se descarta.
+static func show_popup(popup: Node) -> void:
+	var core = get_core()
+	if core == null:
+		if popup != null and is_instance_valid(popup):
+			popup.free()
+		return
+	core.show_popup(popup)
+
+
+static func clear_popups() -> void:
+	var core = get_core()
+	if core != null:
+		core.clear_popups()

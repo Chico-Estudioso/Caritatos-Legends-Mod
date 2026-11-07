@@ -1,6 +1,6 @@
 {
 	"id": "supermarket_legend",
-	"version": "2.0.0",
+	"version": "2.1.0",
 	"category": "shop",
 	"name_key": "CLC_MOD_SUPERMARKET_LEGEND_NAME",
 	"description_key": "CLC_MOD_SUPERMARKET_LEGEND_DESC",
@@ -76,6 +76,13 @@
 			"type": "bool",
 			"default": true,
 			"label_key": "CLC_SUPER_WEAPONS"
+		},
+		{
+			"key": "unboxing",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_SUPER_UNBOXING",
+			"help_key": "CLC_SUPER_UNBOXING_HELP"
 		}
 	]
 }

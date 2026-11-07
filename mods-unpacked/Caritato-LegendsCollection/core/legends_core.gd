@@ -38,6 +38,9 @@ var config_save_error := ""
 var _late_extensions := []
 var _late_extensions_installed := false
 var _menu: Node = null
+# Ventanas interactivas de las leyendas: se muestran de una en una.
+var _popup_queue := []
+var _popup_current: Node = null
 
 # Scripts del juego que otros scripts extienden: se instalan antes para que las
 # extensiones de sus hijos (shop.gd, coop_shop.gd) hereden de la versión ya extendida.
@@ -189,6 +192,47 @@ func open_menu(context: String = "title", return_focus: Control = null) -> Node:
 	var _err = _menu.connect("closed", self, "_on_menu_closed")
 	_menu.open(self, context, return_focus)
 	return _menu
+
+
+# Muestra una ventana de leyenda (ui/legend_popup.gd) o la deja en cola si ya
+# hay otra abierta.
+func show_popup(popup: Node) -> void:
+	if popup == null:
+		return
+	_popup_queue.append(popup)
+	_show_next_popup()
+
+
+func is_popup_open() -> bool:
+	return _popup_current != null and is_instance_valid(_popup_current)
+
+
+# Descarta las ventanas en cola (por ejemplo, al salir de la tienda).
+func clear_popups() -> void:
+	for popup in _popup_queue:
+		if is_instance_valid(popup) and not popup.is_inside_tree():
+			popup.free()
+	_popup_queue.clear()
+
+
+func _show_next_popup() -> void:
+	if is_popup_open():
+		return
+	_popup_current = null
+	while not _popup_queue.empty():
+		var popup = _popup_queue.pop_front()
+		if popup == null or not is_instance_valid(popup):
+			continue
+		_popup_current = popup
+		get_tree().root.add_child(popup)
+		var _err = popup.connect("closed", self, "_on_popup_closed", [], CONNECT_ONESHOT)
+		popup.popup_open()
+		return
+
+
+func _on_popup_closed(_result: String) -> void:
+	_popup_current = null
+	call_deferred("_show_next_popup")
 
 
 func is_menu_open() -> bool:
