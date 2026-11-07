@@ -2,17 +2,19 @@ extends Node
 
 # La Leyenda del Regalo (cooperativo).
 #
-# En la tienda cooperativa, cada jugador tiene un botón «Regalar» que abre una
-# ventana con sus objetos y armas; puede dárselos a otro jugador. Las armas se
-# regalan con sus mejoras, maldición o mecanización. Se respetan las reglas
-# del juego del que recibe (prohibiciones, máximos, huecos de armas, tipo de
-# arma, bando de evolución) y nunca se regalan el personaje, el Tumor, los
-# saltos evolutivos, la torreta del Constructor ni los objetos que se
-# transforman al quitarlos.
+# En la tienda cooperativa, al pulsar un arma u objeto propio aparece el menú
+# del juego (Combinar, Reciclar, Cancelar) con un botón más: «Regalar». Si
+# hay varios jugadores se elige a quién; quien recibe lo acepta o lo rechaza
+# en «¡Un regalo de tu Cari!». Las armas se regalan con sus mejoras,
+# maldición o mecanización. Se respetan las reglas del juego del que recibe
+# (prohibiciones, máximos, huecos de armas, tipo de arma, bando de evolución)
+# y nunca se regalan el personaje, el Tumor, los saltos evolutivos, la torreta
+# del Constructor ni los objetos que se transforman al quitarlos.
 
 const Compat = preload("res://mods-unpacked/Caritato-LegendsCollection/core/compat.gd")
 const GiftRules = preload("res://mods-unpacked/Caritato-LegendsCollection/modules/gift_legend/gift_rules.gd")
-const MENU_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/gift_legend/gift_menu.gd"
+const PICKER_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/gift_legend/gift_recipient_popup.gd"
+const CONFIRM_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/gift_legend/gift_confirm.gd"
 const LOG_NAME := "Caritato-LegendsCollection:Gift"
 
 var core = null
@@ -40,25 +42,19 @@ func on_shop_opened() -> void:
 	_gifts.clear()
 
 
-func gifts_left(player_index: int) -> int:
-	var limit := int(get_setting("gifts_per_shop", 0))
-	if limit <= 0:
-		return -1
-	return int(max(0, limit - int(_gifts.get(player_index, 0))))
+# ¿Se muestra «Regalar» en el menú de este arma u objeto? (El motivo por el
+# que no se pueda regalar a alguien se explica al elegir destinatario.)
+func can_offer(item) -> bool:
+	if item == null or not is_active() or not Compat.is_coop_run() or Compat.get_player_count() < 2:
+		return false
+	if Compat.is_weapon(item):
+		return true
+	return not GiftRules.is_never_giftable(item.my_id, _has_replacement(item))
 
 
-# Lista para la ventana: Array de {data, is_weapon, label, tier, tags, recipients}
-# donde recipients es Array de {index, reason}. No incluye lo que nunca se regala.
-func get_offers(giver: int) -> Array:
-	var offers := []
-	var player_count := Compat.get_player_count()
-	for weapon in Compat.get_player_weapons(giver):
-		offers.append(_make_offer(giver, weapon, true, player_count))
-	for item in Compat.get_player_items(giver):
-		if GiftRules.is_never_giftable(item.my_id, _has_replacement(item)):
-			continue
-		offers.append(_make_offer(giver, item, false, player_count))
-	return offers
+# {data, is_weapon, label, tier, tags, recipients: [{index, reason}]}
+func make_offer(giver: int, data, is_weapon: bool) -> Dictionary:
+	return _make_offer(giver, data, is_weapon, Compat.get_player_count())
 
 
 func block_reason(giver: int, recipient: int, data, is_weapon: bool) -> String:
@@ -108,14 +104,39 @@ func gift(shop: Node, giver: int, recipient: int, data, is_weapon: bool) -> Stri
 	return ""
 
 
-func open_menu(shop: Node, giver: int, return_focus: Control) -> void:
-	var menu_script = load(MENU_PATH)
-	if menu_script == null:
-		ModLoaderLog.error("No se pudo cargar la ventana de regalos.", LOG_NAME)
+# Empieza un regalo desde el menú del arma u objeto: con un solo jugador al
+# que se puede regalar, va directo a su confirmación; si no, se elige a quién.
+func start_gift(shop: Node, giver: int, data, is_weapon: bool) -> void:
+	var offer := make_offer(giver, data, is_weapon)
+	var allowed := []
+	for recipient in offer.recipients:
+		if recipient.reason == "":
+			allowed.append(recipient.index)
+	if offer.recipients.size() == 1 and allowed.size() == 1:
+		_show_confirm(shop, giver, allowed[0], offer)
 		return
-	var menu = menu_script.new()
-	get_tree().root.add_child(menu)
-	menu.open(self, shop, giver, return_focus)
+	var picker_script = load(PICKER_PATH)
+	if picker_script == null or core == null:
+		return
+	var picker = picker_script.new()
+	picker.player_index = giver
+	picker.offer = offer
+	var _err = picker.connect("closed", self, "_on_recipient_chosen", [shop, giver, offer])
+	core.show_popup(picker)
+
+
+func _on_recipient_chosen(result: String, shop: Node, giver: int, offer: Dictionary) -> void:
+	if result.begins_with("to:"):
+		_show_confirm(shop, giver, int(result.substr(3)), offer)
+
+
+func _show_confirm(shop: Node, giver: int, recipient: int, offer: Dictionary) -> void:
+	var confirm_script = load(CONFIRM_PATH)
+	if confirm_script == null or core == null:
+		return
+	var confirm = confirm_script.new()
+	confirm.setup(self, shop, giver, recipient, offer)
+	core.show_popup(confirm)
 
 
 func _make_offer(giver: int, data, is_weapon: bool, player_count: int) -> Dictionary:

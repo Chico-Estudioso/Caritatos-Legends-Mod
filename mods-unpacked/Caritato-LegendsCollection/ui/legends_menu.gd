@@ -14,6 +14,11 @@ const Compat = preload("res://mods-unpacked/Caritato-LegendsCollection/core/comp
 const UiStyle = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/ui_style.gd")
 const Switch = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/switch.gd")
 const Heart = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/heart.gd")
+const FocusGuard = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/focus_guard.gd")
+
+const NAV_ACTIONS := ["ui_up", "ui_down", "ui_left", "ui_right", "ui_accept"]
+# Marca de las acciones que esta pantalla reenvía a la interfaz.
+const FORWARDED_DEVICE := -77
 
 const DLC_NAME_KEYS := {
 	"abyssal_terrors": "CLC_DLC_ABYSSAL_TERRORS",
@@ -35,6 +40,9 @@ var _message_label: Label = null
 var _previous_focus: Control = null
 var _refreshing := false
 var _cancel_actions := []
+# «ui_up_3» -> «ui_up»: acciones de cada mando o teclado en cooperativo.
+var _nav_variants := {}
+var _paused_emulators := []
 var _fonts := {}
 var _dots := {}
 
@@ -50,6 +58,9 @@ func open(p_core, p_context: String = "title", p_return_focus: Control = null) -
 	_previous_focus = p_return_focus
 	_snapshot = core.snapshot()
 	_collect_cancel_actions()
+	_collect_nav_actions()
+	# En cooperativo, los FocusEmulator del menú de pausa se comen la entrada.
+	_paused_emulators = FocusGuard.pause(get_tree())
 	_build()
 	var ids: Array = core.get_module_ids()
 	if not ids.empty():
@@ -59,13 +70,20 @@ func open(p_core, p_context: String = "title", p_return_focus: Control = null) -
 
 
 func close() -> void:
+	FocusGuard.resume(_paused_emulators)
 	emit_signal("closed")
 	if _previous_focus != null and is_instance_valid(_previous_focus) and _previous_focus.is_visible_in_tree():
 		_previous_focus.call_deferred("grab_focus")
 	queue_free()
 
 
+func _exit_tree() -> void:
+	FocusGuard.resume(_paused_emulators)
+
+
 func _input(event: InputEvent) -> void:
+	if event.device == FORWARDED_DEVICE:
+		return
 	# Se consume «atrás/pausa» para que el menú de pausa no se cierre por debajo.
 	for action in _cancel_actions:
 		if event.is_action(action):
@@ -73,6 +91,31 @@ func _input(event: InputEvent) -> void:
 			if event.is_action_released(action):
 				_on_cancel_pressed()
 			return
+	# En cooperativo, cada mando o teclado manda acciones propias («ui_up_3»)
+	# que la interfaz no entiende: se reenvían como la acción normal.
+	var base := forwardable_action(event)
+	if base != "":
+		get_tree().set_input_as_handled()
+		var forwarded := InputEventAction.new()
+		forwarded.action = base
+		forwarded.pressed = event.is_pressed()
+		forwarded.device = FORWARDED_DEVICE
+		Input.parse_input_event(forwarded)
+
+
+# Acción de navegación de un mando o teclado concreto que la interfaz normal
+# no reconoce ("" si no lo es o si ya es la acción normal). El stick analógico
+# se ignora: el juego ya lo convierte en acciones a un ritmo cómodo.
+func forwardable_action(event: InputEvent) -> String:
+	if event is InputEventMouse or event is InputEventJoypadMotion:
+		return ""
+	for base in NAV_ACTIONS:
+		if InputMap.has_action(base) and event.is_action(base):
+			return ""
+	for variant in _nav_variants.keys():
+		if event.is_action(variant):
+			return _nav_variants[variant]
+	return ""
 
 
 # --- Construcción -----------------------------------------------------------
@@ -682,6 +725,15 @@ func _set_control_enabled(control: Control, usable: bool) -> void:
 	elif control is Range:
 		control.editable = usable
 	control.focus_mode = Control.FOCUS_ALL if usable else Control.FOCUS_NONE
+
+
+func _collect_nav_actions() -> void:
+	_nav_variants = {}
+	for action in InputMap.get_actions():
+		var action_name := str(action)
+		for base in NAV_ACTIONS:
+			if action_name.begins_with(base + "_") and action_name.substr(base.length() + 1).is_valid_integer():
+				_nav_variants[action_name] = base
 
 
 func _collect_cancel_actions() -> void:

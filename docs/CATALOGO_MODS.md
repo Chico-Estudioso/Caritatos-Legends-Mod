@@ -157,23 +157,29 @@ Pruebas manuales (Peligro 2 o más):
 ### La Leyenda del Regalo (`gift_legend`)
 
 Diseño:
-- Botón **Regalar** en la fila superior del panel de cada jugador de la tienda cooperativa (junto al reroll). Solo aparece con 2 o más jugadores.
-- La ventana lista armas y objetos del jugador, con un botón por cada posible receptor; si no se puede, el botón aparece desactivado con el motivo.
-- Transferencia con la API del juego: `RunData.remove_item` + `add_item` (retiran y aplican efectos) y `remove_weapon_by_index` + `add_weapon` (el arma conserva mejoras, maldición, mecanización y daño acumulado).
-- Nunca se regalan: el personaje (figura como objeto), `item_tumor`, `item_meca_evolved_leap`, `item_mut_evolved_leap`, `item_builder_turret*` y los objetos con `replaced_by` (quitarlos dejaría su sustituto a quien regala).
-- Reglas de quien recibe: huecos de arma libres, máximo por objeto, objetos prohibidos y grupos vetados de su personaje (las prohibiciones de tienda que elige cada jugador no impiden recibir regalos), sin cuerpo a cuerpo / sin distancia, tier de armas, armas bloqueadas (`lock_current_weapons`), y bando de evolución (no se da un arma meca a un personaje `mutant_only` ni un objeto mutado a uno `meca_only`).
-- Mientras la ventana está abierta, se pausan los `FocusEmulator` de la tienda (igual que hace el juego al pausar) y la ventana gestiona la navegación: arriba/izquierda y abajo/derecha recorren los botones, aceptar regala y atrás cierra.
-- **Rasgo propio: quien recibe confirma.** Al elegir a quién regalar se abre «¡Un regalo de tu Cari!» con un corazón que late y corazones que suben, el objeto y los botones Aceptar/Rechazar. Solo responde el mando o teclado de quien recibe (el juego crea acciones por dispositivo, `ui_accept_<dispositivo>`, que se leen con `CoopService.get_remapped_player_device`); el ratón solo vale si quien recibe juega con teclado y ratón. Quien regala puede retirarlo con Atrás. Al aceptar se hace el regalo y sale una lluvia de corazones.
+- **Dónde se regala**: en la tienda cooperativa, al pulsar un arma u objeto propio aparece el menú del juego (Combinar, Reciclar, Cancelar) con un botón más, **Regalar**. Es una extensión de `ItemPopup`: en el juego, ese menú solo tiene botones para las armas, así que para los objetos muestra Regalar y Cancelar. Con mando se llega como a Reciclar: Reciclar → Regalar → Cancelar.
+- **A quién**: con dos jugadores, va directo a la confirmación. Con más, o si no se puede regalar a nadie, sale «¿A quién se lo regalas?», con un botón por jugador; los que no pueden recibirlo aparecen desactivados con el motivo.
+- **Quién confirma**: quien recibe, en «¡Un regalo de tu Cari!» (corazón que late, corazones que suben y lluvia de corazones al aceptar).
+  - Solo responde su mando o teclado: el juego crea acciones por dispositivo (`ui_accept_<dispositivo>`), que se leen con `CoopService.get_remapped_player_device`.
+  - El ratón solo vale si quien recibe juega con teclado y ratón.
+  - Quien regala puede retirarlo con Atrás.
+- **Transferencia** con la API del juego: `RunData.remove_item` + `add_item` (retiran y aplican efectos) y `remove_weapon_by_index` + `add_weapon` (el arma conserva mejoras, maldición, mecanización y daño acumulado).
+- **Nunca se regalan**: el personaje (figura como objeto), `item_tumor`, `item_meca_evolved_leap`, `item_mut_evolved_leap`, `item_builder_turret*` y los objetos con `replaced_by` (quitarlos dejaría su sustituto a quien regala). Para ellos el menú no muestra Regalar.
+- **Reglas de quien recibe**:
+  - Huecos de arma libres y máximo por objeto.
+  - Objetos prohibidos y grupos vetados de su personaje. Las prohibiciones de tienda que elige cada jugador no impiden recibir regalos.
+  - Sin cuerpo a cuerpo o sin distancia, tier de armas y armas bloqueadas (`lock_current_weapons`).
+  - Bando de evolución: no se da un arma meca a un personaje `mutant_only` ni un objeto mutado a uno `meca_only`.
+- Las ventanas se abren de una en una (`ui/legend_popup.gd`) y, mientras están abiertas, pausan los `FocusEmulator` de la tienda.
 
 Pruebas manuales (partida cooperativa de 2 jugadores):
-- [ ] Cada jugador ve su botón **Regalar** en la tienda.
-- [ ] J1 regala un objeto a J2: se abre la confirmación; solo el mando de J2 puede aceptar o rechazar.
+- [ ] Al pulsar un arma propia en la tienda, el menú muestra Reciclar, **Regalar** y Cancelar; con mando se llega a Regalar.
+- [ ] Al pulsar un objeto propio, el menú muestra Regalar y Cancelar (el personaje y el Tumor no).
+- [ ] Regalar abre la confirmación; solo el mando de J2 puede aceptar o rechazar.
 - [ ] Al aceptar sale la lluvia de corazones, el objeto desaparece de J1, aparece en J2 y las estadísticas de ambos cambian.
-- [ ] Al rechazar, o si J1 lo retira con Atrás, no cambia nada y la ventana de regalos lo indica.
-- [ ] J1 regala un arma a J2 con hueco libre; con J2 sin huecos, el botón aparece desactivado con el motivo.
+- [ ] Al rechazar, o si J1 lo retira con Atrás, no cambia nada y la ventana lo indica.
+- [ ] Con J2 sin huecos de arma, Regalar un arma muestra el motivo en vez de la confirmación.
 - [ ] Un arma mecanizada (Primal Dread) conserva su mecanización al regalarla.
-- [ ] El Tumor y el propio personaje no aparecen en la lista.
-- [ ] Un objeto con máximo (por ejemplo, el Anzuelo con 3) no se puede regalar a quien ya tiene el máximo.
 - [ ] Con «Regalos por jugador en cada tienda» = 1, el segundo regalo se rechaza.
-- [ ] La ventana se maneja con mando (arriba/abajo, aceptar, atrás) y con ratón; al cerrar, el mando vuelve a la tienda.
-- [ ] Al pasar a la siguiente oleada, las armas regaladas aparecen equipadas en quien las recibió.
+- [ ] Tras regalar, el mando de J1 vuelve al botón de reroll y se puede seguir comprando.
+- [ ] Con 3 o 4 jugadores sale «¿A quién se lo regalas?».

@@ -1,6 +1,6 @@
 {
 	"id": "gift_legend",
-	"version": "1.0.0",
+	"version": "2.0.0",
 	"category": "mechanics",
 	"name_key": "CLC_MOD_GIFT_LEGEND_NAME",
 	"description_key": "CLC_MOD_GIFT_LEGEND_DESC",
@@ -12,11 +12,15 @@
 	"conflicts": [],
 	"runtime": "gift_legend.gd",
 	"extensions": [
-		"extensions/ui/menus/shop/coop_shop.gd"
+		"extensions/ui/menus/shop/coop_shop.gd",
+		"extensions/ui/menus/shop/item_popup.gd"
 	],
 	"compatibility": {
 		"status": "untested",
-		"game_versions": ["1.2.X.X", "1.1.15.4"]
+		"game_versions": [
+			"1.2.X.X",
+			"1.1.15.4"
+		]
 	},
 	"origin": {
 		"type": "original",

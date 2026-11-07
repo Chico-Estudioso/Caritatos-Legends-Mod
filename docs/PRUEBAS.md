@@ -80,6 +80,7 @@ Núcleo (cada versión):
 - [ ] Al pasar por un ajuste, su explicación aparece en el recuadro de abajo.
 - [ ] Activar una leyenda desactivada muestra el aviso de reinicio; tras reiniciar aparece como activa.
 - [ ] Durante una partida: pausa → **Caritatopc**; al cerrar con «atrás» se vuelve al menú de pausa sin reanudar la partida.
+- [ ] En cooperativo (teclado + mando): en la pausa → **Caritatopc** se navega con el teclado y con el mando (cruceta y stick), y «atrás» la cierra.
 - [ ] Un `settings.json` con texto basura no impide arrancar y genera la copia `.invalido.bak`.
 
 Cada leyenda tiene su propia lista en `docs/CATALOGO_MODS.md`.

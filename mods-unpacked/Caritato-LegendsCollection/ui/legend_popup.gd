@@ -67,12 +67,18 @@ func _exit_tree() -> void:
 
 # --- Entrada -------------------------------------------------------------------
 
+# En Godot 3, _input se llama en todos los niveles de herencia: las subclases
+# no lo redefinen, sino _handle_input().
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouse:
 		return
 	get_tree().set_input_as_handled()
 	if _closing:
 		return
+	_handle_input(event)
+
+
+func _handle_input(event: InputEvent) -> void:
 	if _is_released(event, "ui_cancel") or _is_released(event, "ui_pause"):
 		_on_cancel()
 	elif _is_pressed(event, "ui_accept"):
@@ -83,19 +89,21 @@ func _input(event: InputEvent) -> void:
 		_on_direction(1)
 
 
-func _is_pressed(event: InputEvent, action: String) -> bool:
+func _is_pressed(event: InputEvent, action: String, who: int = -2) -> bool:
 	if not event.is_pressed() or event.is_echo():
 		return false
-	if player_index >= 0:
-		return Compat.is_player_action(event, action, player_index)
-	return InputMap.has_action(action) and event.is_action(action)
+	return _is_action_of(event, action, player_index if who == -2 else who)
 
 
-func _is_released(event: InputEvent, action: String) -> bool:
+func _is_released(event: InputEvent, action: String, who: int = -2) -> bool:
 	if event.is_pressed():
 		return false
-	if player_index >= 0:
-		return Compat.is_player_action(event, action, player_index)
+	return _is_action_of(event, action, player_index if who == -2 else who)
+
+
+static func _is_action_of(event: InputEvent, action: String, who: int) -> bool:
+	if who >= 0:
+		return Compat.is_player_action(event, action, who)
 	return InputMap.has_action(action) and event.is_action(action)
 
 

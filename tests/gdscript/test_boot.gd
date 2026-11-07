@@ -28,7 +28,8 @@ func _initialize() -> void:
 	run_case("los valores por defecto se guardan en disco", "test_defaults_saved")
 	run_case("los ajustes se sanean y desactivar es inmediato", "test_settings_and_toggle")
 	run_case("la pantalla de configuración se construye y cancela", "test_menu")
-	run_case("la ventana de regalos se construye y se cierra", "test_gift_menu")
+	run_case("la pantalla entiende los mandos de cada jugador", "test_menu_coop_actions")
+	run_case("el regalo empieza desde el menú del objeto", "test_gift_start")
 	run_case("la confirmación del regalo acepta, rechaza y celebra", "test_gift_confirm")
 	run_case("los encargos del Supermercado viajan a la siguiente tienda", "test_supermarket_orders")
 	run_case("las ventanas de las leyendas se abren de una en una", "test_popup_queue")
@@ -144,65 +145,98 @@ func test_menu() -> void:
 	check(not core.is_menu_open(), "la pantalla debería cerrarse")
 
 
-func test_gift_menu() -> void:
+func _fake_gift_item():
+	var fake := GDScript.new()
+	fake.source_code = "extends Resource\nvar my_id := \"item_test\"\nvar name := \"ITEM_TEST\"\nvar tier := 1\nvar icon = null\n"
+	var _reloaded = fake.reload()
+	return fake.new()
+
+
+func test_menu_coop_actions() -> void:
+	# Como en cooperativo: una acción por dispositivo («ui_down_3»).
+	if not InputMap.has_action("ui_down_3"):
+		InputMap.add_action("ui_down_3")
+	var menu = core.open_menu("ingame")
+	var device_action := InputEventAction.new()
+	device_action.action = "ui_down_3"
+	device_action.pressed = true
+	check(menu.forwardable_action(device_action) == "ui_down", "«ui_down_3» debería reenviarse como «ui_down»")
+	var normal := InputEventAction.new()
+	normal.action = "ui_down"
+	normal.pressed = true
+	check(menu.forwardable_action(normal) == "", "la acción normal no se reenvía (la interfaz ya la entiende)")
+	menu._on_cancel_pressed()
+	InputMap.erase_action("ui_down_3")
+
+
+func test_gift_start() -> void:
 	var legend = core.get_runtime("gift_legend")
 	check(legend != null, "falta el runtime del Regalo")
 	if legend == null:
 		return
-	# Sin partida, no hay nada que regalar y ninguna oferta debe fallar.
-	check(legend.get_offers(0).empty(), "sin partida no debería haber ofertas")
-	var before: int = root.get_child_count()
-	legend.open_menu(null, 0, null)
-	check(root.get_child_count() == before + 1, "no se abrió la ventana")
-	var menu = root.get_child(root.get_child_count() - 1)
-	check(menu._nav.size() == 1, "solo debería poder enfocarse «Cerrar»")
-	menu._move_focus(1)
-	menu._press_focused()
-	check(menu.is_queued_for_deletion(), "«Cerrar» debería cerrar la ventana")
+	var item = _fake_gift_item()
+	# Sin partida cooperativa no se ofrece «Regalar» en el menú del objeto.
+	check(not legend.can_offer(item), "fuera del cooperativo no debería ofrecerse")
+	# Si no se puede regalar a nadie, se abre la ventana que lo explica.
+	var offer: Dictionary = legend.make_offer(0, item, false)
+	offer.recipients = [{"index": 1, "reason": "CLC_GIFT_REASON_INACTIVE"}]
+	var picker = load(MOD_PATH + "modules/gift_legend/gift_recipient_popup.gd").new()
+	picker.player_index = 0
+	picker.offer = offer
+	core.show_popup(picker)
+	check(picker._choices.size() == 1, "solo debería poder elegirse «Cerrar»")
+	picker._on_accept()
+	check(picker.result == "cancelled", "«Cerrar» no debería regalar nada")
+	core._show_next_popup()
+
+	# Con destinatarios permitidos, elegir uno devuelve «to:<jugador>».
+	offer.recipients = [{"index": 1, "reason": ""}, {"index": 2, "reason": "CLC_GIFT_REASON_NO_SLOT"}, {"index": 3, "reason": ""}]
+	picker = load(MOD_PATH + "modules/gift_legend/gift_recipient_popup.gd").new()
+	picker.player_index = 0
+	picker.offer = offer
+	core.show_popup(picker)
+	check(picker._choices.size() == 3, "dos jugadores elegibles y «Cerrar»")
+	picker._on_direction(1)
+	picker._on_accept()
+	check(picker.result == "to:3", "debería elegirse el jugador 4 (%s)" % picker.result)
+	core._show_next_popup()
 
 
 func test_gift_confirm() -> void:
 	var legend = core.get_runtime("gift_legend")
-	var script = load(MOD_PATH + "modules/gift_legend/gift_confirm.gd")
-	var fake := GDScript.new()
-	fake.source_code = "extends Resource\nvar my_id := \"item_test\"\nvar name := \"ITEM_TEST\"\nvar tier := 1\nvar icon = null\n"
-	var _reloaded = fake.reload()
-	var offer := {"data": fake.new(), "is_weapon": false, "label": "Objeto de prueba", "tier": 1, "tags": ["CLC_GIFT_TAG_CURSED"], "recipients": []}
-	var results := []
+	var offer := {"data": _fake_gift_item(), "is_weapon": false, "label": "Objeto de prueba", "tier": 1, "tags": ["CLC_GIFT_TAG_CURSED"], "recipients": []}
 
 	# Rechazar desde la ventana.
-	var confirm = _open_confirm(script, legend, offer, results)
+	var confirm = _open_confirm(legend, offer)
 	check(confirm._buttons.size() == 2, "deberían verse «Rechazar» y «Aceptar»")
 	check(confirm._focus_index == confirm.BUTTON_ACCEPT, "el foco debería empezar en «Aceptar»")
 	confirm._activate(confirm.BUTTON_DECLINE)
-	check(results == ["declined"], "rechazar debería avisar a la ventana de regalos")
+	check(confirm.result == "declined", "rechazar debería terminar como «declined»")
+	check(confirm._buttons[1].disabled, "tras responder no deberían quedar botones")
+	confirm.close_popup(confirm.result)
+	core._show_next_popup()
 
 	# Aceptar sin partida cooperativa: no se regala y se explica el motivo.
-	confirm = _open_confirm(script, legend, offer, results)
+	confirm = _open_confirm(legend, offer)
 	confirm.accept()
-	check(confirm._result == "CLC_GIFT_REASON_INACTIVE", "sin partida el regalo no debería hacerse (%s)" % confirm._result)
-	check(confirm._buttons_box.modulate.a == 0.0 and confirm._buttons[1].disabled, "tras responder no deberían quedar botones")
-	confirm._finish(confirm._result)
-	check(results.back() == "CLC_GIFT_REASON_INACTIVE", "el motivo debería llegar a la ventana de regalos")
+	check(confirm.result == "CLC_GIFT_REASON_INACTIVE", "sin partida el regalo no debería hacerse (%s)" % confirm.result)
+	confirm.close_popup(confirm.result)
+	core._show_next_popup()
 
-	# La celebración oculta los botones y termina como aceptado.
-	confirm = _open_confirm(script, legend, offer, results)
+	# La celebración termina como aceptado.
+	confirm = _open_confirm(legend, offer)
 	confirm.celebrate()
 	check(confirm._title.text == tr("CLC_GIFT_RECEIVED_TITLE"), "falta el título de la celebración")
-	confirm._finish(confirm._result)
-	check(results.back() == "accepted", "la celebración debería terminar como aceptado")
+	check(confirm.result == "accepted", "la celebración debería terminar como aceptado")
+	confirm.close_popup(confirm.result)
+	core._show_next_popup()
 
 
-func _open_confirm(script, legend, offer: Dictionary, results: Array):
-	var confirm = script.new()
-	root.add_child(confirm)
-	var _err = confirm.connect("finished", self, "_on_confirm_result", [results])
-	confirm.open(legend, null, 0, 1, offer)
+func _open_confirm(legend, offer: Dictionary):
+	var confirm = load(MOD_PATH + "modules/gift_legend/gift_confirm.gd").new()
+	confirm.setup(legend, null, 0, 1, offer)
+	core.show_popup(confirm)
 	return confirm
-
-
-func _on_confirm_result(result: String, results: Array) -> void:
-	results.append(result)
 
 
 func test_disabled_not_loaded() -> void:
