@@ -29,6 +29,8 @@ func _ready() -> void:
 			relocked = true
 	if relocked:
 		_update_visual_locks()
+	# La caja del encargo sale un momento después de que se vea la tienda.
+	var _err = get_tree().create_timer(0.4).connect("timeout", self, "_clc_super_show_arrivals")
 	# Versión inicial: solo en la tienda de un jugador.
 	if RunData.is_coop_run:
 		return
@@ -36,9 +38,20 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
+	_CLC_SUPER_API.clear_popups()
 	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
 	if legend != null:
 		legend.on_shop_closed()
+
+
+func _clc_super_show_arrivals() -> void:
+	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
+	if legend == null or not is_inside_tree():
+		return
+	for player_index in RunData.get_player_count():
+		var popup = legend.make_arrival_popup(_shop_items[player_index], player_index)
+		if popup != null:
+			_CLC_SUPER_API.show_popup(popup)
 
 
 func fill_shop_items(player_locked_items: Array, player_index: int, just_entered_shop: bool = false) -> void:

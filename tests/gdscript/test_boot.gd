@@ -31,6 +31,8 @@ func _initialize() -> void:
 	run_case("la ventana de regalos se construye y se cierra", "test_gift_menu")
 	run_case("la confirmación del regalo acepta, rechaza y celebra", "test_gift_confirm")
 	run_case("los encargos del Supermercado viajan a la siguiente tienda", "test_supermarket_orders")
+	run_case("las ventanas de las leyendas se abren de una en una", "test_popup_queue")
+	run_case("la caja del encargo se abre a toques", "test_order_box")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -264,6 +266,50 @@ func test_supermarket_orders() -> void:
 		if entry[0] == ordered:
 			kept_order = true
 	check(kept_order, "el encargo pagado debería conservarse")
+	core.reset_defaults()
+
+
+func test_popup_queue() -> void:
+	var popup_script = load(MOD_PATH + "ui/legend_popup.gd")
+	var first = popup_script.new()
+	var second = popup_script.new()
+	core.show_popup(first)
+	core.show_popup(second)
+	check(first.is_inside_tree(), "la primera ventana debería abrirse")
+	check(not second.is_inside_tree(), "la segunda debería esperar en cola")
+	first.close_popup("ok")
+	core._show_next_popup()
+	check(second.is_inside_tree(), "al cerrar la primera debería abrirse la segunda")
+	second.close_popup("ok")
+	core._show_next_popup()
+	check(not core.is_popup_open(), "no deberían quedar ventanas abiertas")
+
+
+func test_order_box() -> void:
+	core.set_module_enabled("supermarket_legend", true)
+	var legend = core.get_runtime("supermarket_legend")
+	var fake := GDScript.new()
+	fake.source_code = "extends Resource\nvar my_id := \"item_box\"\nvar name := \"ITEM_BOX\"\nvar tier := 2\nvar icon = null\n"
+	var _reloaded = fake.reload()
+	var arrived = fake.new()
+	legend._arriving = {0: ["item_box"]}
+	var popup = legend.make_arrival_popup([[arrived, 1]], 0)
+	check(popup != null, "debería crearse la caja del encargo")
+	if popup == null:
+		return
+	check(popup.items.size() == 1 and popup.items[0].tier == 2, "la caja debería llevar el encargo")
+	core.show_popup(popup)
+	for _i in 2:
+		popup._on_accept()
+	check(not popup.is_open(), "con dos toques la caja sigue cerrada")
+	popup._on_accept()
+	check(popup.is_open(), "al tercer toque la caja se abre")
+	popup._on_accept()
+	check(popup.is_queued_for_deletion(), "con la caja abierta, aceptar la cierra")
+	core._show_next_popup()
+	var _stored = core.set_setting("supermarket_legend", "unboxing", false)
+	check(legend.make_arrival_popup([[arrived, 1]], 0) == null, "con el ajuste apagado no hay caja")
+	legend._arriving = {}
 	core.reset_defaults()
 
 

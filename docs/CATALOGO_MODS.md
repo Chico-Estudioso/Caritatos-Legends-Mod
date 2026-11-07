@@ -112,6 +112,7 @@ Diseño:
   - Si al entrar en la siguiente tienda hay más bloqueados que huecos, se descartan antes los que no son encargos.
   - Los encargos que llegan se vuelven a bloquear aunque el jugador tenga desactivado «mantener bloqueados».
 - El precio mostrado sale de `ItemService.get_value()`, así que incluye la Leyenda del Mercader si está activa.
+- **Rasgo propio: la caja del encargo.** En la tienda a la que llega un encargo aparece «¡Tu encargo ha llegado!»: una caja de cartón que tiembla con cada toque (Aceptar o clic) y al tercero se abre con confeti y muestra el artículo. Es solo visual; ajuste «Abrir la caja del encargo».
 - Limitaciones conocidas:
   - Si se sale al menú en mitad de una tienda y se continúa la partida, se puede volver a encargar en esa tienda (pagando de nuevo el recargo).
   - En ese caso, el encargo ya hecho podría aparecer al rerolear esa misma tienda.
@@ -128,6 +129,8 @@ Pruebas manuales (Peligro 2 o más):
 - [ ] Un personaje sin armas cuerpo a cuerpo no ve armas cuerpo a cuerpo; los objetos prohibidos no aparecen.
 - [ ] «Atrás» cierra el catálogo sin abrir la pausa.
 - [ ] Guardar y salir tras encargar y continuar: el encargo sigue llegando a la siguiente tienda.
+- [ ] Al llegar el encargo aparece la caja; tiembla con cada toque y a los tres se abre con confeti. Con mando, teclado y ratón.
+- [ ] Con «Abrir la caja del encargo» apagado no aparece la caja.
 
 ### La Leyenda del Regalo (`gift_legend`)
 

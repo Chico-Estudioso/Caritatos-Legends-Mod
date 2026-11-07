@@ -1,7 +1,8 @@
 extends Control
 
 # Corazones pequeños que suben despacio alrededor del centro y, con burst(),
-# una explosión de corazones. Se dibuja por código; no usa partículas del motor.
+# una explosión. Con shape = "confetti" son papelitos que caen girando. Se
+# dibuja por código; no usa partículas del motor.
 
 const Heart = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/heart.gd")
 
@@ -9,6 +10,9 @@ const TINTS := [Color("ff7eb6"), Color("ff5c8a"), Color("ffd1e8"), Color("ffffff
 
 var ambient := true
 var spread := Vector2(220, 60)
+var shape := "heart"
+var tints: Array = TINTS
+var gravity := 0.0
 var _particles := []
 var _spawn_timer := 0.0
 var _rng := RandomNumberGenerator.new()
@@ -35,7 +39,9 @@ func burst(count: int = 40) -> void:
 			"life": 0.0,
 			"max": _rng.randf_range(0.8, 1.4),
 			"size": _rng.randf_range(9.0, 20.0),
-			"color": TINTS[_rng.randi() % TINTS.size()],
+			"color": tints[_rng.randi() % tints.size()],
+			"rot": _rng.randf() * TAU,
+			"spin": _rng.randf_range(-8.0, 8.0),
 		})
 
 
@@ -52,7 +58,9 @@ func _process(delta: float) -> void:
 				"life": 0.0,
 				"max": _rng.randf_range(1.6, 2.4),
 				"size": _rng.randf_range(6.0, 12.0),
-				"color": TINTS[_rng.randi() % TINTS.size()],
+				"color": tints[_rng.randi() % tints.size()],
+				"rot": 0.0,
+				"spin": 0.0,
 			})
 
 	var alive := []
@@ -62,6 +70,8 @@ func _process(delta: float) -> void:
 			continue
 		particle.pos += particle.vel * delta
 		particle.vel *= particle.drag
+		particle.vel.y += gravity * delta
+		particle.rot += particle.spin * delta
 		alive.append(particle)
 	_particles = alive
 	update()
@@ -73,4 +83,14 @@ func _draw() -> void:
 		var color: Color = particle.color
 		color.a = min(1.0, particle.life * 8.0) * (1.0 - t * t) * 0.9
 		var size: float = particle.size * (1.0 - 0.35 * t)
-		draw_colored_polygon(Heart.heart_points(particle.pos, size, 16), color, PoolVector2Array(), null, null, true)
+		if shape == "confetti":
+			draw_colored_polygon(_confetti_points(particle.pos, size, particle.rot), color, PoolVector2Array(), null, null, true)
+		else:
+			draw_colored_polygon(Heart.heart_points(particle.pos, size, 16), color, PoolVector2Array(), null, null, true)
+
+
+static func _confetti_points(center: Vector2, size: float, rotation: float) -> PoolVector2Array:
+	var points := PoolVector2Array()
+	for corner in [Vector2(-1, -0.45), Vector2(1, -0.45), Vector2(1, 0.45), Vector2(-1, 0.45)]:
+		points.append(center + (corner * size * 0.6).rotated(rotation))
+	return points

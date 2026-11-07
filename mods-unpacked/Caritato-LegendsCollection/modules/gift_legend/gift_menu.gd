@@ -11,9 +11,8 @@ extends CanvasLayer
 const Compat = preload("res://mods-unpacked/Caritato-LegendsCollection/core/compat.gd")
 const UiStyle = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/ui_style.gd")
 const Heart = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/widgets/heart.gd")
+const FocusGuard = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/focus_guard.gd")
 const CONFIRM_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/gift_legend/gift_confirm.gd"
-
-const FOCUS_EMULATOR_SCRIPT_SUFFIX := "focus_emulator.gd"
 const ICON_SIZE := Vector2(68, 68)
 
 var legend = null
@@ -42,13 +41,13 @@ func open(p_legend, p_shop: Node, p_giver: int, return_focus: Control = null) ->
 	shop = p_shop
 	giver = p_giver
 	_return_focus = return_focus
-	_pause_focus_emulators()
+	_paused_emulators = FocusGuard.pause(get_tree())
 	_build()
 	_rebuild_rows()
 
 
 func close() -> void:
-	_resume_focus_emulators()
+	FocusGuard.resume(_paused_emulators)
 	if _return_focus != null and is_instance_valid(_return_focus) and _return_focus.is_visible_in_tree():
 		if Compat.is_coop_run():
 			Compat.focus_player_control(_return_focus, giver)
@@ -58,7 +57,7 @@ func close() -> void:
 
 
 func _exit_tree() -> void:
-	_resume_focus_emulators()
+	FocusGuard.resume(_paused_emulators)
 	if _confirm != null and is_instance_valid(_confirm):
 		_confirm.queue_free()
 
@@ -109,41 +108,6 @@ func _press_focused() -> void:
 	var control = _nav[_nav_index]
 	if is_instance_valid(control) and control is BaseButton and not control.disabled:
 		control.emit_signal("pressed")
-
-
-# --- Emuladores de foco del juego -------------------------------------------------
-
-func _pause_focus_emulators() -> void:
-	var scene = get_tree().current_scene
-	if scene == null:
-		return
-	var pending := [scene]
-	while not pending.empty():
-		var node: Node = pending.pop_back()
-		var script = node.get_script()
-		if script != null and str(script.resource_path).ends_with(FOCUS_EMULATOR_SCRIPT_SUFFIX):
-			# Igual que hace el juego al pausar: se ocultan y dejan de leer la entrada.
-			_paused_emulators.append({
-				"node": node,
-				"input": node.is_processing_input(),
-				"visible": node.visible if "visible" in node else true,
-			})
-			node.set_process_input(false)
-			if "visible" in node:
-				node.visible = false
-		for child in node.get_children():
-			pending.append(child)
-
-
-func _resume_focus_emulators() -> void:
-	for entry in _paused_emulators:
-		var node = entry.node
-		if not is_instance_valid(node):
-			continue
-		node.set_process_input(entry.input)
-		if "visible" in node:
-			node.visible = entry.visible
-	_paused_emulators.clear()
 
 
 # --- Construcción -------------------------------------------------------------

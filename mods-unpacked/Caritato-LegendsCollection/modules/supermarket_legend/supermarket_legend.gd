@@ -18,6 +18,7 @@ extends Node
 const Compat = preload("res://mods-unpacked/Caritato-LegendsCollection/core/compat.gd")
 const SupermarketRules = preload("res://mods-unpacked/Caritato-LegendsCollection/modules/supermarket_legend/supermarket_rules.gd")
 const MENU_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/supermarket_legend/supermarket_menu.gd"
+const BOX_POPUP_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/supermarket_legend/order_box_popup.gd"
 const LOG_NAME := "Caritato-LegendsCollection:Supermarket"
 
 var core = null
@@ -131,6 +132,35 @@ func relock_arrivals(shop_items: Array, player_index: int) -> bool:
 
 func arrivals(player_index: int) -> int:
 	return _arriving.get(player_index, []).size()
+
+
+# Artículos de la tienda que son encargos recién llegados: [{data, label, tier}].
+func arrived_entries(shop_items: Array, player_index: int) -> Array:
+	var remaining: Array = _arriving.get(player_index, []).duplicate()
+	var result := []
+	for entry in shop_items:
+		var item = entry[0] if entry is Array and not entry.empty() else null
+		if item == null or not remaining.has(item.my_id):
+			continue
+		remaining.erase(item.my_id)
+		result.append({"data": item, "label": tr(item.name), "tier": int(item.tier) if "tier" in item else 0})
+	return result
+
+
+# Ventana «¡Tu encargo ha llegado!» (null si está desactivada o no hay nada).
+func make_arrival_popup(shop_items: Array, player_index: int) -> Node:
+	if not is_active() or not bool(get_setting("unboxing", true)):
+		return null
+	var entries := arrived_entries(shop_items, player_index)
+	if entries.empty():
+		return null
+	var popup_script = load(BOX_POPUP_PATH)
+	if popup_script == null:
+		return null
+	var popup = popup_script.new()
+	popup.items = entries
+	popup.player_index = player_index if Compat.is_coop_run() else -1
+	return popup
 
 
 # --- Encargos ------------------------------------------------------------------
