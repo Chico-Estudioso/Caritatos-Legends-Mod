@@ -510,3 +510,85 @@ static func _singleton(singleton_name: String) -> Object:
 	if loop == null or not loop is SceneTree:
 		return null
 	return loop.root.get_node_or_null(singleton_name)
+
+
+# --- Cajas -------------------------------------------------------------------------
+
+# Hash de una clave de Keys (p. ej. "consumable_item_box_hash"); 0 si no existe.
+static func key_hash(key_name: String) -> int:
+	var keys = _singleton("Keys")
+	if keys == null or not key_name in keys:
+		return 0
+	return int(keys.get(key_name))
+
+
+# Consumible del juego por su clave de Keys (caja normal, caja legendaria…).
+static func get_consumable_data(key_name: String):
+	var item_service = _singleton("ItemService")
+	var hash_value := key_hash(key_name)
+	if item_service == null or hash_value == 0 or not "consumables" in item_service:
+		return null
+	return item_service.get_element(item_service.consumables, hash_value)
+
+
+# --- Fusión de personajes --------------------------------------------------------
+
+# Personajes del juego (incluidos los de los DLC activos). Solo durante la
+# partida o en menús: en la 1.2 la lista se construye la primera vez.
+static func get_characters() -> Array:
+	var item_service = _singleton("ItemService")
+	if item_service == null or not "characters" in item_service:
+		return []
+	var characters = item_service.characters
+	return characters if characters is Array else []
+
+
+static func is_character_unlocked(character) -> bool:
+	var progress = _singleton("ProgressData")
+	if progress == null or character == null or not "characters_unlocked" in progress:
+		return true
+	return progress.characters_unlocked.has(character.my_id_hash)
+
+
+static func get_player_character(player_index: int):
+	var run_data = _singleton("RunData")
+	if run_data == null:
+		return null
+	if run_data.has_method("get_player_character"):
+		return run_data.get_player_character(player_index)
+	if "players_data" in run_data and player_index < run_data.players_data.size():
+		return run_data.players_data[player_index].current_character
+	return null
+
+
+# Aplica todos los efectos de un objeto o personaje al jugador, como hace el
+# juego con las mejoras y los objetos.
+static func apply_item_effects(item, player_index: int) -> bool:
+	var run_data = _singleton("RunData")
+	if run_data == null or item == null or not run_data.has_method("apply_item_effects"):
+		return false
+	run_data.apply_item_effects(item, player_index)
+	return true
+
+
+# Suma un valor a un efecto del jugador por su nombre ("items_price", "xp_gain"…).
+static func add_player_effect(key_name: String, value: int, player_index: int) -> bool:
+	var run_data = _singleton("RunData")
+	var hash_value := key_hash(key_name + "_hash")
+	if run_data == null or hash_value == 0 or not run_data.has_method("get_player_effects"):
+		return false
+	var effects = run_data.get_player_effects(player_index)
+	if not effects is Dictionary or not effects.has(hash_value):
+		return false
+	effects[hash_value] += value
+	var utils = _singleton("Utils")
+	if utils != null and utils.has_method("reset_stat_cache"):
+		utils.reset_stat_cache(player_index)
+	return true
+
+
+# Texto de los efectos de un objeto o personaje (con colores BBCode del juego).
+static func item_effects_text(item, player_index: int) -> String:
+	if item == null or not item.has_method("get_effects_text"):
+		return ""
+	return str(item.get_effects_text(player_index))

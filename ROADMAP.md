@@ -44,7 +44,10 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] Rasgo interactivo distintivo para cada leyenda: Regalo (confirmación con choque de puños), Supermercado (caja del encargo), Anzuelo («¡Pica!»), Mercader (regateo) y Cosecha Eterna (cosecha dorada).
 - [x] La Leyenda del Regalo (cooperativo): regalar objetos y armas.
 - [ ] Prueba manual de La Leyenda del Regalo en cooperativo.
-- [ ] Mejora de cajas a legendaria (idea de Mauro: a las 3 cajas, luego cada 6 y cada 9) — pendiente de valorar.
+- [x] La Leyenda de las Cajas: fusionar cajas en una legendaria (3, luego 6 y 9; configurable).
+- [x] La Leyenda de la Fusión (recreación de GMO): fusionarse con otro personaje al empezar, con penalizaciones.
+- [ ] Prueba manual de las Cajas y la Fusión.
+- [ ] Editor de personajes y objetos («Tus tatos»): decidir con Mauro entre BroEditor (mojimoon, ya existe y es compatible con la 1.2) o un editor propio.
 - [ ] Siguientes candidatas: Rainbow Crate (Apache-2.0), Second Chance (MIT), contador de rerolls, medidor de daño.
 - [ ] Una leyenda por PR, con procedencia y pruebas.
 

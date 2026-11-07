@@ -70,6 +70,8 @@ Para probar en Steam sin publicar, el ZIP se copia en la carpeta de un objeto su
 | Menú del arma u objeto en la tienda | `ItemPopup` (`_combine_button`, `_discard_button`, `_cancel_button`, `should_show_buttons()`, `_update_button_visibilities()`, `_on_CancelButton_pressed()`, `buttons_enabled`, `player_index`, `_item_data`, `_focused`); `CoopItemPopup` hereda de él y es el script que se extiende (ModLoader solo recarga las clases hijas de las extensiones instaladas al arrancar, no de las que se instalan en `_ready`); `RunData.can_combine()` solo admite armas | `ui/menus/shop/item_popup.gd`, `ui/menus/shop/coop_item_popup.gd`, `ui/menus/global/popup_manager.gd` | Regalo |
 | Entrada por jugador en cooperativo | Acciones por dispositivo `ui_accept_<n>`, `ui_cancel_<n>`…, `CoopService.get_remapped_player_device(i)`, `is_player_using_gamepad(i)`, `get_player_color(i)` | `singletons/coop_service.gd`, `ui/menus/global/focus_emulator.gd` | Regalo |
 | Foco por jugador en cooperativo | Nodos `FocusEmulator1..4` de la escena (se ocultan y dejan de leer la entrada mientras la ventana está abierta, como hace el juego al pausar), `Utils.focus_player_control()` | `ui/menus/global/focus_emulator.gd`, `singletons/utils.gd` | Regalo |
+| Cajas por abrir al terminar la oleada | `Main._on_EndWaveTimer_timeout()`, `_is_run_lost`, `_is_run_won`, `_is_wave_failed`, `_consumables_to_process[i]` (lista de `UpgradesUI.ConsumableToProcess` con `consumable_data` y `player_index`), `_things_to_process_player_containers[i].consumables.add_element()/remove_element()`, `ItemService.consumables` + `get_element()`, `Keys.consumable_item_box_hash`, `Keys.consumable_legendary_item_box_hash` (confirmadas en mods de la 1.2: BroEditor, NewContentLoader) | `main.gd`, `ui/menus/upgrades/upgrades_ui.gd` | Cajas |
+| Fusión de personajes | `RunData.apply_item_effects(item, i)`, `RunData.get_player_character(i)`, `RunData.get_player_effects(i)[hash] += valor`, `Utils.reset_stat_cache(i)`, `ItemService.characters`, `ProgressData.characters_unlocked`, `ItemParentData.get_effects_text(i)`, `Player.update_player_stats(reset)`, `EffectBehaviorService.update_active_effect_behaviors()`, `Main._players`, efectos `xp_gain`, `items_price`, `number_of_enemies`, `enemy_speed` | `singletons/run_data.gd`, `main.gd`, `entities/units/player/player.gd` | Fusión |
 | Tema y fuentes de la interfaz | `res://resources/themes/base_theme.tres`, `res://resources/fonts/actual/base/*.tres` (opcionales) | recursos del juego | 0.1.0 |
 
 `tools/game_scripts.txt` contiene las rutas de scripts del juego que existen en la versión objetivo; la validación falla si una extensión apunta a otra ruta. Para regenerarlo tras una actualización, con una copia local descompilada del juego (fuera del repositorio):
@@ -86,7 +88,9 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 | La Leyenda de la Cosecha Eterna | 1.1.15.4 | Verificado en código; no probado en el juego |
 | La Leyenda del Mercader | 1.1.15.4 | Verificado en código; no probado en el juego |
 | La Leyenda del Supermercado | 1.1.15.4 | Verificado en código; no probado en el juego; solo tienda de un jugador |
-| La Leyenda del Regalo | 1.1.15.4; API de transferencia confirmada en 1.2 | Verificado en código; no probado en el juego |
+| La Leyenda del Regalo | 1.2.0.1 | Probado en el juego por Mauro (cooperativo) |
+| La Leyenda de las Cajas | 1.1.15.4; API confirmada en mods de la 1.2 | Verificado en código; no probado en el juego |
+| La Leyenda de la Fusión | 1.1.15.4; API confirmada en mods de la 1.2 | Verificado en código; no probado en el juego |
 
 ## Otros mods
 

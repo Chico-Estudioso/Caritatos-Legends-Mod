@@ -37,6 +37,8 @@ func _initialize() -> void:
 	run_case("el minijuego «¡Pica!» premia pescar a tiempo", "test_fishing_popup")
 	run_case("el regateo rebaja los artículos de la tienda", "test_haggle")
 	run_case("la cosecha dorada solo sale en el modo infinito", "test_golden_harvest")
+	run_case("la fusión de cajas se ofrece y se celebra", "test_crates_popup")
+	run_case("la fusión de bros elige compañero o ninguno", "test_fusion_popup")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -450,3 +452,67 @@ func _remove_config() -> void:
 	var dir := Directory.new()
 	if dir.file_exists(CONFIG_PATH):
 		var _err = dir.remove(CONFIG_PATH)
+
+
+func test_crates_popup() -> void:
+	var legend = core.get_runtime("crates_legend")
+	check(legend != null, "falta el runtime de las Cajas")
+	if legend == null:
+		return
+	legend.on_wave_end(1)
+	check(legend.cost_for(0) == 3, "la primera fusión pide 3 cajas")
+	check(legend.make_popup(0, 2) == null, "con 2 cajas no se ofrece")
+	var popup = legend.make_popup(0, 4)
+	check(popup != null, "con 4 cajas se ofrece la fusión")
+	if popup == null:
+		return
+	check(popup.cost == 3 and popup.next_cost == 6, "la ventana sabe lo que cuesta esta y la siguiente")
+	core.show_popup(popup)
+	popup.fuse()
+	check(popup.is_closing() and popup.result == "fused", "fusionar debería dar «fused»")
+	popup.close_popup(popup.result)
+	core._show_next_popup()
+	legend.register_fusion(0, 3)
+	check(legend.cost_for(0) == 6, "la siguiente fusión pide 6")
+	var later = legend.make_popup(0, 6)
+	check(later != null, "con 6 cajas se vuelve a ofrecer")
+	if later != null:
+		core.show_popup(later)
+		later.decline()
+		check(later.result == "declined", "«Ahora no» debería dar «declined»")
+		core._show_next_popup()
+	legend.on_wave_end(1)
+	check(legend.cost_for(0) == 3, "una partida nueva vuelve a empezar")
+
+
+func test_fusion_popup() -> void:
+	var legend = core.get_runtime("fusion_legend")
+	check(legend != null, "falta el runtime de la Fusión")
+	if legend == null:
+		return
+	# Viene apagada por defecto (y test_settings_and_toggle restaura los valores).
+	core.set_module_enabled("fusion_legend", true)
+	check(legend.should_offer(1), "se ofrece al empezar la partida")
+	check(not legend.should_offer(2), "no se ofrece en otras oleadas")
+	check(legend.penalties().size() == 4, "cuatro penalizaciones por defecto")
+	# Sin juego no hay personajes: no hay ventana.
+	check(legend.make_popup(0) == null, "sin personajes no se ofrece nada")
+	var popup = load(MOD_PATH + "modules/fusion_legend/fusion_popup.gd").new()
+	popup.partners = [
+		{"id": "a", "name": "Uno", "icon": null, "text": "+5 vida"},
+		{"id": "b", "name": "Dos", "icon": null, "text": "+10 % daño"},
+	]
+	popup.penalties = legend.penalties()
+	core.show_popup(popup)
+	popup._move(1, 0)
+	check(popup.selected() == 1, "a la derecha elige el segundo")
+	popup.fuse()
+	check(popup.result == "partner:1", "fusionar devuelve el compañero elegido")
+	popup.close_popup(popup.result)
+	core._show_next_popup()
+	var empty = load(MOD_PATH + "modules/fusion_legend/fusion_popup.gd").new()
+	empty.partners = [{"id": "a", "name": "Uno", "icon": null, "text": ""}]
+	core.show_popup(empty)
+	empty.choose_none()
+	check(empty.result == "none", "«Sin fusión» devuelve «none»")
+	core._show_next_popup()

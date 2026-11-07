@@ -1,0 +1,81 @@
+{
+	"id": "fusion_legend",
+	"version": "1.0.0",
+	"category": "mechanics",
+	"name_key": "CLC_MOD_FUSION_LEGEND_NAME",
+	"description_key": "CLC_MOD_FUSION_LEGEND_DESC",
+	"short_name_key": "CLC_MOD_FUSION_LEGEND_SHORT",
+	"accent": "#ff8fd8",
+	"warning_key": "CLC_FUSION_WARNING",
+	"enabled_by_default": false,
+	"requires_dlc": [],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "fusion_legend.gd",
+	"extensions": [
+		"extensions/main.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": [
+			"1.2.X.X",
+			"1.1.15.4"
+		]
+	},
+	"origin": {
+		"type": "independent_recreation",
+		"inspired_by": [
+			"Genetically Modified Overkill (Flabort, github.com/Flabort/Genetically-Engineered-Overkill, sin licencia; hecho para Brotato 0.6)"
+		],
+		"notes": "Código propio. No se ha copiado código ni recursos del mod original. Las penalizaciones por defecto siguen las de GMO (experiencia -10 %, precios +20 %, enemigos +20 %, velocidad +10 %)."
+	},
+	"settings": [
+		{
+			"key": "penalty_xp",
+			"type": "int",
+			"default": 10,
+			"min": 0,
+			"max": 50,
+			"step": 5,
+			"suffix": " %",
+			"label_key": "CLC_FUSION_PENALTY_XP"
+		},
+		{
+			"key": "penalty_price",
+			"type": "int",
+			"default": 20,
+			"min": 0,
+			"max": 100,
+			"step": 5,
+			"suffix": " %",
+			"label_key": "CLC_FUSION_PENALTY_PRICE"
+		},
+		{
+			"key": "penalty_enemies",
+			"type": "int",
+			"default": 20,
+			"min": 0,
+			"max": 100,
+			"step": 5,
+			"suffix": " %",
+			"label_key": "CLC_FUSION_PENALTY_ENEMIES"
+		},
+		{
+			"key": "penalty_speed",
+			"type": "int",
+			"default": 10,
+			"min": 0,
+			"max": 50,
+			"step": 5,
+			"suffix": " %",
+			"label_key": "CLC_FUSION_PENALTY_SPEED"
+		},
+		{
+			"key": "allow_locked",
+			"type": "bool",
+			"default": false,
+			"label_key": "CLC_FUSION_ALLOW_LOCKED",
+			"help_key": "CLC_FUSION_ALLOW_LOCKED_HELP"
+		}
+	]
+}

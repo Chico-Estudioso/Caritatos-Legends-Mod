@@ -34,6 +34,8 @@ Se documentan al incorporar cada leyenda, con enlace al original y la confirmaci
 | La Leyenda del Mercader | SIFD's Mod | SIFD | Steam Workshop | La idea de precios y rerolls sin inflación por oleada | No |
 | La Leyenda del Supermercado | Supermarket (超市) | duyang97 | Steam Workshop 2993532272 (retirado) | La idea de un botón en la tienda para elegir artículos | No |
 | La Leyenda del Regalo | Idea de Mauro (leyenda original) | — | — | QuickEquip (Oudstand) sirvió para confirmar la API de añadir y quitar objetos y armas en Brotato 1.2 | No |
+| La Leyenda de las Cajas | Idea de Mauro (leyenda original) | — | — | BroEditor (mojimoon) y NewContentLoader (Yoko) sirvieron para confirmar la API de las cajas por abrir en la 1.2 | No (BroEditor sin licencia; NewContentLoader con licencia restringida: solo se leyó) |
+| La Leyenda de la Fusión | Genetically Modified Overkill (GMO) | Flabort | https://github.com/Flabort/Genetically-Engineered-Overkill | La idea de jugar con dos personajes con penalizaciones y sus valores por defecto | No (repositorio sin licencia) |
 | La Leyenda de la Cosecha Eterna | Stronger Harvesting | CommanderAstern | https://github.com/CommanderAstern/brotato-stronger-harvesting | Referencia de la opción de crecer en infinito | No (repositorio sin licencia) |
 
 ## Herramientas y dependencias del juego
