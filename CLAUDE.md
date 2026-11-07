@@ -48,6 +48,8 @@ Si la documentación contradice el código, no elijas en silencio: corrige la qu
 - Brotato usa Godot 3 (GDScript 3) y ModLoader 6.3.0. No uses sintaxis de Godot 4.
 - En Godot 3, `_init`, `_ready`, `_enter_tree`, `_exit_tree`, `_process`, `_input`… se ejecutan en todos los niveles de herencia automáticamente: **no llames a `._ready()`** en una extensión. Para métodos normales sí se usa `.metodo()` para llamar al original.
 - Verifica nombres de funciones y rutas contra el código real del juego (ver `docs/COMPATIBILIDAD.md`). No inventes APIs.
+- Brotato 1.2: las extensiones de autoloads (`extensions/singletons/...`) se instalan en `_init`; todas las demás en `_ready` (lo hace el núcleo). Nunca consultes `ItemService.items/weapons/characters` al arrancar (caché perezosa de la 1.2).
+- Cada extensión replica la ruta del script que extiende: `modules/<id>/extensions/ui/menus/shop/base_shop.gd` extiende `res://ui/menus/shop/base_shop.gd`.
 - Las llamadas a la API del juego compartidas van en `core/compat.gd`.
 - Una leyenda desactivada no instala extensiones ni crea su runtime. Si se desactiva en caliente, sus extensiones deben comportarse como el juego base.
 - Las extensiones deben ser finas: comprueban si la leyenda está activa y delegan en su runtime. Sus constantes, variables y funciones auxiliares llevan prefijo `_clc_<leyenda>_` / `_CLC_<LEYENDA>_` (un miembro repetido en la cadena de herencia rompe el script).

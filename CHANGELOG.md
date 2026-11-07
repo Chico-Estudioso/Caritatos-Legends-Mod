@@ -4,6 +4,15 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 
 ## [Sin publicar]
 
+### Corregido
+- **Compatibilidad con Brotato 1.2**: las extensiones de scripts de escenas (tienda, `main.gd`, menús) se instalan en `_ready` y no en `_init`. En 1.2.0.1, cargar la tienda durante `_init` rompía su compilación y el juego desactivaba todos los mods en el siguiente arranque.
+- El Anzuelo ya no consulta la lista de objetos al arrancar (en 1.2 se quedaría en caché sin los objetos de los DLC).
+- La comprobación de DLC en la partida usa los «conjuntos de objetos» de la 1.2 (`RunData.active_update_data_ids`).
+
+### Cambiado
+- `compatible_game_version`: 1.2.X.X y 1.1.15.4.
+- Validación: las extensiones deben replicar la ruta del script que extienden.
+
 ## [0.2.0] - 2026-11-06
 
 Versión candidata: completa en pruebas automáticas, pendiente de probar dentro de Brotato antes de publicarla.

@@ -115,6 +115,21 @@ class ValidateTests(unittest.TestCase):
         self.assertIn("'LegendsAPI' debe empezar por _clc_", output)
         self.assertNotIn("'_clc_prefix_ok'", output)
 
+    def test_extension_path_must_mirror_target(self) -> None:
+        module_dir = self.mod_dir / "modules" / "mirror_legend"
+        (module_dir / "extensions" / "ui").mkdir(parents=True)
+        (module_dir / "extensions" / "ui" / "shop.gd").write_text(
+            'extends "res://ui/menus/shop/base_shop.gd"\n', encoding="utf-8"
+        )
+        self.write_module("mirror_legend", {
+            "id": "mirror_legend", "version": "1.0.0", "category": "mechanics",
+            "name_key": "CLC_MOD_HOOK_LEGEND_NAME", "description_key": "CLC_MOD_HOOK_LEGEND_DESC",
+            "origin": {"type": "original"}, "extensions": ["extensions/ui/shop.gd"],
+        })
+        code, output = run_validate(self.mod_dir)
+        self.assertEqual(code, 1)
+        self.assertIn("debe replicar la del script extendido", output)
+
     def test_unlisted_module_folder_is_rejected(self) -> None:
         (self.mod_dir / "modules" / "stray_legend").mkdir()
         code, output = run_validate(self.mod_dir)

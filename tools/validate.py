@@ -332,6 +332,14 @@ def validate_extension(path: Path, game_scripts: set[str], report: Report) -> No
     elif game_scripts and target not in game_scripts:
         report.error(f"{rel(path)}: {target} no existe en la versión objetivo del juego")
 
+    # El núcleo decide cuándo instalar cada extensión por su ruta: la parte tras
+    # «extensions/» debe ser la ruta del script que extiende (sin «res://»).
+    posix = path.as_posix()
+    marker = "/extensions/"
+    mirrored = posix[posix.find(marker) + len(marker):] if marker in posix else ""
+    if mirrored != target[len("res://"):]:
+        report.error(f"{rel(path)}: la ruta debe replicar la del script extendido (extensions/{target[len('res://'):]})")
+
 
 def validate_core_extensions(report: Report, game_scripts: set[str]) -> None:
     extensions_dir = MOD_DIR / "extensions"
@@ -343,6 +351,8 @@ def validate_core_extensions(report: Report, game_scripts: set[str]) -> None:
         relative = path.relative_to(MOD_DIR).as_posix()
         if f'"{relative}"' not in main_text:
             report.error(f"{rel(path)}: no está instalada en mod_main.gd")
+        if relative.startswith("extensions/singletons/"):
+            report.error(f"{rel(path)}: las extensiones del núcleo se instalan en _ready y no pueden extender autoloads")
 
 
 def validate_res_paths(report: Report) -> None:

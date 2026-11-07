@@ -55,6 +55,8 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [ ] Publicar con aprobación de Mauro.
 
 ## Mantenimiento
+- [x] Adaptación a Brotato 1.2 con la información pública (orden de instalación de extensiones, caché de objetos, conjuntos de objetos).
+- [ ] Prueba en Brotato 1.2 de todas las leyendas.
 - [ ] Revisar cada actualización de Brotato (prompt `docs/prompts/05_...`).
 - [ ] Regenerar `tools/game_scripts.txt` y la matriz de compatibilidad.
 

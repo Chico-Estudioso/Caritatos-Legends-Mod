@@ -33,7 +33,17 @@ var boot_state := {}
 var runtimes := {}
 var config_save_error := ""
 
+# Extensiones de scripts de escenas (tienda, main.gd, menús) pendientes de
+# instalar en mod_main._ready(). Ver install_late_extensions().
+var _late_extensions := []
+var _late_extensions_installed := false
 var _menu: Node = null
+
+# Scripts del juego que otros scripts extienden: se instalan antes para que las
+# extensiones de sus hijos (shop.gd, coop_shop.gd) hereden de la versión ya extendida.
+const LATE_EXTENSION_PRIORITY := [
+	"ui/menus/shop/base_shop.gd",
+]
 
 
 func boot(p_mod_dir: String, p_version: String) -> void:
@@ -233,7 +243,11 @@ func _load_module(id: String) -> bool:
 			return _fail_module(id, "load_failed", runtime_path)
 
 	for extension_path in extension_paths:
-		ModLoaderMod.install_script_extension(extension_path)
+		var target := extension_target(extension_path)
+		if is_early_target(target):
+			ModLoaderMod.install_script_extension(extension_path)
+		else:
+			_late_extensions.append({"path": extension_path, "target": target, "module": id})
 
 	if runtime_script != null:
 		var runtime = runtime_script.new()
@@ -244,6 +258,50 @@ func _load_module(id: String) -> bool:
 		runtimes[id] = runtime
 
 	return true
+
+
+# Instala las extensiones de scripts de escenas. Se llama desde mod_main._ready():
+# en Brotato 1.2.0.1, cargar base_shop.gd durante _init falla (infiere tipos de
+# RunData, que aún no existe) y el CrashReporter desactiva todos los mods en el
+# siguiente arranque. Las escenas se cargan después, así que instalar aquí es seguro.
+func install_late_extensions() -> void:
+	if _late_extensions_installed:
+		return
+	_late_extensions_installed = true
+	for entry in sort_late_extensions(_late_extensions):
+		ModLoaderMod.install_script_extension(entry.path)
+	_late_extensions.clear()
+
+
+func get_pending_late_extensions() -> Array:
+	return _late_extensions.duplicate()
+
+
+# Las extensiones replican la ruta del script que extienden:
+# modules/<id>/extensions/ui/menus/shop/base_shop.gd -> ui/menus/shop/base_shop.gd
+static func extension_target(extension_path: String) -> String:
+	var marker := "/extensions/"
+	var index := extension_path.find(marker)
+	if index == -1:
+		return ""
+	return extension_path.substr(index + marker.length())
+
+
+# Los autoloads (singletons) se crean justo después de ModLoader: sus
+# extensiones deben instalarse durante _init o ya no surten efecto.
+static func is_early_target(target: String) -> bool:
+	return target.begins_with("singletons/")
+
+
+static func sort_late_extensions(entries: Array) -> Array:
+	var first := []
+	var rest := []
+	for entry in entries:
+		if LATE_EXTENSION_PRIORITY.has(entry.target):
+			first.append(entry)
+		else:
+			rest.append(entry)
+	return first + rest
 
 
 func _fail_module(id: String, reason: String, detail: String) -> bool:

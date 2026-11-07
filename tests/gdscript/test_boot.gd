@@ -42,12 +42,34 @@ func test_all_loaded() -> void:
 
 
 func test_extensions_installed() -> void:
+	# Tras boot() (equivale a mod_main._init) solo están las de autoloads.
+	var during_init: Array = ModLoaderMod.installed_extensions().duplicate()
+	var pending: Array = core.get_pending_late_extensions()
+	for id in core.get_module_ids():
+		var definition: Dictionary = core.get_definition(id)
+		for extension in definition.extensions:
+			var path: String = definition.dir.plus_file(extension)
+			var early: bool = extension.begins_with("extensions/singletons/")
+			check(during_init.has(path) == early, "%s: %s debería instalarse %s" % [id, path, "en _init" if early else "en _ready"])
+
+	# install_late_extensions() (equivale a mod_main._ready) instala el resto,
+	# con base_shop.gd antes que cualquier otra.
+	core.install_late_extensions()
 	var installed: Array = ModLoaderMod.installed_extensions()
 	for id in core.get_module_ids():
 		var definition: Dictionary = core.get_definition(id)
 		for extension in definition.extensions:
 			var path: String = definition.dir.plus_file(extension)
 			check(installed.has(path), "%s: falta instalar %s" % [id, path])
+	var late_installed: Array = installed.slice(during_init.size(), installed.size() - 1) if installed.size() > during_init.size() else []
+	var seen_other := false
+	for path in late_installed:
+		if path.ends_with("ui/menus/shop/base_shop.gd"):
+			check(not seen_other, "base_shop.gd debe instalarse antes que otras extensiones tardías")
+		else:
+			seen_other = true
+	check(late_installed.size() == pending.size(), "se esperaban %d extensiones tardías" % pending.size())
+	check(core.get_pending_late_extensions().empty(), "no deberían quedar extensiones pendientes")
 
 
 func test_defaults_saved() -> void:

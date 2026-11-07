@@ -28,10 +28,10 @@ func setup(p_core, p_module_id: String) -> void:
 	module_id = p_module_id
 
 
-func _ready() -> void:
-	# Los objetos del DLC pueden no estar cargados todavía; se vuelve a aplicar
-	# al entrar en cada tienda y cada vez que cambia la configuración.
-	call_deferred("apply_curse_chance")
+# No se toca ItemService.items al arrancar: en Brotato 1.2 la lista se construye
+# y se guarda en caché la primera vez que se consulta, y hacerlo antes de que el
+# juego sepa qué DLC tiene la dejaría sin sus objetos. La probabilidad se aplica
+# al entrar en cada tienda y cada vez que cambia la configuración.
 
 
 func on_config_changed() -> void:
