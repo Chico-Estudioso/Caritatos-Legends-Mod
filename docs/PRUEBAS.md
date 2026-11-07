@@ -20,21 +20,48 @@ La CI (`.github/workflows/validacion.yml`) ejecuta todo lo anterior en cada push
 
 ## Instalación local para probar en Brotato
 
-1. `python tools/build.py` → `dist/Caritato-LegendsCollection.zip`.
-2. Abre la carpeta de instalación (Steam → Brotato → Administrar → Ver archivos locales).
-3. Crea la carpeta `mods` si no existe y copia dentro el ZIP sin descomprimir.
-4. Si también estás suscrito a la versión de Workshop, desuscríbete mientras pruebas para no cargar dos copias.
-5. Abre Brotato y revisa `%APPDATA%\Brotato\logs\modloader.log`. Debe aparecer:
-   - `Iniciando Caritatos Legends v<versión>`
-   - una línea por leyenda: `[id] cargada`, `[id] desactivada por el jugador`, etc.
-   - `Caritatos Legends listo.`
+### Dónde busca mods el juego
+
+| Versión de Brotato | Dónde carga los ZIP | Carpeta `mods` |
+|---|---|---|
+| Steam | Solo en `<biblioteca de Steam>\steamapps\workshop\content\1942280\<id>\`, y solo si `<id>` es un objeto del Workshop al que estás suscrito | **Se ignora** (también `--mods-path`) |
+| GOG, Epic y otras | `<instalación de Brotato>\mods\` (o la ruta de `--mods-path=<ruta>`) | Sí |
+
+Evidencia en `docs/COMPATIBILIDAD.md` («Cómo se carga un mod»).
+
+### En Steam (antes de publicar)
+
+1. Consigue el ZIP: `python tools/build.py` → `dist/Caritato-LegendsCollection.zip`, o el artefacto `Caritato-LegendsCollection` de la última ejecución de la CI (el artefacto descargado es un ZIP que contiene nuestro ZIP: sácalo, pero **no** lo descomprimas).
+2. Suscríbete en el Workshop a un mod pequeño de Brotato que no toque la tienda, la recolección ni los menús (o usa uno al que ya estés suscrito). Abre Brotato una vez para que Steam lo descargue y ciérralo.
+3. Abre `<biblioteca de Steam>\steamapps\workshop\content\1942280\`. Hay una carpeta numérica por cada objeto del Workshop; la del mod elegido lleva el número que aparece en su página (`steamcommunity.com/sharedfiles/filedetails/?id=<número>`). Las carpetas de mods a los que ya no estás suscrito no se cargan.
+4. Copia `Caritato-LegendsCollection.zip` sin descomprimir dentro de esa carpeta, junto al ZIP del otro mod. Si no quieres que ese mod se cargue, puedes borrar su ZIP (Steam puede volver a ponerlo cuando se actualice).
+5. Abre Brotato. En «Mods» debe aparecer **LegendsCollection** y en el menú principal, el botón **Leyendas**.
+6. En cada versión nueva, sobrescribe el ZIP. Si Steam actualiza el mod de esa carpeta puede borrar el nuestro: vuelve a copiarlo.
+7. Cuando el mod esté publicado en el Workshop (aunque sea oculto), basta con suscribirse; quita entonces la copia manual para no cargar dos.
+
+La carpeta `Brotato\mods` de la instalación de Steam no hace falta y se puede borrar.
+
+### En GOG, Epic y otras versiones
+
+1. Crea la carpeta `mods` en la instalación de Brotato si no existe.
+2. Copia dentro el ZIP sin descomprimir.
+
+### Comprobar que ha cargado
+
+Abre Brotato y revisa `%APPDATA%\Brotato\logs\modloader.log`. Debe aparecer:
+- `Checking workshop item path: "...\1942280\<número>"` (solo en Steam) y, después, el ZIP cargado.
+- `Iniciando Caritatos Legends v<versión>`
+- una línea por leyenda: `[id] cargada`, `[id] desactivada por el jugador`, etc.
+- `Caritatos Legends listo.`
+
+Si el menú «Mods» sale vacío, el ZIP no está en una carpeta que el juego lea: revisa la tabla de arriba y el log.
 
 La configuración se guarda en `%APPDATA%\Brotato\caritato_legends\settings.json`. Si se borra, el mod vuelve a los valores por defecto. Si está dañada, se guarda una copia `settings.json.invalido.bak` y se arranca con los valores por defecto.
 
 ## Prueba rápida recomendada (15 minutos)
 
 1. Instala el ZIP como se indica arriba y abre Brotato.
-2. Menú principal → **Leyendas**: deben aparecer 4 leyendas activas. Cierra con «Guardar y cerrar».
+2. Menú principal → **Leyendas**: deben aparecer 5 leyendas activas. Cierra con «Guardar y cerrar».
 3. Partida nueva con Abyssal Terrors: al terminar la oleada 4, el Anzuelo debe estar en la tienda.
 4. En esa tienda, botón **Supermercado** → encarga un objeto → aparece en la tienda y se puede comprar.
 5. Pausa → **Leyendas** → Mercader: rerolls al 0 % → al volver a la tienda, el reroll cuesta 0.

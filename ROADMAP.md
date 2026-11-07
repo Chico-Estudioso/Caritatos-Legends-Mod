@@ -17,7 +17,7 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] Empaquetado reproducible (`tools/build.py`).
 - [x] Validaciones automáticas y CI.
 - [x] Documentación de instalación y diagnóstico (`docs/PRUEBAS.md`).
-- [ ] Comprobar dentro de Brotato que se detecta e inicializa (prueba manual).
+- [~] Comprobar dentro de Brotato que se detecta e inicializa (prueba manual; primer intento en Steam 1.2.0.1 sin cargar porque se usó la carpeta `mods`, ver `docs/PRUEBAS.md`).
 
 ## Fase 2 — Núcleo modular y configuración
 - [x] Registro de leyendas con ids únicos y validación de definiciones.

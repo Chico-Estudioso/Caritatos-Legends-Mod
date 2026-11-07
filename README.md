@@ -18,11 +18,14 @@
 Cuando se publique: suscríbete en el Workshop de Brotato y abre el juego. No necesita ningún otro mod.
 
 ### Manual (pruebas locales)
-1. Genera el paquete: `python tools/build.py` → `dist/Caritato-LegendsCollection.zip`.
-2. Copia el ZIP **sin descomprimir** en la carpeta `mods` de la instalación de Brotato (crea la carpeta si no existe). En Steam: clic derecho en Brotato → Administrar → Ver archivos locales.
-3. Abre Brotato. El ModLoader integrado detecta el mod.
+La versión de Steam de Brotato **no lee la carpeta `mods`**: solo carga los ZIP que hay dentro de las carpetas de los mods del Workshop a los que estás suscrito. Para probar el ZIP sin publicarlo:
 
-Más detalle y diagnóstico en `docs/PRUEBAS.md`.
+1. Genera el paquete (`python tools/build.py` → `dist/Caritato-LegendsCollection.zip`) o descárgalo de los artefactos de la CI.
+2. Suscríbete a un mod pequeño de Brotato en el Workshop (o usa uno al que ya estés suscrito) y abre el juego una vez para que Steam lo descargue.
+3. Copia el ZIP **sin descomprimir** dentro de la carpeta de ese mod: `<biblioteca de Steam>\steamapps\workshop\content\1942280\<número del mod>\`.
+4. Abre Brotato: en «Mods» aparece **LegendsCollection** y en el menú principal, el botón **Leyendas**.
+
+En las versiones sin Steam (GOG, Epic) sí vale la carpeta `mods` de la instalación. Más detalle y diagnóstico en `docs/PRUEBAS.md`.
 
 ## Configuración en el juego
 

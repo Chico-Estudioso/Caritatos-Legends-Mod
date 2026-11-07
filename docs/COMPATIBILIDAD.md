@@ -29,7 +29,12 @@ Pendiente: verificar dentro de Brotato 1.2 las firmas de `BaseShop.fill_shop_ite
 
 ## Cómo se carga un mod
 
-- ModLoader carga ZIPs desde `<instalación de Brotato>/mods/` y desde las carpetas de Steam Workshop (`steamapps/workshop/content/1942280/<id>/`).
+El juego elige el perfil de opciones del ModLoader por plataforma (`addons/mod_loader/options/options.tres`, verificado en código 1.1.15.4; la 1.2 sigue con ModLoader 6.3.0):
+
+- **Steam** (perfil `steam.tres`, `steam_workshop_enabled = true`): `ModLoader._load_mod_zips()` solo recorre `steamapps/workshop/content/1942280/`, y Blobfish modificó `_ModLoaderSteam.load_steam_workshop_zips()` para cargar únicamente las carpetas cuyo número está en `Platform.get_subscribed_mods()` (objetos suscritos). Dentro de cada carpeta carga todos los `.zip` y `.pck`. **La carpeta `<instalación>/mods/` y `--mods-path` se ignoran.**
+- **GOG, Epic y versión local** (`steam_workshop_enabled = false`): carga los ZIP de `<instalación de Brotato>/mods/` o de `--mods-path=<ruta>`.
+
+Para probar en Steam sin publicar, el ZIP se copia en la carpeta de un objeto suscrito (procedimiento en `docs/PRUEBAS.md`).
 - Dentro del ZIP: `mods-unpacked/<Namespace>-<Nombre>/manifest.json` y `mod_main.gd`.
 - Registro de ModLoader: `user://logs/modloader.log` (en Windows `%APPDATA%\Brotato\logs\modloader.log`).
 
@@ -82,3 +87,4 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 | Fecha | Brotato | ModLoader | Versión del mod | Resultado | Leyendas probadas | Notas |
 |---|---|---|---|---|---|---|
 | 2026-11-06 | — | — | 0.1.0 | Solo pruebas automáticas | — | Validación, sintaxis (gdparse), pruebas de herramientas y del núcleo. Pendiente de probar dentro de Brotato. |
+| 2026-11-07 | 1.2.0.1 (Steam) | 6.3.0 | 0.2.0 + Regalo | No cargó | — | El ZIP estaba en `Brotato/mods`, que la versión de Steam no lee. Corregidas las instrucciones de instalación. |
