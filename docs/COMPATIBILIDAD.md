@@ -6,12 +6,26 @@ No se declara compatibilidad por intuición. «Verificado en código» significa
 
 | Componente | Versión | Estado | Evidencia / notas |
 |---|---|---|---|
+| Brotato | **1.2.x** (actual, con el DLC Primal Dread) | Adaptado con la información pública de la 1.2; **no probado en el juego** | No hay código de la 1.2 publicado. Fuentes: guía de migración 1.1→1.2 de mojimoon (`docs/MIGRATION-1.2.md` de mojimoon/BrotatoMods) y mods ya actualizados (BrotatoOnline, FengAddMods, QuickEquip) |
 | Brotato | 1.1.15.4 | Verificado en código; **no probado en el juego** | `ProgressData.VERSION = "1.1.15.4"` en el código de referencia (actualización «All Pain No Gain», 2026) |
 | Abyssal Terrors (DLC) | datos de 1.1.14.5 | Verificado en código | Rutas `res://dlcs/dlc_1/...`; el código de 1.1.15.4 disponible no incluye el DLC |
 | Godot | 3.x (GDScript 3) | Verificado | El juego es un proyecto Godot 3 |
 | ModLoader | 6.3.0 | Verificado en código | `MODLOADER_VERSION = "6.3.0"` integrado en el juego; perfil Steam con Workshop activado |
 | Mod Options | 0.6.2 (MIT) | Evaluado, no se usa | Requiere instalar otro mod; ver `docs/DECISIONES.md` |
 | ContentLoader | 6.2.3 | Evaluado, sin decidir | Sin licencia publicada |
+
+## Cambios de Brotato 1.2 que afectan al mod
+
+| Cambio en 1.2 | Efecto | Cómo se resuelve |
+|---|---|---|
+| `base_shop.gd` (1.2.0.1) infiere tipos de `RunData` con `:=`; durante `_init` de los mods `RunData` aún no existe | Cargar una extensión de la tienda en `_init` rompe la compilación y el CrashReporter **desactiva todos los mods** en el siguiente arranque | Las extensiones de scripts de escenas se instalan en `mod_main._ready()`; solo las de autoloads (`res://singletons/...`) se instalan en `_init` (`core/legends_core.gd`) |
+| `ItemService.items/weapons/characters` pasan a ser una caché que se construye la primera vez que se consulta | Consultarla antes de que `ProgressData` sepa qué DLC hay la deja sin objetos de DLC para toda la sesión | Ninguna leyenda consulta `ItemService.items` al arrancar; el Anzuelo aplica su probabilidad al entrar en la tienda |
+| Los DLC pasan a ser «conjuntos de objetos»; `RunData.enabled_dlcs` significa «DLC comprados» | Comprobar si un DLC está en la partida con `enabled_dlcs` da falsos positivos | `Compat.is_dlc_enabled_in_run()` usa `RunData.active_update_data_ids` si existe |
+| `ProgressData.get_dlc_data()` desaparece (ahora `ItemService.get_dlc_data_by_id()`) | — | El mod no lo usa |
+| `RunData.remove_item(item, p, by_id, apply_replacement = true)` | Quitar un objeto con sustituto añade el sustituto | El Regalo no transfiere objetos con `replaced_by` |
+| Nuevo DLC Primal Dread: armas meca (`is_meca`), objetos mutantes (`is_mutant`), Tumor (`item_tumor`), personajes `meca_only` / `mutant_only` | Reglas nuevas para transferir objetos | Ver La Leyenda del Regalo |
+
+Pendiente: verificar dentro de Brotato 1.2 las firmas de `BaseShop.fill_shop_items`, `Main._on_HarvestingTimer_timeout`, `ItemService.get_value/get_reroll_price/get_stat_description_text` y `banned_items_for_endless`, que no aparecen en las fuentes públicas de la 1.2.
 
 ## Cómo se carga un mod
 

@@ -30,15 +30,16 @@ En el ZIP final esta carpeta va bajo `mods-unpacked/` (lo genera `tools/build.py
 
 ## Arranque
 
-1. ModLoader instancia `mod_main.gd` durante su inicialización (es el único momento en que se pueden instalar extensiones de scripts).
+1. ModLoader instancia `mod_main.gd` durante su inicialización (`_init`): es el único momento en que se pueden extender los autoloads (`res://singletons/...`), porque el juego los crea justo después.
 2. `LegendsCore.boot()` registra los textos, lee `modules/modules.json` y cada `module.json`, valida referencias y lee la configuración del jugador.
 3. `module_registry.resolve_load_set()` decide el estado de cada leyenda:
    - `loaded`: activada, sin errores, con dependencias cargadas y sin conflictos.
    - `disabled`: desactivada por el jugador → no instala nada.
    - `blocked`: falta una dependencia o hay conflicto con otra leyenda cargada.
    - `error`: definición inválida o archivos ausentes → se registra en el log con su id.
-4. Para cada leyenda `loaded` se comprueba que existen todos sus archivos, se instalan sus extensiones con `ModLoaderMod.install_script_extension()` y se crea su runtime como hijo de `LegendsCore`.
+4. Para cada leyenda `loaded` se comprueba que existen todos sus archivos, se instalan ya sus extensiones de autoloads y se crea su runtime como hijo de `LegendsCore`. Las extensiones de scripts de escenas quedan pendientes.
 5. Se guarda la configuración completada con los valores por defecto.
+6. En `mod_main._ready()` se instalan las extensiones del núcleo (menús) y las pendientes de las leyendas, con `base_shop.gd` primero para que `shop.gd` y `coop_shop.gd` hereden la versión ya extendida. Hacerlo en `_init` rompe la tienda de Brotato 1.2.0.1 (ver `docs/COMPATIBILIDAD.md`).
 
 ## Activación, desactivación y reinicio
 

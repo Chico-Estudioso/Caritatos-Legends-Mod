@@ -21,12 +21,19 @@ static func is_dlc_available(dlc_id: String) -> bool:
 	return progress_data.is_dlc_available(dlc_id)
 
 
-# El DLC está habilitado en la partida en curso (o en la próxima, desde el menú).
+# El DLC está habilitado en la partida en curso.
+# 1.2: RunData.active_update_data_ids (los «conjuntos de objetos» de la partida;
+#      enabled_dlcs pasa a significar solo «DLC comprados»).
+# 1.1: RunData.enabled_dlcs.
 static func is_dlc_enabled_in_run(dlc_id: String) -> bool:
 	var run_data = _singleton("RunData")
-	if run_data == null or not "enabled_dlcs" in run_data:
+	if run_data == null:
 		return false
-	return run_data.enabled_dlcs.has(dlc_id)
+	if "active_update_data_ids" in run_data:
+		return run_data.active_update_data_ids.has(dlc_id)
+	if "enabled_dlcs" in run_data:
+		return run_data.enabled_dlcs.has(dlc_id)
+	return false
 
 
 static func get_player_count() -> int:

@@ -2,14 +2,26 @@ extends Node
 
 # Punto de entrada que ModLoader instancia al arrancar Brotato.
 #
-# ModLoader solo permite instalar extensiones de scripts durante su fase de
-# inicialización, así que aquí se lee la configuración del jugador y se cargan
-# únicamente las leyendas activadas. Activar una leyenda que no estaba cargada
-# requiere reiniciar el juego; la interfaz lo indica.
+# Dos momentos de instalación:
+# - _init(): se lee la configuración, se deciden las leyendas que se cargan y
+#   se instalan las extensiones de autoloads (res://singletons/...), que deben
+#   estar antes de que el juego cree esos nodos.
+# - _ready(): se instalan las extensiones de scripts de escenas (tienda,
+#   main.gd, menús). En Brotato 1.2.0.1 cargar base_shop.gd durante _init
+#   rompe su compilación y el CrashReporter desactiva todos los mods.
+#
+# Activar una leyenda que no estaba cargada requiere reiniciar el juego; la
+# interfaz lo indica.
 
 const MOD_ID := "Caritato-LegendsCollection"
 const LOG_NAME := "Caritato-LegendsCollection:Main"
 const VERSION := "0.2.0"
+
+# Accesos a la pantalla de configuración (menú principal y menú de pausa).
+const CORE_EXTENSIONS := [
+	"extensions/ui/menus/pages/main_menu.gd",
+	"extensions/ui/menus/ingame/ingame_main_menu.gd",
+]
 
 var mod_dir := ""
 var core: Node = null
@@ -29,22 +41,18 @@ func _init() -> void:
 	add_child(core)
 	core.boot(mod_dir, VERSION)
 
+
+func _ready() -> void:
 	_install_core_extensions()
+	if core != null:
+		core.install_late_extensions()
+	ModLoaderLog.success("Caritatos Legends listo.", LOG_NAME)
 
 
 func _install_core_extensions() -> void:
-	# Accesos a la pantalla de configuración (menú principal y menú de pausa).
-	var extensions := [
-		"extensions/ui/menus/pages/main_menu.gd",
-		"extensions/ui/menus/ingame/ingame_main_menu.gd",
-	]
-	for extension in extensions:
+	for extension in CORE_EXTENSIONS:
 		var path: String = mod_dir.plus_file(extension)
 		if File.new().file_exists(path) or ResourceLoader.exists(path):
 			ModLoaderMod.install_script_extension(path)
 		else:
 			ModLoaderLog.error("Falta la extensión del núcleo: %s" % path, LOG_NAME)
-
-
-func _ready() -> void:
-	ModLoaderLog.success("Caritatos Legends listo.", LOG_NAME)
