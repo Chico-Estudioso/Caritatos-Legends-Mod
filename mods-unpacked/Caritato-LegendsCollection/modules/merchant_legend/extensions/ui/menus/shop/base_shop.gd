@@ -21,6 +21,7 @@ func _ready() -> void:
 	var legend = _CLC_MERCHANT_API.get_runtime(_CLC_MERCHANT_ID)
 	if legend == null or not legend.haggle_enabled():
 		return
+	_CLC_MERCHANT_API.trace("Tienda: añadiendo Regatear")
 	for player_index in RunData.get_player_count():
 		_clc_merchant_add_button(player_index)
 

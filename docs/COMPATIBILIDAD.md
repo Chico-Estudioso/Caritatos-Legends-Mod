@@ -88,9 +88,17 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 | La Leyenda del Supermercado | 1.1.15.4 | Verificado en código; no probado en el juego; solo tienda de un jugador |
 | La Leyenda del Regalo | 1.1.15.4; API de transferencia confirmada en 1.2 | Verificado en código; no probado en el juego |
 
+## Otros mods
+
+| Mod | Qué pasa | Qué hacer |
+|---|---|---|
+| FoxLab (JonathanFox, Primal Dread) | Carga `base_shop.gd` durante su `_init`. En la 1.2 eso rompe la compilación de la tienda (`base_shop.gdc:212`, «the variable type can't be inferred») y la tienda deja de funcionar, con o sin Caritatopc. | No usarlo junto a este mod hasta que su autor lo corrija. |
+| PerfectHook (AzazelRabbit) | Cambia el Anzuelo y la tienda, igual que nuestra Leyenda del Anzuelo, y está hecho para versiones anteriores. | Usar solo uno de los dos: la Leyenda del Anzuelo ya da la probabilidad configurable y el Anzuelo garantizado. |
+
 ## Historial de pruebas
 
 | Fecha | Brotato | ModLoader | Versión del mod | Resultado | Leyendas probadas | Notas |
 |---|---|---|---|---|---|---|
 | 2026-11-06 | — | — | 0.1.0 | Solo pruebas automáticas | — | Validación, sintaxis (gdparse), pruebas de herramientas y del núcleo. Pendiente de probar dentro de Brotato. |
 | 2026-11-07 | 1.2.0.1 (Steam) | 6.3.0 | 0.2.0 + Regalo | No cargó | — | El ZIP estaba en `Brotato/mods`, que la versión de Steam no lee. Corregidas las instrucciones de instalación. |
+| 2026-11-07 | 1.2.0.1 (Steam) | 6.3.0 | 1.0.0 candidata (con la extensión de `ItemPopup`) | Cooperativo bien; en solitario el juego se cierra al entrar en la primera tienda | Anzuelo (probabilidad 45 %), Cosecha Eterna, Regalo | El último paso registrado es «Probabilidad por anzuelo» al entrar en la tienda. Solo en solitario se usaba la extensión de `ItemPopup` (en cooperativo no llegaba); se retiró y la del menú cooperativo se hizo más prudente. En otras sesiones también estaba FoxLab, que rompe la tienda por su cuenta (ver «Otros mods»). |

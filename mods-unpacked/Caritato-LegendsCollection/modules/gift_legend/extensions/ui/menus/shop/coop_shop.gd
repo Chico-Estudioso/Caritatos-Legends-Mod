@@ -13,6 +13,7 @@ const _CLC_GIFT_ID := "gift_legend"
 func _ready() -> void:
 	var legend = _CLC_GIFT_API.get_runtime(_CLC_GIFT_ID)
 	if legend != null:
+		_CLC_GIFT_API.trace("Tienda cooperativa: lista (Regalo)")
 		legend.on_shop_opened()
 		_clc_gift_check_popups()
 

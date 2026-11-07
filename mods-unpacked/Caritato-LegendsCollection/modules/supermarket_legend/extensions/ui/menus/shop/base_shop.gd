@@ -23,6 +23,7 @@ func _ready() -> void:
 	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
 	if legend == null:
 		return
+	_CLC_SUPER_API.trace("Tienda: lista (Supermercado)")
 	var relocked := false
 	for player_index in RunData.get_player_count():
 		if legend.relock_arrivals(_shop_items[player_index], player_index):
