@@ -77,14 +77,28 @@ func _capture_gift() -> void:
 	var offer := {"data": data, "is_weapon": true, "label": "Pistola láser", "tier": 2, "tags": ["CLC_GIFT_TAG_MECA"], "recipients": []}
 
 	var confirm = load(MOD_PATH + "modules/gift_legend/gift_confirm.gd").new()
-	root.add_child(confirm)
-	confirm.open(core.get_runtime("gift_legend"), null, 0, 1, offer)
+	confirm.setup(core.get_runtime("gift_legend"), null, 0, 1, offer)
+	core.show_popup(confirm)
 	yield(_frames(60), "completed")
 	_save("regalo_1_confirmacion")
 	confirm.celebrate()
 	yield(_frames(12), "completed")
 	_save("regalo_2_celebracion")
-	confirm._finish("accepted")
+	confirm.close_popup("accepted")
+	yield(_frames(2), "completed")
+
+	# Elegir a quién regalar (cuatro jugadores, uno sin hueco de arma).
+	var picker = load(MOD_PATH + "modules/gift_legend/gift_recipient_popup.gd").new()
+	picker.player_index = 0
+	picker.offer = {"data": data, "is_weapon": true, "label": "Pistola láser", "tier": 2, "tags": [], "recipients": [
+		{"index": 1, "reason": ""},
+		{"index": 2, "reason": "CLC_GIFT_REASON_NO_SLOT"},
+		{"index": 3, "reason": ""},
+	]}
+	core.show_popup(picker)
+	yield(_frames(6), "completed")
+	_save("regalo_3_elegir")
+	picker.close_popup("cancelled")
 	yield(_frames(2), "completed")
 
 
