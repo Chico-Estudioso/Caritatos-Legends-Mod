@@ -10,7 +10,7 @@
 | **La Leyenda de la Cosecha Eterna** | En el modo infinito eliges cuánta recolección se pierde tras la oleada 20 (por defecto 0 %, el juego quita un 20 %), si sigue creciendo como antes y si la Hucha sigue funcionando | Incluida, pendiente de prueba en el juego |
 | **La Leyenda del Mercader** | Precio de los artículos y de los rerolls en porcentaje (0 % = rerolls gratis) y opción de que no suban con las oleadas. Por defecto, la tienda funciona como en el juego | Incluida, pendiente de prueba en el juego |
 | **La Leyenda del Supermercado** | Botón **Supermercado** en la tienda: catálogo con los objetos y armas que podrías encontrar; el elegido aparece en tu tienda y lo compras como cualquier otro. Encargos por tienda, coste y tier máximo configurables | Incluida, pendiente de prueba en el juego (solo un jugador) |
-| **La Leyenda del Regalo** *(cooperativo)* | Botón **Regalar** en la tienda de cada jugador: da tus objetos y armas (también mecanizadas o malditas) a otro jugador. El Tumor y los objetos ligados a mecánicas propias no se regalan | Incluida, pendiente de prueba en el juego |
+| **La Leyenda del Regalo** *(cooperativo)* | Botón **Regalar** en la tienda de cada jugador: da tus objetos y armas (también mecanizadas o malditas) a otro jugador, que lo acepta en una ventana con corazones («¡Un regalo de tu Cari!»). El Tumor y los objetos ligados a mecánicas propias no se regalan | Incluida, pendiente de prueba en el juego |
 
 ## Instalación
 

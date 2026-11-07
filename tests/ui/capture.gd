@@ -9,6 +9,7 @@ extends SceneTree
 # si tools/capture_ui.py recibe una.
 
 const MOD_PATH := "res://mods-unpacked/Caritato-LegendsCollection/"
+const UiStyle = preload("res://mods-unpacked/Caritato-LegendsCollection/ui/ui_style.gd")
 const CONFIG_PATH := "user://caritato_legends/settings.json"
 
 var core = null
@@ -56,13 +57,32 @@ func _run() -> void:
 
 	menu._on_cancel_pressed()
 	yield(_frames(3), "completed")
-	_extra_captures()
 
+	yield(_capture_gift(), "completed")
 
-# Las PR que añaden ventanas nuevas amplían esta función.
-func _extra_captures() -> void:
 	print("Capturas guardadas: %d en %s" % [_saved, _out_dir])
 	quit(0 if _saved > 0 else 1)
+
+
+# Confirmación de un regalo (con un arma inventada) y la celebración al aceptar.
+func _capture_gift() -> void:
+	var fake := GDScript.new()
+	fake.source_code = "extends Resource\nvar my_id := \"weapon_capture\"\nvar name := \"WEAPON_CAPTURE\"\nvar tier := 2\nvar icon = null\n"
+	var _reloaded = fake.reload()
+	var data = fake.new()
+	data.icon = UiStyle.circle_texture(96, Color("ffd166"), Color("ff8c42"), 8.0)
+	var offer := {"data": data, "is_weapon": true, "label": "Pistola láser", "tier": 2, "tags": ["CLC_GIFT_TAG_MECA"], "recipients": []}
+
+	var confirm = load(MOD_PATH + "modules/gift_legend/gift_confirm.gd").new()
+	root.add_child(confirm)
+	confirm.open(core.get_runtime("gift_legend"), null, 0, 1, offer)
+	yield(_frames(60), "completed")
+	_save("regalo_1_confirmacion")
+	confirm.celebrate()
+	yield(_frames(12), "completed")
+	_save("regalo_2_celebracion")
+	confirm._finish("accepted")
+	yield(_frames(2), "completed")
 
 
 func _frames(count: int) -> void:
