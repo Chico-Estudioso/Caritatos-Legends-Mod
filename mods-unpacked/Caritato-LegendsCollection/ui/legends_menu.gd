@@ -545,6 +545,8 @@ func _status_for(id: String) -> Array:
 			return [tr("CLC_STATUS_REQUIRES_DLC") % tr(DLC_NAME_KEYS.get(dlc_id, dlc_id)), UiStyle.WARN]
 
 	var game_version := Compat.game_version()
+	if game_version == "":
+		return [tr("CLC_STATUS_ACTIVE"), UiStyle.OK]
 	var compatibility: Dictionary = definition.compatibility
 	if compatibility.status == "tested" and compatibility.game_versions.has(game_version):
 		return [tr("CLC_STATUS_ACTIVE") + " · " + tr("CLC_STATUS_TESTED") % game_version, UiStyle.OK]
