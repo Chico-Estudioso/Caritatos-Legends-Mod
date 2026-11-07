@@ -4,6 +4,9 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 
 ## [Sin publicar]
 
+### Añadido
+- **La Leyenda del Regalo** (`gift_legend`, cooperativo): botón «Regalar» en el panel de cada jugador de la tienda cooperativa. Abre una ventana con sus armas y objetos y deja dárselos a otro jugador; las armas conservan mejoras, maldición o mecanización. Respeta huecos de arma, máximos por objeto, prohibiciones y restricciones del personaje que recibe, armas bloqueadas y el bando de evolución (solo meca / solo mutante). Nunca se regalan el personaje, el Tumor, los saltos evolutivos, la torreta del Constructor ni los objetos que se transforman al quitarlos. Ajustes: objetos, armas, última arma, malditos y regalos por tienda. La ventana se maneja con ratón, teclado o cualquier mando.
+
 ### Corregido
 - **Compatibilidad con Brotato 1.2**: las extensiones de scripts de escenas (tienda, `main.gd`, menús) se instalan en `_ready` y no en `_init`. En 1.2.0.1, cargar la tienda durante `_init` rompía su compilación y el juego desactivaba todos los mods en el siguiente arranque.
 - El Anzuelo ya no consulta la lista de objetos al arrancar (en 1.2 se quedaría en caché sin los objetos de los DLC).

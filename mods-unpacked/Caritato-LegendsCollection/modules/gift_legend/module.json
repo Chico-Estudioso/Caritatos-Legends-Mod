@@ -1,0 +1,64 @@
+{
+	"id": "gift_legend",
+	"version": "1.0.0",
+	"category": "mechanics",
+	"name_key": "CLC_MOD_GIFT_LEGEND_NAME",
+	"description_key": "CLC_MOD_GIFT_LEGEND_DESC",
+	"enabled_by_default": true,
+	"requires_dlc": [],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "gift_legend.gd",
+	"extensions": [
+		"extensions/ui/menus/shop/coop_shop.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": ["1.2.X.X", "1.1.15.4"]
+	},
+	"origin": {
+		"type": "original",
+		"inspired_by": [
+			"Petición de Mauro: regalar objetos y armas entre jugadores en cooperativo"
+		],
+		"notes": "Código propio. Transferencia con RunData.add_item/remove_item y add_weapon/remove_weapon_by_index (API pública del juego, confirmada en 1.2 por QuickEquip de Oudstand)."
+	},
+	"settings": [
+		{
+			"key": "allow_items",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_GIFT_ALLOW_ITEMS"
+		},
+		{
+			"key": "allow_weapons",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_GIFT_ALLOW_WEAPONS",
+			"help_key": "CLC_GIFT_ALLOW_WEAPONS_HELP"
+		},
+		{
+			"key": "keep_last_weapon",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_GIFT_KEEP_LAST_WEAPON",
+			"depends_on": "allow_weapons"
+		},
+		{
+			"key": "allow_cursed",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_GIFT_ALLOW_CURSED"
+		},
+		{
+			"key": "gifts_per_shop",
+			"type": "int",
+			"default": 0,
+			"min": 0,
+			"max": 20,
+			"step": 1,
+			"label_key": "CLC_GIFT_LIMIT",
+			"help_key": "CLC_GIFT_LIMIT_HELP"
+		}
+	]
+}

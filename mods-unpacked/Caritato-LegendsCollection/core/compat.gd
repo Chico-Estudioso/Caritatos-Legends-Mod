@@ -203,24 +203,120 @@ static func can_offer_item(item, player_index: int) -> bool:
 
 
 static func can_offer_weapon(weapon, player_index: int) -> bool:
-	var run_data = _singleton("RunData")
-	if run_data == null:
+	if not is_weapon_allowed_for_player(weapon, player_index):
 		return false
-	if is_item_banned_for_player(player_index, weapon.my_id):
+	var removed = get_player_effect_value("remove_shop_items", player_index, [])
+	var entity_service = _singleton("EntityService")
+	if removed is Array and removed.has(generate_hash("structure")) and entity_service != null and entity_service.is_weapon_spawning_structure(weapon):
+		return false
+	return true
+
+
+# Restricciones sobre un arma: prohibidas, sin cuerpo a cuerpo, sin distancia
+# y tier mínimo/máximo de armas. include_shop_bans: contar también las
+# prohibiciones de tienda del jugador (sí para ofrecer en tienda, no para regalos).
+static func is_weapon_allowed_for_player(weapon, player_index: int, include_shop_bans: bool = true) -> bool:
+	var banned := is_item_banned_for_player(player_index, weapon.my_id) if include_shop_bans else is_banned_by_character(player_index, weapon.my_id)
+	if banned:
 		return false
 	# WeaponData.Type: 0 = cuerpo a cuerpo, 1 = a distancia.
-	if run_data.get_player_effect_bool(generate_hash("no_melee_weapons"), player_index) and weapon.type == 0:
+	if player_effect_bool("no_melee_weapons", player_index) and weapon.type == 0:
 		return false
-	if run_data.get_player_effect_bool(generate_hash("no_ranged_weapons"), player_index) and weapon.type == 1:
+	if player_effect_bool("no_ranged_weapons", player_index) and weapon.type == 1:
 		return false
-	var min_tier = run_data.get_player_effect(generate_hash("min_weapon_tier"), player_index)
-	var max_tier = run_data.get_player_effect(generate_hash("max_weapon_tier"), player_index)
-	if weapon.tier < int(min_tier) or weapon.tier > int(max_tier):
+	var min_tier = int(get_player_effect_value("min_weapon_tier", player_index, 0))
+	var max_tier = int(get_player_effect_value("max_weapon_tier", player_index, 99))
+	return weapon.tier >= min_tier and weapon.tier <= max_tier
+
+
+# Valor de un efecto del jugador; fallback si el efecto no existe en esta
+# versión del juego (por ejemplo, meca_only antes de la 1.2).
+static func get_player_effect_value(effect_id: String, player_index: int, fallback = 0):
+	var run_data = _singleton("RunData")
+	if run_data == null or player_index < 0 or player_index >= run_data.players_data.size():
+		return fallback
+	return run_data.get_player_effects(player_index).get(generate_hash(effect_id), fallback)
+
+
+static func player_effect_bool(effect_id: String, player_index: int) -> bool:
+	var value = get_player_effect_value(effect_id, player_index, 0)
+	return (value is int or value is float) and value > 0
+
+
+static func is_coop_run() -> bool:
+	var run_data = _singleton("RunData")
+	return run_data != null and "is_coop_run" in run_data and run_data.is_coop_run
+
+
+static func get_player_items(player_index: int) -> Array:
+	var run_data = _singleton("RunData")
+	return run_data.get_player_items(player_index) if run_data != null else []
+
+
+static func get_player_weapons(player_index: int) -> Array:
+	var run_data = _singleton("RunData")
+	return run_data.get_player_weapons(player_index) if run_data != null else []
+
+
+static func player_free_weapon_slots(player_index: int) -> int:
+	var slots = int(get_player_effect_value("weapon_slot", player_index, 0))
+	return slots - get_player_weapons(player_index).size()
+
+
+# Huecos que le quedan a un jugador para un objeto con máximo (Utils.LARGE_NUMBER si no tiene).
+static func remaining_item_capacity(item, player_index: int) -> int:
+	var run_data = _singleton("RunData")
+	if run_data == null or not run_data.has_method("get_remaining_max_nb_item"):
+		return 1
+	return int(run_data.get_remaining_max_nb_item(item, player_index))
+
+
+# Pone el foco de un jugador en un control: en cooperativo, a través de su
+# FocusEmulator (Utils.focus_player_control); si no, con el foco normal.
+static func focus_player_control(control: Control, player_index: int) -> void:
+	var utils = _singleton("Utils")
+	if is_coop_run() and utils != null and utils.has_method("focus_player_control"):
+		utils.focus_player_control(control, player_index)
+	elif control != null and is_instance_valid(control):
+		control.call_deferred("grab_focus")
+
+
+static func get_character_name_key(player_index: int) -> String:
+	var run_data = _singleton("RunData")
+	if run_data == null or not run_data.has_method("get_player_character"):
+		return ""
+	var character = run_data.get_player_character(player_index)
+	return character.name if character != null and "name" in character else ""
+
+
+static func item_flag(item, flag: String) -> bool:
+	return item != null and flag in item and bool(item.get(flag))
+
+
+# Pasa un objeto de un jugador a otro. RunData.remove_item/add_item retiran y
+# aplican sus efectos. Solo para objetos sin sustituto (replaced_by), porque
+# remove_item añadiría el sustituto a quien lo pierde.
+static func transfer_item(item, from_player: int, to_player: int) -> bool:
+	var run_data = _singleton("RunData")
+	if run_data == null or item == null:
 		return false
-	var removed: Array = run_data.get_player_effect(generate_hash("remove_shop_items"), player_index)
-	var entity_service = _singleton("EntityService")
-	if removed.has(generate_hash("structure")) and entity_service != null and entity_service.is_weapon_spawning_structure(weapon):
+	if not run_data.players_data[from_player].items.has(item):
 		return false
+	run_data.remove_item(item, from_player)
+	run_data.add_item(item, to_player)
+	return true
+
+
+# Pasa un arma (con sus mejoras, maldición o mecanización) de un jugador a otro.
+static func transfer_weapon(weapon, from_player: int, to_player: int) -> bool:
+	var run_data = _singleton("RunData")
+	if run_data == null or weapon == null:
+		return false
+	var index: int = run_data.players_data[from_player].weapons.find(weapon)
+	if index == -1:
+		return false
+	run_data.remove_weapon_by_index(index, from_player)
+	var _given = run_data.add_weapon(weapon, to_player)
 	return true
 
 
@@ -284,11 +380,20 @@ static func is_item_banned_for_player(player_index: int, item_id: String) -> boo
 			return true
 		if banned is int and banned == item_hash:
 			return true
+	return is_banned_by_character(player_index, item_id)
+
+
+# Solo lo que el personaje no puede usar (sus objetos prohibidos y grupos
+# vetados), sin contar las prohibiciones de tienda que elige el jugador.
+static func is_banned_by_character(player_index: int, item_id: String) -> bool:
+	var run_data = _singleton("RunData")
+	if run_data == null or player_index < 0 or player_index >= run_data.players_data.size():
+		return false
 	if run_data.has_method("get_player_character"):
 		var character = run_data.get_player_character(player_index)
 		if character != null and "banned_items" in character and character.banned_items.has(item_id):
 			return true
-	return false
+	return is_in_banned_item_group(player_index, item_id)
 
 
 # Lee una constante del script de un objeto recorriendo su cadena de herencia

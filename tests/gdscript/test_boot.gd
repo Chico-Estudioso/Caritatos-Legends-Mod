@@ -25,6 +25,7 @@ func _initialize() -> void:
 	run_case("los valores por defecto se guardan en disco", "test_defaults_saved")
 	run_case("los ajustes se sanean y desactivar es inmediato", "test_settings_and_toggle")
 	run_case("la pantalla de configuración se construye y cancela", "test_menu")
+	run_case("la ventana de regalos se construye y se cierra", "test_gift_menu")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -115,6 +116,23 @@ func test_menu() -> void:
 	else:
 		menu._on_cancel_pressed()
 	check(not core.is_menu_open(), "la pantalla debería cerrarse")
+
+
+func test_gift_menu() -> void:
+	var legend = core.get_runtime("gift_legend")
+	check(legend != null, "falta el runtime del Regalo")
+	if legend == null:
+		return
+	# Sin partida, no hay nada que regalar y ninguna oferta debe fallar.
+	check(legend.get_offers(0).empty(), "sin partida no debería haber ofertas")
+	var before: int = root.get_child_count()
+	legend.open_menu(null, 0, null)
+	check(root.get_child_count() == before + 1, "no se abrió la ventana")
+	var menu = root.get_child(root.get_child_count() - 1)
+	check(menu._nav.size() == 1, "solo debería poder enfocarse «Cerrar»")
+	menu._move_focus(1)
+	menu._press_focused()
+	check(menu.is_queued_for_deletion(), "«Cerrar» debería cerrar la ventana")
 
 
 func test_disabled_not_loaded() -> void:
