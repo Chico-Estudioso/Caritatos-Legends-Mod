@@ -42,7 +42,7 @@ func _run() -> void:
 	yield(_frames(8), "completed")
 	_save("menu_1_anzuelo")
 
-	for id in ["supermarket_legend", "gift_legend", "endless_harvest", "studio_legend"]:
+	for id in ["supermarket_legend", "gift_legend", "endless_harvest", "studio_legend", "mouse_legend"]:
 		menu._select(id)
 		yield(_frames(6), "completed")
 		_save("menu_%d_%s" % [_saved + 1, id])

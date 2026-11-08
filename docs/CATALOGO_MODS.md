@@ -25,6 +25,7 @@ Fuentes consultadas el 2026-11-06: repositorios públicos de GitHub y buscadores
 | Leyenda | Origen | Qué hace | Estado |
 |---|---|---|---|
 | **La Leyenda del Regalo** (`gift_legend`) | Petición de Mauro | Regalar objetos y armas entre jugadores en cooperativo | Incluida (sin probar en el juego) |
+| **La Leyenda del Ratón** (`mouse_legend`) | Petición de Mauro | El ratón se ve y funciona en cooperativo (solo en el panel de quien juega con teclado y ratón) y con un mando conectado | Incluida (sin probar en el juego) |
 | **La Leyenda de las Cajas** (`crates_legend`) | Idea de Mauro | Al terminar la oleada, fusionar cajas por abrir en una caja legendaria: la primera fusión pide 3 cajas, después 6 y 9 (configurable) | Incluida (sin probar en el juego) |
 
 ## Recuperadas en la fase 5
@@ -253,4 +254,28 @@ Pruebas manuales:
 - [ ] J1 se pone un tato y lo ve encima de su patata en la partida; en cooperativo, cada jugador el suyo.
 - [ ] «Atrás» cierra el editor o el medidor y no el menú Caritatopc.
 - [ ] El medidor muestra los personajes del juego y los de BroEditor, y marca como «Roto» uno con estadísticas exageradas.
+
+### La Leyenda del Ratón (`mouse_legend`)
+
+Diseño (petición de Mauro: «que el ratón aunque fuera cooperativo se pudiera usar para hacer scroll en items y demás, o interactuar en la pantalla del J1 únicamente aunque se pueda mover por todas»):
+- **Por qué no se ve**: en cooperativo, `InputService._input` esconde el ratón con cualquier pulsación de cualquier jugador. En solitario lo esconde con cada evento del mando, y un stick o gatillo que bailen lo esconden sin parar.
+- **Cursor**: aparece al mover el ratón y se oculta tras 5 s sin moverlo (ajustable; 0 = nunca). El runtime cuelga de ModLoader, que va antes que InputService en el árbol, así que recibe cada evento justo después de que el juego lo esconda y lo vuelve a mostrar.
+- **De quién es el ratón**: del primer jugador que juega con teclado y ratón; si todos usan mando, del J1.
+- **Solo en su panel**:
+  - Los paneles de cada jugador son las zonas de foco de los `FocusEmulator` de la pantalla; en la tienda, el contenedor de cada jugador.
+  - Sobre el panel de otro jugador, pulsar, la rueda y el resaltado no llegan a la interfaz. Soltar el botón sí, para que nada se quede trabado.
+  - Si los `FocusEmulator` están ocultos (pausa, ventanas de Caritatopc), el ratón vale en toda la pantalla.
+- **Lo pulsado cuenta como suyo**: los clics no pasan por los `FocusEmulator`, así que `FocusEmulatorSignal.get_player_index` devuelve -1 y el juego suponía el J1 o se equivocaba. La extensión se lo atribuye al jugador del ratón si el control está en su panel.
+- **Solitario con mando**: el cursor vuelve al mover el ratón. Durante la oleada no se toca, porque ahí el juego gestiona el cursor (puntería manual).
+- En la selección de personaje en cooperativo el juego desactiva el ratón en la cuadrícula; esta leyenda no lo cambia.
+
+Pruebas manuales:
+- [ ] Cooperativo (J1 con teclado y ratón, J2 con mando): en la tienda, el cursor aparece al mover el ratón y no desaparece cuando el J2 pulsa botones.
+- [ ] Con la rueda se desplazan los objetos del J1; pasar el ratón por un objeto o arma del J1 muestra su ficha.
+- [ ] Pulsar un artículo de la tienda del J1 lo compra para el J1; pulsar un arma suya abre su menú (Reciclar, Regalar, Cancelar) y funciona con el ratón.
+- [ ] Sobre el panel del J2 el cursor se ve, pero no compra, no resalta ni desplaza nada.
+- [ ] Con todos los jugadores con mando, el ratón actúa en el panel del J1.
+- [ ] Tras 5 s sin mover el ratón, el cursor se oculta; con 0 no se oculta.
+- [ ] En solitario con un mando conectado, el cursor aparece al mover el ratón en los menús y en la tienda.
+- [ ] Desactivada, el ratón se comporta como en el juego base.
 

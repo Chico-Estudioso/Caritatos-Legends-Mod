@@ -301,7 +301,16 @@
 		"CLC_POWER_VERY_STRONG": "Muy fuerte",
 		"CLC_POWER_BROKEN": "Roto",
 		"CLC_POWER_EMPTY": "No hay nada que medir todavía. Abre el medidor dentro de Brotato.",
-		"CLC_POWER_SUMMARY": "%d en total; %d muy fuertes o rotos."
+		"CLC_POWER_SUMMARY": "%d en total; %d muy fuertes o rotos.",
+		"CLC_MOD_MOUSE_LEGEND_NAME": "La Leyenda del Ratón",
+		"CLC_MOD_MOUSE_LEGEND_DESC": "El ratón se ve y funciona aunque haya mandos: en cooperativo, solo en el panel del bro que juega con teclado y ratón.",
+		"CLC_MOD_MOUSE_LEGEND_SHORT": "Ratón",
+		"CLC_MOUSE_COOP": "Ratón en cooperativo",
+		"CLC_MOUSE_COOP_HELP": "El cursor aparece al mover el ratón. Se puede pasar por toda la pantalla, pero solo se pulsa y se usa la rueda en el panel del jugador con teclado y ratón (el J1 si todos usan mando).",
+		"CLC_MOUSE_SOLO_GAMEPAD": "Ratón con un mando conectado",
+		"CLC_MOUSE_SOLO_GAMEPAD_HELP": "En solitario, el cursor vuelve al mover el ratón aunque haya un mando conectado. Durante la oleada lo sigue gestionando el juego.",
+		"CLC_MOUSE_HIDE_AFTER": "Ocultar el cursor tras",
+		"CLC_MOUSE_HIDE_AFTER_HELP": "Segundos sin mover el ratón. 0 = no se oculta."
 	},
 	"en": {
 		"CLC_MENU_BUTTON": "Caritatopc",
@@ -605,6 +614,15 @@
 		"CLC_POWER_VERY_STRONG": "Very strong",
 		"CLC_POWER_BROKEN": "Broken",
 		"CLC_POWER_EMPTY": "Nothing to measure yet. Open the meter inside Brotato.",
-		"CLC_POWER_SUMMARY": "%d in total; %d very strong or broken."
+		"CLC_POWER_SUMMARY": "%d in total; %d very strong or broken.",
+		"CLC_MOD_MOUSE_LEGEND_NAME": "The Legend of the Mouse",
+		"CLC_MOD_MOUSE_LEGEND_DESC": "The mouse shows up and works even with controllers: in co-op, only on the panel of the bro playing with keyboard and mouse.",
+		"CLC_MOD_MOUSE_LEGEND_SHORT": "Mouse",
+		"CLC_MOUSE_COOP": "Mouse in co-op",
+		"CLC_MOUSE_COOP_HELP": "The cursor appears when you move the mouse. It can go anywhere on screen, but clicks and the wheel only work on the panel of the keyboard and mouse player (P1 if everyone uses a controller).",
+		"CLC_MOUSE_SOLO_GAMEPAD": "Mouse with a controller connected",
+		"CLC_MOUSE_SOLO_GAMEPAD_HELP": "In solo, the cursor comes back when you move the mouse even if a controller is connected. During waves the game still handles it.",
+		"CLC_MOUSE_HIDE_AFTER": "Hide the cursor after",
+		"CLC_MOUSE_HIDE_AFTER_HELP": "Seconds without moving the mouse. 0 = never hide."
 	}
 }

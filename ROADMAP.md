@@ -51,6 +51,8 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] Editor de personajes y objetos: opción B elegida por Mauro, BroEditor (Mojimoon) para crear y editar, con aviso y enlace de descarga.
 - [x] El Taller de los Tatos: «Tus tatos» (editor de píxeles, PNG, iconos para BroEditor y llevarlo puesto) y medidor de poder.
 - [ ] Pack de efectos nuevos para bros (registrar contenido en la 1.2), en su propia PR.
+- [x] La Leyenda del Ratón: el ratón se ve y funciona en cooperativo (solo en el panel de quien juega con teclado y ratón) y con un mando conectado.
+- [ ] Prueba manual del ratón en cooperativo y con mando.
 - [ ] Probar Caritatopc junto a BroEditor dentro del juego.
 - [ ] Siguientes candidatas: Rainbow Crate (Apache-2.0), Second Chance (MIT), contador de rerolls, medidor de daño.
 - [ ] Una leyenda por PR, con procedencia y pruebas.

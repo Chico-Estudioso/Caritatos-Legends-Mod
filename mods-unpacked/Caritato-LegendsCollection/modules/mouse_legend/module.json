@@ -1,0 +1,57 @@
+{
+	"id": "mouse_legend",
+	"version": "1.0.0",
+	"category": "quality_of_life",
+	"name_key": "CLC_MOD_MOUSE_LEGEND_NAME",
+	"description_key": "CLC_MOD_MOUSE_LEGEND_DESC",
+	"short_name_key": "CLC_MOD_MOUSE_LEGEND_SHORT",
+	"accent": "#5ec8d8",
+	"enabled_by_default": true,
+	"requires_dlc": [],
+	"dependencies": [],
+	"conflicts": [],
+	"runtime": "mouse_legend.gd",
+	"extensions": [
+		"extensions/singletons/focus_emulator_signal.gd"
+	],
+	"compatibility": {
+		"status": "untested",
+		"game_versions": [
+			"1.2.X.X"
+		]
+	},
+	"origin": {
+		"type": "original",
+		"inspired_by": [
+			"Petición de Mauro: usar el ratón en cooperativo para moverse por los objetos e interactuar solo en el panel del J1"
+		],
+		"notes": "Código propio. Usa InputService, FocusEmulator (zonas de cada jugador) y FocusEmulatorSignal.get_player_index del juego."
+	},
+	"settings": [
+		{
+			"key": "coop_mouse",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_MOUSE_COOP",
+			"help_key": "CLC_MOUSE_COOP_HELP"
+		},
+		{
+			"key": "solo_gamepad",
+			"type": "bool",
+			"default": true,
+			"label_key": "CLC_MOUSE_SOLO_GAMEPAD",
+			"help_key": "CLC_MOUSE_SOLO_GAMEPAD_HELP"
+		},
+		{
+			"key": "hide_after",
+			"type": "int",
+			"default": 5,
+			"min": 0,
+			"max": 30,
+			"step": 1,
+			"suffix": " s",
+			"label_key": "CLC_MOUSE_HIDE_AFTER",
+			"help_key": "CLC_MOUSE_HIDE_AFTER_HELP"
+		}
+	]
+}
