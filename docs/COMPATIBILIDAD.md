@@ -75,6 +75,7 @@ Para probar en Steam sin publicar, el ZIP se copia en la carpeta de un objeto su
 | Tus tatos en la partida | `Player` → nodo `Animation/Sprite` (los aspectos del juego son `Sprite` hijos de él, de 150 × 150), `res://entities/units/player/potato.png` | `entities/units/player/player.tscn`, `player.gd` | Taller |
 | Otros mods cargados | `ModLoaderStore.mod_data[id]` (`is_loadable`, `is_active`) | `addons/mod_loader/mod_loader_store.gd` | Taller |
 | Iconos de BroEditor | Carpeta `user://Mojimoon-BroEditor/icons/` (PNG que BroEditor ofrece como iconos) | BroEditor | Taller |
+| Ratón en cooperativo | `InputService._input` (esconde el ratón con cualquier evento en cooperativo y con los del mando en solitario), `FocusEmulator.player_index` y `_focus_base_nodes` (panel de cada jugador), `FocusEmulatorSignal.get_player_index(control)` (devuelve -1 si la señal no vino de un `FocusEmulator`), `CoopService.is_player_using_gamepad(i)`, `res://main.tscn` (durante la oleada en solitario el cursor lo gestiona `main.gd`) | `singletons/input_service.gd`, `singletons/focus_emulator_signal.gd`, `ui/menus/global/focus_emulator.gd`, `ui/menus/global/popup_manager.gd` | Ratón |
 | Tema y fuentes de la interfaz | `res://resources/themes/base_theme.tres`, `res://resources/fonts/actual/base/*.tres` (opcionales) | recursos del juego | 0.1.0 |
 
 `tools/game_scripts.txt` contiene las rutas de scripts del juego que existen en la versión objetivo; la validación falla si una extensión apunta a otra ruta. Para regenerarlo tras una actualización, con una copia local descompilada del juego (fuera del repositorio):
@@ -95,6 +96,7 @@ cd <copia-del-juego> && find . -name "*.gd" -not -path "./addons/*" | sed 's#^\.
 | La Leyenda de las Cajas | 1.1.15.4; API confirmada en mods de la 1.2 | Verificado en código; no probado en el juego |
 | La Leyenda de la Fusión | 1.1.15.4; API confirmada en mods de la 1.2 | Verificado en código; no probado en el juego |
 | El Taller de los Tatos | 1.2 (con BroEditor 3.0.6) | Verificado en código; no probado en el juego |
+| La Leyenda del Ratón | 1.2 | Verificado en código; no probado en el juego |
 
 ## Otros mods
 

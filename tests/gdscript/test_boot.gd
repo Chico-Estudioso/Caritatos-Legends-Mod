@@ -40,6 +40,7 @@ func _initialize() -> void:
 	run_case("la fusión de cajas se ofrece y se celebra", "test_crates_popup")
 	run_case("la fusión de bros elige compañero o ninguno", "test_fusion_popup")
 	run_case("el Taller abre «Tus tatos» y el medidor desde sus acciones", "test_studio_screens")
+	run_case("el ratón solo actúa en el panel de su jugador", "test_mouse_zones")
 	run_case("una leyenda desactivada al arrancar no se carga", "test_disabled_not_loaded")
 	_remove_config()
 	finish()
@@ -551,3 +552,77 @@ func test_studio_screens() -> void:
 		check(meter.entries_for("characters").empty(), "sin juego no hay personajes que medir")
 		meter.close_screen()
 	menu.close()
+
+
+# Cooperativo de mentira: un RunData con dos jugadores y dos FocusEmulator con
+# un panel cada uno. Nadie usa teclado (no hay CoopService), así que el ratón
+# es del J1.
+func test_mouse_zones() -> void:
+	var legend = core.get_runtime("mouse_legend")
+	check(legend != null, "falta el runtime del Ratón")
+	if legend == null:
+		return
+	var run_data := _fake_node("extends Node\nvar is_coop_run := true\nfunc get_player_count() -> int:\n\treturn 2\n")
+	run_data.name = "RunData"
+	root.add_child(run_data)
+	var screen := Control.new()
+	root.add_child(screen)
+	var panels := []
+	var emulators := []
+	for player_index in 2:
+		var panel := Control.new()
+		panel.rect_position = Vector2(200 * player_index, 0)
+		panel.rect_size = Vector2(200, 200)
+		screen.add_child(panel)
+		var button := Button.new()
+		button.rect_size = Vector2(50, 50)
+		panel.add_child(button)
+		panels.append(panel)
+		var emulator := _fake_node("extends Node2D\nvar player_index := -1\nvar _focus_base_nodes := []\n")
+		emulator.player_index = player_index
+		emulator._focus_base_nodes = [panel]
+		screen.add_child(emulator)
+		emulators.append(emulator)
+	legend.emulators_override = emulators
+
+	check(legend.coop_mouse_enabled(), "debería verse como cooperativo")
+	check(legend.mouse_player() == 0, "sin teclado, el ratón es del J1")
+	check(legend.visible_zones().size() == 2, "dos paneles visibles")
+
+	legend._input(_mouse_press(Vector2(300, 50)))
+	check(not legend._mouse_event_pending, "en el panel del J2 no se puede pulsar")
+	legend._input(_mouse_press(Vector2(50, 50)))
+	check(legend._mouse_event_pending, "en su panel sí")
+	check(legend.should_show(), "tras usarlo, el cursor se ve")
+	check(legend.claim_player(panels[0].get_child(0), -1) == 0, "lo pulsado en su panel es del J1")
+	check(legend.claim_player(panels[1].get_child(0), -1) == -1, "lo del panel del J2 no se le atribuye")
+	legend._process(0.0)
+	check(legend.claim_player(panels[0].get_child(0), -1) == -1, "pasado el fotograma ya no es cosa del ratón")
+
+	# Con los FocusEmulator ocultos (pausa, ventanas de Caritatopc) vale todo.
+	for emulator in emulators:
+		emulator.visible = false
+	check(legend.visible_zones().empty(), "sin paneles visibles")
+	legend._input(_mouse_press(Vector2(300, 50)))
+	check(legend._mouse_event_pending, "con la pausa se puede pulsar en cualquier sitio")
+	legend._process(0.0)
+
+	legend.emulators_override = null
+	screen.free()
+	run_data.free()
+	check(not legend.coop_mouse_enabled(), "sin RunData vuelve a ser solitario")
+
+
+func _fake_node(source: String) -> Node:
+	var script := GDScript.new()
+	script.source_code = source
+	var _err = script.reload()
+	return script.new()
+
+
+func _mouse_press(position: Vector2) -> InputEventMouseButton:
+	var event := InputEventMouseButton.new()
+	event.button_index = BUTTON_LEFT
+	event.pressed = true
+	event.position = position
+	return event

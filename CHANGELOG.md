@@ -20,6 +20,11 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
   - **Medidor de poder**: personajes y objetos (también los de BroEditor) de más a menos fuerte, con etiquetas Equilibrado, Fuerte, Muy fuerte o Roto frente a los del juego.
 - Campo `actions` en `module.json`: botones en la ficha de una leyenda que llaman a su runtime. «Atrás» cierra la ventana que abren sin cerrar el menú.
 - `docs/COMPATIBILIDAD.md`: BroEditor es compatible. Se documenta dónde coincide con Caritatopc.
+- **La Leyenda del Ratón** (`mouse_legend`): el ratón se ve y funciona aunque haya mandos.
+  - En cooperativo, el cursor aparece al mover el ratón y ya no lo esconden las pulsaciones de los demás. Recorre toda la pantalla, pero solo pulsa, usa la rueda y resalta en el panel del jugador con teclado y ratón (el J1 si todos usan mando).
+  - Lo que se pulsa con el ratón cuenta como de ese jugador (extensión de `FocusEmulatorSignal`); antes el juego suponía el J1 o se equivocaba.
+  - En solitario con un mando conectado, el cursor vuelve al mover el ratón, salvo durante la oleada.
+  - Se oculta tras 5 s sin mover el ratón (ajustable; 0 = nunca).
 
 ### Corregido
 - **El juego se cerraba al aceptar un regalo.**
