@@ -94,12 +94,12 @@ func gift(shop: Node, giver: int, recipient: int, data, is_weapon: bool) -> Stri
 	var reason := block_reason(giver, recipient, data, is_weapon)
 	if reason != "":
 		return reason
-	var done: bool = Compat.transfer_weapon(data, giver, recipient) if is_weapon else Compat.transfer_item(data, giver, recipient)
-	if not done:
+	var received = Compat.transfer_weapon(data, giver, recipient) if is_weapon else Compat.transfer_item(data, giver, recipient)
+	if received == null:
 		return "CLC_GIFT_REASON_NOT_OWNED"
 	_gifts[giver] = int(_gifts.get(giver, 0)) + 1
 	if shop != null and is_instance_valid(shop) and shop.has_method("_clc_gift_refresh"):
-		shop._clc_gift_refresh([giver, recipient])
+		shop._clc_gift_refresh(giver, recipient, data, received, is_weapon)
 	ModLoaderLog.info("Regalo: %s de J%d a J%d" % [data.my_id, giver + 1, recipient + 1], LOG_NAME)
 	return ""
 

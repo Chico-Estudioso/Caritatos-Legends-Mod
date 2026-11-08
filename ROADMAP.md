@@ -44,6 +44,7 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] Rasgo interactivo distintivo para cada leyenda: Regalo (confirmación con choque de puños), Supermercado (caja del encargo), Anzuelo («¡Pica!»), Mercader (regateo) y Cosecha Eterna (cosecha dorada).
 - [x] La Leyenda del Regalo (cooperativo): regalar objetos y armas.
 - [ ] Prueba manual de La Leyenda del Regalo en cooperativo.
+- [x] Corregido el cierre al aceptar un regalo (foco del cooperativo sobre casillas destruidas) y el regalo de armas recién compradas.
 - [x] La Leyenda de las Cajas: fusionar cajas en una legendaria (3, luego 6 y 9; configurable).
 - [x] La Leyenda de la Fusión (recreación de GMO): fusionarse con otro personaje al empezar, con penalizaciones.
 - [ ] Prueba manual de las Cajas y la Fusión.

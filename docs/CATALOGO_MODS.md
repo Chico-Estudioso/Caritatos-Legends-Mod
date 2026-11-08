@@ -188,7 +188,10 @@ Pruebas manuales (partida cooperativa de 2 jugadores):
 - [ ] Con J2 sin huecos de arma, Regalar un arma muestra el motivo en vez de la confirmación.
 - [ ] Un arma mecanizada (Primal Dread) conserva su mecanización al regalarla.
 - [ ] Con «Regalos por jugador en cada tienda» = 1, el segundo regalo se rechaza.
-- [ ] Tras regalar, el mando de J1 vuelve al botón de reroll y se puede seguir comprando.
+- [ ] Tras regalar, los mandos de los dos jugadores vuelven a su botón de reroll y se puede seguir comprando.
+- [ ] Con el cursor de quien recibe sobre su propio inventario, aceptar el regalo no cierra el juego (fallo del 8 de noviembre).
+- [ ] Regalar un objeto repetido (×2) deja ×1 a quien regala y lo suma a la casilla de quien recibe; regalar el segundo también funciona.
+- [ ] Se puede regalar un arma comprada en esa misma tienda.
 - [ ] Con 3 o 4 jugadores sale «¿A quién se lo regalas?».
 
 ### La Leyenda de las Cajas (`crates_legend`)

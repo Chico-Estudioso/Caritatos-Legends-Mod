@@ -37,7 +37,7 @@ func _ready() -> void:
 	if container == null or container != _cancel_button.get_parent():
 		_CLC_GIFT_API.trace("Regalo: Reciclar y Cancelar no comparten contenedor; no se añade Regalar")
 		return
-	_CLC_GIFT_API.trace("Regalo: preparando el botón del menú de J%d" % (player_index + 1))
+	_CLC_GIFT_API.trace("Regalo: preparando el botón de un menú de objeto (uno por jugador)")
 	var button := Button.new()
 	button.name = "CaritatoGiftButton"
 	button.text = tr("CLC_GIFT_BUTTON")

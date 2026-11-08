@@ -295,29 +295,68 @@ static func item_flag(item, flag: String) -> bool:
 
 # Pasa un objeto de un jugador a otro. RunData.remove_item/add_item retiran y
 # aplican sus efectos. Solo para objetos sin sustituto (replaced_by), porque
-# remove_item añadiría el sustituto a quien lo pierde.
-static func transfer_item(item, from_player: int, to_player: int) -> bool:
+# remove_item añadiría el sustituto a quien lo pierde. Devuelve el objeto que
+# ahora tiene quien recibe, o null si quien regala no lo tiene.
+static func transfer_item(item, from_player: int, to_player: int):
 	var run_data = _singleton("RunData")
 	if run_data == null or item == null:
-		return false
-	if not run_data.players_data[from_player].items.has(item):
-		return false
-	run_data.remove_item(item, from_player)
-	run_data.add_item(item, to_player)
-	return true
+		return null
+	var items: Array = run_data.players_data[from_player].items
+	var index := owned_index(items, item, _same_func("is_same_item"))
+	if index == -1:
+		return null
+	var owned = items[index]
+	run_data.remove_item(owned, from_player)
+	run_data.add_item(owned, to_player)
+	return owned
 
 
 # Pasa un arma (con sus mejoras, maldición o mecanización) de un jugador a otro.
-static func transfer_weapon(weapon, from_player: int, to_player: int) -> bool:
+# Devuelve el arma que ahora tiene quien recibe (RunData.add_weapon guarda una
+# copia), o null si quien regala no la tiene.
+static func transfer_weapon(weapon, from_player: int, to_player: int):
 	var run_data = _singleton("RunData")
 	if run_data == null or weapon == null:
-		return false
-	var index: int = run_data.players_data[from_player].weapons.find(weapon)
+		return null
+	var weapons: Array = run_data.players_data[from_player].weapons
+	var index := owned_index(weapons, weapon, _same_func("is_same_weapon"))
 	if index == -1:
-		return false
+		return null
+	var owned = weapons[index]
 	run_data.remove_weapon_by_index(index, from_player)
-	var _given = run_data.add_weapon(weapon, to_player)
-	return true
+	var given = run_data.add_weapon(owned, to_player)
+	return given if given != null else owned
+
+
+# Posición de `data` en la lista de armas u objetos de un jugador: el mismo
+# objeto o, si no está, uno igual. Hace falta porque la casilla del inventario
+# no siempre muestra el mismo objeto que guarda RunData: al comprar un arma el
+# juego guarda una copia, y los objetos repetidos comparten una sola casilla.
+# `same` (opcional) dice si dos son iguales; sin él, basta con el mismo id y la
+# misma maldición.
+static func owned_index(list: Array, data, same: FuncRef = null) -> int:
+	if data == null:
+		return -1
+	var index := list.find(data)
+	if index != -1:
+		return index
+	for i in list.size():
+		var owned = list[i]
+		if owned == null or not "my_id" in owned or not "my_id" in data or owned.my_id != data.my_id:
+			continue
+		if item_flag(owned, "is_cursed") != item_flag(data, "is_cursed"):
+			continue
+		if same != null and same.is_valid() and not same.call_func(owned, data):
+			continue
+		return i
+	return -1
+
+
+static func _same_func(method: String) -> FuncRef:
+	var item_service = _singleton("ItemService")
+	if item_service != null and item_service.has_method(method):
+		return funcref(item_service, method)
+	return null
 
 
 static func is_in_banned_item_group(player_index: int, item_id: String) -> bool:
