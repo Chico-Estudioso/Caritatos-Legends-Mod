@@ -21,6 +21,13 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
 - Campo `actions` en `module.json`: botones en la ficha de una leyenda que llaman a su runtime. «Atrás» cierra la ventana que abren sin cerrar el menú.
 - `docs/COMPATIBILIDAD.md`: BroEditor es compatible. Se documenta dónde coincide con Caritatopc.
 
+### Corregido
+- **El juego se cerraba al aceptar un regalo.**
+  - Causa: tras el regalo se rehacían enteros los inventarios de los dos jugadores, y el foco del cooperativo (`FocusEmulator`) de quien recibía seguía apuntando a una casilla destruida. El juego publicado se cierra de golpe al volver a dibujarla.
+  - Ahora, antes de tocar nada, el foco que estuviera sobre esos inventarios pasa al botón de reroll de cada jugador.
+  - Además, se quita una casilla a quien regala y se añade otra a quien recibe, como hace el juego al reciclar o comprar (`modules/gift_legend/gift_shop_sync.gd`).
+- **No se podía regalar un arma comprada en esa misma tienda** (salía «no lo tienes»): el juego guarda una copia del arma comprada. Ahora el arma u objeto se busca también por igualdad, con `ItemService.is_same_weapon` / `is_same_item`.
+
 ## [1.0.0] - Versión candidata (pendiente de probar en Brotato y de publicar)
 
 ### Corregido (cierre en solitario)
