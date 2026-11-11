@@ -27,6 +27,11 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
   - Se oculta tras 5 s sin mover el ratón (ajustable; 0 = nunca).
 
 ### Corregido
+- **Supermercado: al rerolear tras un encargo se bloqueaba un artículo al azar.**
+  - El juego bloquea a la vista tantas casillas como bloqueados tenga, y contaba el encargo, que no está en esa tienda.
+  - Ahora el encargo se aparta un momento de la lista de bloqueados mientras se rerolea.
+  - De paso, con 3 artículos bloqueados más un encargo ya se puede rerolear.
+- **Supermercado: los encargos ganados se perdían si no se gastaban en la tienda siguiente.** Ahora cada élite o jefe derrotado da un encargo que se guarda hasta gastarlo, también al continuar la partida (`user://caritato_legends/supermarket_run.json`). En el modo «en cada tienda» siguen sin acumularse.
 - **El juego se cerraba al aceptar un regalo.**
   - Causa: tras el regalo se rehacían enteros los inventarios de los dos jugadores, y el foco del cooperativo (`FocusEmulator`) de quien recibía seguía apuntando a una casilla destruida. El juego publicado se cierra de golpe al volver a dibujarla.
   - Ahora, antes de tocar nada, el foco que estuviera sobre esos inventarios pasa al botón de reroll de cada jugador.

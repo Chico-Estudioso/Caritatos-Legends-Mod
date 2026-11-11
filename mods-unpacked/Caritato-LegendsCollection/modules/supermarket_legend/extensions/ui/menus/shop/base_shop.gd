@@ -55,6 +55,19 @@ func _clc_super_show_arrivals() -> void:
 			_CLC_SUPER_API.show_popup(popup)
 
 
+# Mientras se rerolea, los encargos de esta tienda salen de la lista de
+# bloqueados: si no, la tienda bloqueaba a la vista una casilla nueva al azar
+# por cada encargo (ver hold_pending_locks).
+func _on_RerollButton_pressed(player_index: int) -> void:
+	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
+	if legend == null:
+		._on_RerollButton_pressed(player_index)
+		return
+	legend.hold_pending_locks(player_index)
+	._on_RerollButton_pressed(player_index)
+	legend.release_pending_locks(player_index)
+
+
 func fill_shop_items(player_locked_items: Array, player_index: int, just_entered_shop: bool = false) -> void:
 	var legend = _CLC_SUPER_API.get_runtime(_CLC_SUPER_ID)
 	var locked := player_locked_items

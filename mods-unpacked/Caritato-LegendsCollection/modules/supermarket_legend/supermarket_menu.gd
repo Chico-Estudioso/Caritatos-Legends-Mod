@@ -210,7 +210,7 @@ func _build_card(entry: Dictionary) -> Control:
 
 func _refresh() -> void:
 	var left: int = legend.orders_left(player_index)
-	var unlocked: bool = legend.is_unlocked()
+	var unlocked: bool = legend.is_unlocked(player_index)
 	var can_order := unlocked and left > 0
 	_status_label.text = tr("CLC_SUPER_ORDERS_LEFT") % left if unlocked else tr("CLC_SUPER_LOCKED")
 	_status_chip.add_stylebox_override("panel", UiStyle.box(ACCENT if can_order else UiStyle.OFF, 12, Vector2(16, 6)))

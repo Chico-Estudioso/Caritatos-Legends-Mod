@@ -7,8 +7,9 @@ extends Node
 # las restricciones del personaje) hasta el tier elegido.
 #
 # Para que no rompa la partida:
-#   - Los encargos se ganan al derrotar a un élite o a un jefe (o, si se
-#     configura así, en cada tienda).
+#   - Los encargos se ganan al derrotar a un élite o a un jefe, y se guardan
+#     hasta gastarlos (o, si se configura así, hay encargos en cada tienda,
+#     que no se acumulan).
 #   - Encargar cuesta un recargo (por defecto, el 50 % del precio) que se paga
 #     al momento.
 #   - El artículo no aparece en esta tienda: llega bloqueado a la siguiente,
@@ -20,21 +21,26 @@ const SupermarketRules = preload("res://mods-unpacked/Caritato-LegendsCollection
 const MENU_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/supermarket_legend/supermarket_menu.gd"
 const BOX_POPUP_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/supermarket_legend/order_box_popup.gd"
 const LOG_NAME := "Caritato-LegendsCollection:Supermarket"
+# Encargos gastados en la partida en curso (los ganados se cuentan con las
+# bajas de élites y jefes, que guarda el juego).
+const RUN_STATE_PATH := "user://caritato_legends/supermarket_run.json"
 
 var core = null
 var module_id := ""
 
-# Tienda actual
+# Para las pruebas: dónde se guarda el estado de la partida.
+var run_state_path := RUN_STATE_PATH
+
+# Tienda actual: jugador -> encargos hechos en ella
 var _orders_done := {}
-var _orders_allowed := 0
-var _unlocked := false
 # jugador -> ids encargados en esta tienda (llegan en la siguiente)
 var _pending := {}
 # jugador -> ids que llegan en esta tienda
 var _arriving := {}
-# Bajas de élites y jefes al salir de la tienda anterior.
-var _snapshot_wave := -1
-var _snapshot_kills := -1
+# jugador -> encargos apartados de la lista de bloqueados mientras se rerolea
+var _held := {}
+# {run, kills, spent: {jugador: gastados}} de la partida en curso
+var _run_state := {}
 
 
 func setup(p_core, p_module_id: String) -> void:
@@ -60,26 +66,63 @@ func mode() -> String:
 
 # Se llama al entrar en la tienda, antes de que el juego la rellene.
 func on_shop_opened() -> void:
+	_release_all_held()
 	_arriving = _pending
 	_pending = {}
 	_orders_done = {}
-	var wave := Compat.current_wave()
-	var special_wave := Compat.was_elite_or_boss_wave(wave)
-	_unlocked = SupermarketRules.unlocked_by_kills(_snapshot_wave, _snapshot_kills, wave, Compat.elite_and_boss_kills(), special_wave)
-	_orders_allowed = SupermarketRules.orders_for_shop(mode(), int(get_setting("orders_per_shop", 1)), _unlocked)
+	sync_run_state()
 
 
 func on_shop_closed() -> void:
-	# Al pulsar «Ir» el juego ya ha avanzado la oleada: la foto es para la siguiente tienda.
-	_snapshot_wave = Compat.current_wave()
-	_snapshot_kills = Compat.elite_and_boss_kills()
+	_release_all_held()
+
+
+# Lee los encargos gastados en esta partida. Si es otra partida, empiezan de
+# cero.
+func sync_run_state() -> void:
+	_run_state = SupermarketRules.next_run_state(_read_run_state(), Compat.run_fingerprint(), Compat.elite_and_boss_kills())
+	_write_run_state()
+
+
+# Al rerolear, la tienda del juego cuenta los bloqueados para saber cuántas
+# casillas bloquear a la vista (las primeras) y si se puede rerolear. Los
+# encargos de esta tienda no están en ella: contarlos bloqueaba una casilla
+# nueva al azar y, con la tienda llena de bloqueados, impedía rerolear. Se
+# apartan de la lista mientras dura el reroll y se devuelven después.
+func hold_pending_locks(player_index: int) -> void:
+	release_pending_locks(player_index)
+	var pending: Array = _pending.get(player_index, [])
+	if pending.empty() or not is_active():
+		return
+	var live: Array = Compat.locked_shop_items(player_index)
+	var indices: Array = SupermarketRules.last_occurrences(_ids_of(live), pending)
+	var taken := []
+	for position in range(indices.size() - 1, -1, -1):
+		var index: int = indices[position]
+		taken.push_front(live[index])
+		live.remove(index)
+	if not taken.empty():
+		_held[player_index] = taken
+
+
+func release_pending_locks(player_index: int) -> void:
+	if not _held.has(player_index):
+		return
+	Compat.locked_shop_items(player_index).append_array(_held[player_index])
+	var _erased = _held.erase(player_index)
+
+
+func _release_all_held() -> void:
+	for player_index in _held.keys():
+		release_pending_locks(player_index)
 
 
 # Bloqueados que la tienda pasa al rerolear: sin los encargos de esta tienda,
-# que llegan en la siguiente.
+# que llegan en la siguiente. Si ya se han apartado (hold_pending_locks), no
+# hay nada que quitar.
 func filter_reroll_locked(locked: Array, player_index: int) -> Array:
 	var pending: Array = _pending.get(player_index, [])
-	if pending.empty() or not is_active():
+	if pending.empty() or not is_active() or _held.has(player_index):
 		return locked
 	var kept_indices: Array = SupermarketRules.keep_without(_ids_of(locked), pending)
 	var result := []
@@ -165,12 +208,24 @@ func make_arrival_popup(shop_items: Array, player_index: int) -> Node:
 
 # --- Encargos ------------------------------------------------------------------
 
+# Encargos que le quedan al jugador. En el modo «al derrotar un élite o un
+# jefe» se acumulan durante la partida hasta gastarlos.
 func orders_left(player_index: int) -> int:
-	return int(max(0, _orders_allowed - int(_orders_done.get(player_index, 0))))
+	var per := int(get_setting("orders_per_shop", 1))
+	if mode() == SupermarketRules.MODE_EVERY_SHOP:
+		return SupermarketRules.every_shop_left(per, int(_orders_done.get(player_index, 0)))
+	return SupermarketRules.boss_credits(Compat.elite_and_boss_kills(), per, spent_orders(player_index))
 
 
-func is_unlocked() -> bool:
-	return _orders_allowed > 0
+func spent_orders(player_index: int) -> int:
+	var spent = _run_state.get("spent", {})
+	return int(spent.get(str(player_index), 0)) if spent is Dictionary else 0
+
+
+# ¿Tiene o ha tenido encargos en esta tienda? (si no, el catálogo explica cómo
+# ganarlos).
+func is_unlocked(player_index: int = 0) -> bool:
+	return orders_left(player_index) > 0 or int(_orders_done.get(player_index, 0)) > 0
 
 
 func price_of(item, player_index: int) -> int:
@@ -201,10 +256,8 @@ func get_catalog(player_index: int) -> Array:
 func block_reason(player_index: int) -> String:
 	if not is_active():
 		return "CLC_SUPER_ERROR_INACTIVE"
-	if _orders_allowed <= 0:
-		return "CLC_SUPER_ERROR_LOCKED"
-	if not SupermarketRules.can_order(int(_orders_done.get(player_index, 0)), _orders_allowed):
-		return "CLC_SUPER_ERROR_NO_ORDERS"
+	if orders_left(player_index) <= 0:
+		return "CLC_SUPER_ERROR_NO_ORDERS" if int(_orders_done.get(player_index, 0)) > 0 else "CLC_SUPER_ERROR_LOCKED"
 	if not SupermarketRules.fits_next_shop(Compat.locked_shop_items(player_index).size(), Compat.nb_shop_items()):
 		return "CLC_SUPER_ERROR_NO_SLOT"
 	return ""
@@ -226,6 +279,13 @@ func order(shop: Node, item, player_index: int) -> String:
 		_pending[player_index] = []
 	_pending[player_index].append(item.my_id)
 	_orders_done[player_index] = int(_orders_done.get(player_index, 0)) + 1
+	if mode() != SupermarketRules.MODE_EVERY_SHOP:
+		var spent = _run_state.get("spent", {})
+		if not spent is Dictionary:
+			spent = {}
+		spent[str(player_index)] = spent_orders(player_index) + 1
+		_run_state["spent"] = spent
+		_write_run_state()
 	if shop != null and is_instance_valid(shop) and shop.has_method("_clc_super_on_ordered"):
 		shop._clc_super_on_ordered(player_index)
 	ModLoaderLog.info("Encargo: %s (jugador %d, recargo %d); llega en la siguiente tienda" % [item.my_id, player_index + 1, fee], LOG_NAME)
@@ -240,6 +300,26 @@ func open_catalog(shop: Node, player_index: int, return_focus: Control) -> void:
 	var menu = menu_script.new()
 	get_tree().root.add_child(menu)
 	menu.open(self, shop, player_index, return_focus)
+
+
+func _read_run_state():
+	var file := File.new()
+	if not file.file_exists(run_state_path) or file.open(run_state_path, File.READ) != OK:
+		return {}
+	var parsed := JSON.parse(file.get_as_text())
+	file.close()
+	return parsed.result if parsed.error == OK and parsed.result is Dictionary else {}
+
+
+func _write_run_state() -> void:
+	var dir := Directory.new()
+	var _made = dir.make_dir_recursive(run_state_path.get_base_dir())
+	var file := File.new()
+	if file.open(run_state_path, File.WRITE) != OK:
+		ModLoaderLog.warning("No se pudo guardar %s" % run_state_path, LOG_NAME)
+		return
+	file.store_string(to_json(_run_state))
+	file.close()
 
 
 static func _ids_of(locked: Array) -> Array:

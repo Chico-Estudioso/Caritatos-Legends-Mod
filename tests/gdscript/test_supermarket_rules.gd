@@ -6,9 +6,10 @@ var SupermarketRules = load(MOD_PATH + "modules/supermarket_legend/supermarket_r
 
 
 func _init() -> void:
-	run_case("encargos por tienda según el modo", "test_orders_for_shop")
-	run_case("élite o jefe derrotado", "test_unlocked_by_kills")
-	run_case("límite de encargos", "test_can_order")
+	run_case("encargos ganados con élites y jefes", "test_boss_credits")
+	run_case("encargos en cada tienda", "test_every_shop_left")
+	run_case("encargos gastados por partida", "test_next_run_state")
+	run_case("encargos apartados al rerolear", "test_last_occurrences")
 	run_case("recargo del encargo", "test_order_fee")
 	run_case("hueco en la siguiente tienda", "test_fits_next_shop")
 	run_case("bloqueados de más al entrar", "test_overflow_to_drop")
@@ -17,23 +18,37 @@ func _init() -> void:
 	finish()
 
 
-func test_orders_for_shop() -> void:
-	check(SupermarketRules.orders_for_shop("boss", 1, false) == 0, "sin élite ni jefe no hay encargos")
-	check(SupermarketRules.orders_for_shop("boss", 2, true) == 2, "tras un élite o jefe, los encargos configurados")
-	check(SupermarketRules.orders_for_shop("every_shop", 1, false) == 1, "en cada tienda no hace falta derrotar a nadie")
+func test_boss_credits() -> void:
+	check(SupermarketRules.boss_credits(0, 1, 0) == 0, "sin élites ni jefes no hay encargos")
+	check(SupermarketRules.boss_credits(1, 1, 0) == 1, "un élite derrotado da un encargo")
+	check(SupermarketRules.boss_credits(3, 1, 1) == 2, "los no gastados se guardan")
+	check(SupermarketRules.boss_credits(2, 2, 1) == 3, "varios encargos por élite o jefe")
+	check(SupermarketRules.boss_credits(1, 1, 5) == 0, "nunca negativo")
 
 
-func test_unlocked_by_kills() -> void:
-	check(SupermarketRules.unlocked_by_kills(12, 1, 12, 2, false), "una baja más que al salir de la tienda anterior")
-	check(not SupermarketRules.unlocked_by_kills(12, 2, 12, 2, true), "con foto, una oleada de élite sin baja no cuenta")
-	check(SupermarketRules.unlocked_by_kills(-1, -1, 12, 0, true), "sin foto, basta con que fuera oleada de élite")
-	check(not SupermarketRules.unlocked_by_kills(11, 0, 12, 5, false), "una foto de otra oleada no sirve")
+func test_every_shop_left() -> void:
+	check(SupermarketRules.every_shop_left(1, 0) == 1, "uno por tienda")
+	check(SupermarketRules.every_shop_left(1, 1) == 0, "gastado en esta tienda")
+	check(SupermarketRules.every_shop_left(2, 3) == 0, "nunca negativo")
 
 
-func test_can_order() -> void:
-	check(SupermarketRules.can_order(0, 1), "el primer encargo se permite")
-	check(not SupermarketRules.can_order(1, 1), "no se supera el límite")
-	check(not SupermarketRules.can_order(0, 0), "sin encargos disponibles")
+func test_next_run_state() -> void:
+	var stored := {"run": "abc", "kills": 2, "spent": {"0": 1}}
+	var same: Dictionary = SupermarketRules.next_run_state(stored, "abc", 3)
+	check(same.spent.get("0") == 1 and same.kills == 3, "en la misma partida se conserva lo gastado")
+	var other: Dictionary = SupermarketRules.next_run_state(stored, "xyz", 3)
+	check(other.spent.empty() and other.run == "xyz", "otra huella es otra partida")
+	var fewer: Dictionary = SupermarketRules.next_run_state(stored, "abc", 0)
+	check(fewer.spent.empty(), "con menos bajas que las guardadas es otra partida")
+	check(SupermarketRules.next_run_state(null, "abc", 0).spent.empty(), "sin estado guardado se empieza de cero")
+	check(SupermarketRules.next_run_state({"run": "abc", "spent": "roto"}, "abc", 0).spent.empty(), "un estado roto no rompe nada")
+
+
+func test_last_occurrences() -> void:
+	check(SupermarketRules.last_occurrences(["a", "b", "a"], ["a"]) == [2], "la última aparición")
+	check(SupermarketRules.last_occurrences(["a", "b", "a", "c"], ["a", "c"]) == [2, 3], "una por encargo")
+	check(SupermarketRules.last_occurrences(["a", "a"], ["a", "a"]) == [0, 1], "dos encargos iguales")
+	check(SupermarketRules.last_occurrences(["a"], ["z"]).empty(), "lo que no está no se aparta")
 
 
 func test_order_fee() -> void:

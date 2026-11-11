@@ -427,7 +427,7 @@ class FakeSupermarket:
 	func orders_left(_player_index: int) -> int:
 		return left
 
-	func is_unlocked() -> bool:
+	func is_unlocked(_player_index: int = 0) -> bool:
 		return unlocked
 
 	func order(_shop, _item, _player_index: int) -> String:

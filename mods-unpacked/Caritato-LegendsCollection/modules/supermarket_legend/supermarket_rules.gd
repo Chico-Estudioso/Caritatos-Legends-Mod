@@ -7,27 +7,27 @@ const MODE_BOSS := "boss"
 const MODE_EVERY_SHOP := "every_shop"
 
 
-# Encargos que se pueden hacer en una tienda. En el modo «boss» solo hay
-# encargos en la tienda que sigue a una oleada en la que se derrotó a un élite
-# o a un jefe; en «every_shop», en todas.
-static func orders_for_shop(mode: String, per_unlock: int, unlocked: bool) -> int:
-	if mode == MODE_EVERY_SHOP or unlocked:
-		return int(max(0, per_unlock))
-	return 0
+# Encargos que quedan en el modo «al derrotar un élite o un jefe»: cada élite
+# o jefe derrotado en la partida da per_kill encargos, que se guardan hasta
+# gastarlos.
+static func boss_credits(kills: int, per_kill: int, spent: int) -> int:
+	return int(max(0, kills * int(max(0, per_kill)) - spent))
 
 
-# ¿Se derrotó a un élite o a un jefe en la oleada que acaba de terminar?
-# Con la foto de bajas tomada al salir de la tienda anterior basta comparar.
-# Sin foto (por ejemplo, al continuar una partida guardada) se acepta si la
-# oleada era de élite o de jefe.
-static func unlocked_by_kills(snapshot_wave: int, snapshot_kills: int, wave: int, kills_now: int, special_wave: bool) -> bool:
-	if snapshot_wave == wave and snapshot_kills >= 0:
-		return kills_now > snapshot_kills
-	return special_wave
+# Encargos que quedan en el modo «en cada tienda»: no se acumulan.
+static func every_shop_left(per_shop: int, done: int) -> int:
+	return int(max(0, per_shop - done))
 
 
-static func can_order(orders_done: int, orders_allowed: int) -> bool:
-	return orders_done < orders_allowed
+# Estado guardado de la partida: {run, kills, spent: {jugador: gastados}}. Si
+# es otra partida (otra huella, o menos bajas que las guardadas, que en una
+# misma partida solo suben), los gastados empiezan de cero.
+static func next_run_state(stored, fingerprint: String, kills: int) -> Dictionary:
+	var same_run: bool = stored is Dictionary and str(stored.get("run", "")) == fingerprint and kills >= int(stored.get("kills", 0))
+	var spent = stored.get("spent", {}) if same_run else {}
+	if not spent is Dictionary:
+		spent = {}
+	return {"run": fingerprint, "kills": kills, "spent": spent}
 
 
 # Recargo del encargo: porcentaje del precio del artículo, redondeado hacia arriba.
@@ -56,6 +56,22 @@ static func overflow_to_drop(is_order: Array, max_slots: int) -> Array:
 				excess -= 1
 			index -= 1
 	return drop
+
+
+# Índices de las últimas apariciones de cada id de «wanted» (una por cada vez
+# que aparece en «wanted»). Los encargos se añaden al final de la lista de
+# bloqueados, así que son las últimas apariciones de su id.
+static func last_occurrences(ids: Array, wanted: Array) -> Array:
+	var remaining := wanted.duplicate()
+	var found := []
+	var index := ids.size() - 1
+	while index >= 0 and not remaining.empty():
+		if remaining.has(ids[index]):
+			remaining.erase(ids[index])
+			found.append(index)
+		index -= 1
+	found.sort()
+	return found
 
 
 # Quita de una lista de ids una aparición de cada id de «remove» (los
