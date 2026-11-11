@@ -132,26 +132,33 @@ Diseño:
 - El catálogo sale de `ItemService.get_pool(tier, ITEMS/WEAPONS)` (solo lo desbloqueado y de los DLC activos) y se filtra con las mismas restricciones que usa el juego al generar la tienda: prohibiciones del jugador y del personaje, grupos vetados, etiquetas retiradas, máximo por objeto, armas cuerpo a cuerpo/a distancia, tier mínimo y máximo de armas y estructuras.
 - **Equilibrio (pedido por Mauro)**:
   - **Aviso**: la leyenda viene apagada por defecto y la ficha avisa de que es muy fuerte.
-  - **Cuándo se gana un encargo**: por defecto, en la tienda que sigue a una oleada en la que se derrotó a un élite o a un jefe. Se mira con `RunData.elites_killed_this_run` y `bosses_killed_this_run`: se toma una foto al salir de la tienda anterior y se compara al entrar. Al continuar una partida guardada no hay foto, y basta con que la oleada fuera de élite (`RunData.elites_spawn`) o la del jefe.
-  - **Modo «en cada tienda»**: los élites solo aparecen desde el Peligro 2; para quien juegue en Peligro 0 y 1, este modo da los encargos en cada tienda.
+  - **Cuándo se gana un encargo**: por defecto, cada élite o jefe derrotado da un encargo (ajustable), que **se guarda hasta gastarlo**: si no se usa en la tienda siguiente, sigue disponible en las demás.
+    - Ganados: élites y jefes derrotados en la partida (`RunData.elites_killed_this_run` y `bosses_killed_this_run`, que el juego guarda con la partida) × encargos por élite o jefe.
+    - Gastados: se apuntan en `user://caritato_legends/supermarket_run.json` junto con una huella de la partida (personajes, dificultad, modo y élites y jefes sorteados al empezar). Al continuar una partida guardada, siguen gastados.
+    - Otra partida (otra huella, o menos bajas que las apuntadas) empieza con cero gastados.
+  - **Modo «en cada tienda»**: los élites solo aparecen desde el Peligro 2; para quien juegue en Peligro 0 y 1, este modo da los encargos en cada tienda. Estos no se acumulan.
   - **Precio**: cada encargo cuesta un recargo (por defecto, el 50 % del precio del artículo) que se paga al encargar.
   - **Entrega**: el artículo no aparece en la tienda actual; llega **bloqueado a la siguiente**, donde se compra a su precio normal.
 - **Cómo viaja el encargo**:
   - Se añade a la lista de bloqueados del juego con `RunData.lock_player_shop_item`, así que se guarda con la partida.
-  - La extensión de la tienda lo quita de los bloqueados al rerolear en la tienda en la que se hizo.
+  - Al rerolear en la tienda en la que se hizo, la extensión lo aparta un momento de la lista de bloqueados y lo devuelve después.
+    - La tienda del juego bloquea a la vista las primeras casillas, tantas como bloqueados haya, y no deja rerolear con 4 bloqueados.
+    - Contar el encargo bloqueaba una casilla nueva al azar en cada reroll (fallo visto por Mauro) y, con 3 bloqueados más el encargo, impedía rerolear.
   - Si al entrar en la siguiente tienda hay más bloqueados que huecos, se descartan antes los que no son encargos.
   - Los encargos que llegan se vuelven a bloquear aunque el jugador tenga desactivado «mantener bloqueados».
 - El precio mostrado sale de `ItemService.get_value()`, así que incluye la Leyenda del Mercader si está activa.
 - **Rasgo propio: la caja del encargo.** En la tienda a la que llega un encargo aparece «¡Tu encargo ha llegado!»: una caja de cartón que tiembla con cada toque (Aceptar o clic) y al tercero se abre con confeti y muestra el artículo. Es solo visual; ajuste «Abrir la caja del encargo».
 - Limitaciones conocidas:
-  - Si se sale al menú en mitad de una tienda y se continúa la partida, se puede volver a encargar en esa tienda (pagando de nuevo el recargo).
-  - En ese caso, el encargo ya hecho podría aparecer al rerolear esa misma tienda.
+  - Si se sale al menú en mitad de una tienda y se continúa la partida, el encargo ya hecho podría aparecer al rerolear esa misma tienda.
 
 Pruebas manuales (Peligro 2 o más):
 - [ ] La leyenda aparece apagada con el aviso de que es muy fuerte; al encenderla pide reiniciar.
 - [ ] Antes del primer élite, el catálogo dice «Sin encargos» y no deja encargar.
 - [ ] Tras derrotar a un élite: el botón muestra «Supermercado (1)» y se puede encargar una vez; el recargo (50 %) se descuenta al momento.
 - [ ] El encargo no aparece en la tienda actual, ni al rerolear.
+- [ ] Tras encargar, al rerolear no se bloquea ningún artículo nuevo; los que bloqueaste tú siguen bloqueados.
+- [ ] Si no gastas el encargo, en la tienda siguiente sigue ahí («Supermercado (1)»); tras otro élite o jefe, «Supermercado (2)».
+- [ ] Guardar y salir con un encargo sin gastar y continuar: sigue disponible; uno ya gastado no vuelve.
 - [ ] En la siguiente tienda aparece **bloqueado**; se compra a su precio normal.
 - [ ] En una oleada de élite en la que el élite no muere, no se gana encargo.
 - [ ] Con 4 artículos bloqueados, encargar avisa de que no cabría.

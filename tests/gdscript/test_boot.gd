@@ -7,6 +7,31 @@ extends "res://tests/gdscript/base_test.gd"
 # valores neutros a través de core/compat.gd.
 
 const CONFIG_PATH := "user://caritato_legends/settings.json"
+const SUPERMARKET_STATE_PATH := "user://caritato_test_supermarket_run.json"
+# RunData de mentira con lo que usa el Supermercado.
+const FAKE_RUN_DATA := """extends Node
+var is_coop_run := false
+var is_endless_run := false
+var current_wave := 12
+var nb_of_waves := 20
+var current_difficulty := 3
+var bosses_spawn := ["boss_a"]
+var elites_spawn := [[11, 0, "elite_a"], [31, 0, "elite_endless"]]
+var elites_killed_this_run := []
+var bosses_killed_this_run := []
+var locked_shop_items := [[], [], [], []]
+var gold := 100
+func get_player_count() -> int:
+	return 1
+func get_player_character(_player_index: int):
+	return null
+func get_player_currency(_player_index: int) -> int:
+	return gold
+func remove_currency(amount: int, _player_index: int) -> void:
+	gold -= amount
+func lock_player_shop_item(item, wave: int, player_index: int) -> void:
+	locked_shop_items[player_index].push_back([item, wave])
+"""
 
 var core = null
 
@@ -266,6 +291,8 @@ func test_supermarket_orders() -> void:
 	check(legend != null, "falta el runtime del Supermercado")
 	if legend == null:
 		return
+	legend.run_state_path = SUPERMARKET_STATE_PATH
+	_remove_file(SUPERMARKET_STATE_PATH)
 	var fake := GDScript.new()
 	fake.source_code = "extends Resource\nvar my_id := \"item_test\"\nvar name := \"ITEM_TEST\"\nvar tier := 0\nvar value := 10\nvar icon = null\n"
 	var _reloaded = fake.reload()
@@ -307,7 +334,74 @@ func test_supermarket_orders() -> void:
 		if entry[0] == ordered:
 			kept_order = true
 	check(kept_order, "el encargo pagado debería conservarse")
+
+	_test_supermarket_saved_orders(legend, fake)
+	_remove_file(SUPERMARKET_STATE_PATH)
 	core.reset_defaults()
+
+
+# Modo «al derrotar un élite o un jefe» con un RunData de mentira: los
+# encargos ganados se guardan hasta gastarlos, también al continuar la
+# partida, y al rerolear el encargo no cuenta como bloqueado de la tienda.
+func _test_supermarket_saved_orders(legend, fake: GDScript) -> void:
+	var _stored = core.set_setting("supermarket_legend", "order_mode", "boss")
+	var run_data := _fake_node(FAKE_RUN_DATA)
+	run_data.name = "RunData"
+	root.add_child(run_data)
+	var ordered = fake.new()
+
+	legend.on_shop_opened()
+	check(legend.orders_left(0) == 0, "sin élites ni jefes no hay encargos")
+	run_data.elites_killed_this_run.append(1)
+	legend.on_shop_closed()
+	legend.on_shop_opened()
+	check(legend.orders_left(0) == 1, "un élite derrotado da un encargo")
+	check(legend.is_unlocked(0), "el catálogo debería estar abierto")
+	# No lo gasta, pasa otra oleada y derrota a un jefe: se suman.
+	run_data.bosses_killed_this_run.append(2)
+	legend.on_shop_closed()
+	legend.on_shop_opened()
+	check(legend.orders_left(0) == 2, "el encargo sin gastar debería guardarse (%d)" % legend.orders_left(0))
+
+	# Al rerolear, el encargo sale un momento de la lista de bloqueados.
+	var kept = fake.new()
+	kept.my_id = "item_kept"
+	run_data.locked_shop_items[0].append([kept, 12])
+	check(legend.order(null, ordered, 0) == "", "debería poder encargarse")
+	check(legend.orders_left(0) == 1, "queda un encargo")
+	var live: Array = run_data.locked_shop_items[0]
+	check(live.size() == 2 and live[1][0] == ordered, "el encargo va a la lista de bloqueados")
+	legend.hold_pending_locks(0)
+	check(live.size() == 1 and live[0][0] == kept, "durante el reroll solo cuenta lo bloqueado en la tienda")
+	check(legend.filter_reroll_locked(live, 0).size() == 1, "con el encargo apartado no se quita nada más")
+	legend.release_pending_locks(0)
+	check(live.size() == 2 and live[1][0] == ordered, "tras el reroll el encargo vuelve a la lista")
+
+	# Al continuar la partida (runtime nuevo que lee el archivo), lo gastado sigue gastado.
+	var reloaded = load(MOD_PATH + "modules/supermarket_legend/supermarket_legend.gd").new()
+	reloaded.setup(core, "supermarket_legend")
+	reloaded.run_state_path = SUPERMARKET_STATE_PATH
+	reloaded.on_shop_opened()
+	check(reloaded.orders_left(0) == 1, "al continuar la partida debería quedar uno (%d)" % reloaded.orders_left(0))
+	reloaded.free()
+
+	# En el modo infinito el juego sortea más élites a mitad de partida: sigue
+	# siendo la misma.
+	run_data.elites_spawn.append([41, 0, "elite_endless_2"])
+	legend.on_shop_opened()
+	check(legend.spent_orders(0) == 1, "los élites del modo infinito no cambian la partida")
+
+	# Otra partida empieza de cero.
+	run_data.elites_spawn = [[12, 0, "elite_b"]]
+	legend.on_shop_opened()
+	check(legend.spent_orders(0) == 0, "en otra partida no hay encargos gastados")
+	run_data.free()
+
+
+func _remove_file(path: String) -> void:
+	var dir := Directory.new()
+	if dir.file_exists(path):
+		var _removed = dir.remove(path)
 
 
 func test_popup_queue() -> void:

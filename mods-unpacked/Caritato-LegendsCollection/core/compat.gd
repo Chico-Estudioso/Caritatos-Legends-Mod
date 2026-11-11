@@ -392,11 +392,8 @@ static func remove_currency(amount: int, player_index: int) -> void:
 
 # --- Élites, jefes y artículos bloqueados -----------------------------------------
 
-# EliteType del juego: 0 = élite, 1 = horda.
-const ELITE_TYPE_ELITE := 0
-
-
-# Élites y jefes derrotados en lo que va de partida.
+# Élites y jefes derrotados en lo que va de partida (el juego los guarda con
+# la partida).
 static func elite_and_boss_kills() -> int:
 	var run_data = _singleton("RunData")
 	if run_data == null:
@@ -408,17 +405,28 @@ static func elite_and_boss_kills() -> int:
 	return total
 
 
-# La oleada tenía un élite (no una horda) o era la del jefe.
-static func was_elite_or_boss_wave(wave: int) -> bool:
+# Huella de la partida en curso: no cambia al guardar y continuar, y casi
+# siempre cambia de una partida a otra. Junta los personajes, la dificultad,
+# el modo y los élites y jefes que se sortean al empezar. En el modo infinito
+# se sortean más élites pasada la oleada 20; esos no cuentan.
+static func run_fingerprint() -> String:
 	var run_data = _singleton("RunData")
 	if run_data == null:
-		return false
-	if "elites_spawn" in run_data:
+		return ""
+	var parts := []
+	for property in ["current_difficulty", "is_endless_run", "is_coop_run", "bosses_spawn"]:
+		if property in run_data:
+			parts.append(str(run_data.get(property)))
+	if "elites_spawn" in run_data and run_data.elites_spawn is Array:
+		var last_wave := normal_wave_count()
 		for entry in run_data.elites_spawn:
 			# [oleada, tipo, id]
-			if entry is Array and entry.size() >= 2 and int(entry[0]) == wave and int(entry[1]) == ELITE_TYPE_ELITE:
-				return true
-	return wave == normal_wave_count()
+			if entry is Array and not entry.empty() and int(entry[0]) <= last_wave:
+				parts.append(str(entry))
+	for player_index in get_player_count():
+		var character = get_player_character(player_index)
+		parts.append(str(character.my_id) if character != null and "my_id" in character else "")
+	return str(PoolStringArray(parts).join("|").hash())
 
 
 static func nb_shop_items() -> int:

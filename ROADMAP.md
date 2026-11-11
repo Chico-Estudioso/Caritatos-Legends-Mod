@@ -39,6 +39,7 @@ Estados: `[ ]` pendiente, `[~]` en curso, `[x]` terminado, `[!]` bloqueado. Se a
 - [x] La Leyenda del Mercader (FreeRerolls + SIFD's Mod).
 - [x] La Leyenda del Supermercado (Supermarket), versión de un jugador.
 - [ ] Supermercado en cooperativo.
+- [x] Supermercado: el reroll ya no bloquea artículos al azar tras encargar, y los encargos ganados se guardan hasta gastarlos.
 - [x] Supermercado equilibrado: aviso de opción muy fuerte, encargos al derrotar élites o jefes, recargo y entrega en la siguiente tienda.
 - [x] Interfaz Caritatopc con forma de biblioteca y estética común (`ui/ui_style.gd`).
 - [x] Rasgo interactivo distintivo para cada leyenda: Regalo (confirmación con choque de puños), Supermercado (caja del encargo), Anzuelo («¡Pica!»), Mercader (regateo) y Cosecha Eterna (cosecha dorada).
