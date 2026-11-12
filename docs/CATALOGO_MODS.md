@@ -132,10 +132,11 @@ Diseño:
 - El catálogo sale de `ItemService.get_pool(tier, ITEMS/WEAPONS)` (solo lo desbloqueado y de los DLC activos) y se filtra con las mismas restricciones que usa el juego al generar la tienda: prohibiciones del jugador y del personaje, grupos vetados, etiquetas retiradas, máximo por objeto, armas cuerpo a cuerpo/a distancia, tier mínimo y máximo de armas y estructuras.
 - **Equilibrio (pedido por Mauro)**:
   - **Aviso**: la leyenda viene apagada por defecto y la ficha avisa de que es muy fuerte.
-  - **Cuándo se gana un encargo**: por defecto, cada élite o jefe derrotado da un encargo (ajustable), que **se guarda hasta gastarlo**: si no se usa en la tienda siguiente, sigue disponible en las demás.
-    - Ganados: élites y jefes derrotados en la partida (`RunData.elites_killed_this_run` y `bosses_killed_this_run`, que el juego guarda con la partida) × encargos por élite o jefe.
-    - Gastados: se apuntan en `user://caritato_legends/supermarket_run.json` junto con una huella de la partida (personajes, dificultad, modo y élites y jefes sorteados al empezar). Al continuar una partida guardada, siguen gastados.
-    - Otra partida (otra huella, o menos bajas que las apuntadas) empieza con cero gastados.
+  - **Cuándo se gana un encargo**: por defecto, un encargo (ajustable) por cada **oleada** en la que se derrota al menos a un élite o a un jefe. Si caen dos a la vez (los dos jefes de la oleada 20 en Peligro 5), cuenta una vez. El encargo **se guarda hasta gastarlo**: si no se usa en la tienda siguiente, sigue disponible en las demás.
+    - Al entrar en cada tienda se comparan las bajas de élites y jefes (`RunData.elites_killed_this_run` y `bosses_killed_this_run`) con las apuntadas en la tienda anterior; si han subido, se suma el encargo de esa oleada.
+    - Ganados, gastados, bajas y oleada se apuntan en `user://caritato_legends/supermarket_run.json` con una huella de la partida (personajes, dificultad y modo). Al continuar una partida guardada, siguen igual.
+    - Brotato guarda una sola partida a la vez. Una partida nueva se reconoce por otra huella, por tener menos bajas que las apuntadas o por volver a la oleada 1; entonces todo empieza de cero.
+    - La huella no usa las listas de élites y jefes sorteados: el juego las amplía a mitad de partida. Antes contaba un encargo por baja: con dos jefes a la vez, o si el juego contaba dos veces el mismo, salían dos (visto por Mauro en la 1.2.0.2).
   - **Modo «en cada tienda»**: los élites solo aparecen desde el Peligro 2; para quien juegue en Peligro 0 y 1, este modo da los encargos en cada tienda. Estos no se acumulan.
   - **Precio**: cada encargo cuesta un recargo (por defecto, el 50 % del precio del artículo) que se paga al encargar.
   - **Entrega**: el artículo no aparece en la tienda actual; llega **bloqueado a la siguiente**, donde se compra a su precio normal.
@@ -158,6 +159,8 @@ Pruebas manuales (Peligro 2 o más):
 - [ ] El encargo no aparece en la tienda actual, ni al rerolear.
 - [ ] Tras encargar, al rerolear no se bloquea ningún artículo nuevo; los que bloqueaste tú siguen bloqueados.
 - [ ] Si no gastas el encargo, en la tienda siguiente sigue ahí («Supermercado (1)»); tras otro élite o jefe, «Supermercado (2)».
+- [ ] Si gastas el encargo, tras el siguiente élite o jefe hay uno solo («Supermercado (1)»).
+- [ ] En Peligro 5, los dos jefes de la oleada 20 dan un solo encargo.
 - [ ] Guardar y salir con un encargo sin gastar y continuar: sigue disponible; uno ya gastado no vuelve.
 - [ ] En la siguiente tienda aparece **bloqueado**; se compra a su precio normal.
 - [ ] En una oleada de élite en la que el élite no muere, no se gana encargo.

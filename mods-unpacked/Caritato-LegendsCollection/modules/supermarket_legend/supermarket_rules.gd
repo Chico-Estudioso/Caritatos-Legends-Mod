@@ -7,11 +7,10 @@ const MODE_BOSS := "boss"
 const MODE_EVERY_SHOP := "every_shop"
 
 
-# Encargos que quedan en el modo «al derrotar un élite o un jefe»: cada élite
-# o jefe derrotado en la partida da per_kill encargos, que se guardan hasta
-# gastarlos.
-static func boss_credits(kills: int, per_kill: int, spent: int) -> int:
-	return int(max(0, kills * int(max(0, per_kill)) - spent))
+# Encargos que quedan en el modo «al derrotar un élite o un jefe»: los
+# ganados en la partida menos los gastados. Se guardan hasta gastarlos.
+static func credits(earned: int, spent: int) -> int:
+	return int(max(0, earned - spent))
 
 
 # Encargos que quedan en el modo «en cada tienda»: no se acumulan.
@@ -19,15 +18,33 @@ static func every_shop_left(per_shop: int, done: int) -> int:
 	return int(max(0, per_shop - done))
 
 
-# Estado guardado de la partida: {run, kills, spent: {jugador: gastados}}. Si
-# es otra partida (otra huella, o menos bajas que las guardadas, que en una
-# misma partida solo suben), los gastados empiezan de cero.
-static func next_run_state(stored, fingerprint: String, kills: int) -> Dictionary:
-	var same_run: bool = stored is Dictionary and str(stored.get("run", "")) == fingerprint and kills >= int(stored.get("kills", 0))
-	var spent = stored.get("spent", {}) if same_run else {}
+# ¿Es la misma partida que la del estado guardado? Brotato solo guarda una
+# partida a la vez, así que basta con reconocer una nueva: otra huella
+# (personajes, dificultad, modo), menos bajas de élites y jefes que las
+# apuntadas (en una partida solo suben) o vuelta a la oleada 1.
+static func is_same_run(stored, fingerprint: String, kills: int, wave: int) -> bool:
+	if not stored is Dictionary or str(stored.get("run", "")) != fingerprint:
+		return false
+	if kills < int(stored.get("kills", 0)):
+		return false
+	return not (wave <= 1 and int(stored.get("wave", 0)) > 1)
+
+
+# Estado de la partida al entrar en una tienda:
+# {run, kills, wave, earned, spent: {jugador: gastados}}.
+# Si en la oleada que acaba de terminar cayó al menos un élite o jefe (hay
+# más bajas que las apuntadas), se ganan per_wave encargos: uno por oleada
+# aunque caigan dos jefes a la vez. En otra partida, todo empieza de cero.
+static func next_run_state(stored, fingerprint: String, kills: int, wave: int, per_wave: int) -> Dictionary:
+	if not is_same_run(stored, fingerprint, kills, wave):
+		return {"run": fingerprint, "kills": kills, "wave": wave, "earned": 0, "spent": {}}
+	var earned := int(stored.get("earned", 0))
+	if kills > int(stored.get("kills", 0)):
+		earned += int(max(0, per_wave))
+	var spent = stored.get("spent", {})
 	if not spent is Dictionary:
 		spent = {}
-	return {"run": fingerprint, "kills": kills, "spent": spent}
+	return {"run": fingerprint, "kills": kills, "wave": wave, "earned": earned, "spent": spent}
 
 
 # Recargo del encargo: porcentaje del precio del artículo, redondeado hacia arriba.

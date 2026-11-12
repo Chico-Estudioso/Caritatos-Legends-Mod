@@ -340,9 +340,10 @@ func test_supermarket_orders() -> void:
 	core.reset_defaults()
 
 
-# Modo «al derrotar un élite o un jefe» con un RunData de mentira: los
-# encargos ganados se guardan hasta gastarlos, también al continuar la
-# partida, y al rerolear el encargo no cuenta como bloqueado de la tienda.
+# Modo «al derrotar un élite o un jefe» con un RunData de mentira: un
+# encargo por oleada con algún élite o jefe derrotado, que se guarda hasta
+# gastarlo (también al continuar la partida), y al rerolear el encargo no
+# cuenta como bloqueado de la tienda.
 func _test_supermarket_saved_orders(legend, fake: GDScript) -> void:
 	var _stored = core.set_setting("supermarket_legend", "order_mode", "boss")
 	var run_data := _fake_node(FAKE_RUN_DATA)
@@ -350,25 +351,28 @@ func _test_supermarket_saved_orders(legend, fake: GDScript) -> void:
 	root.add_child(run_data)
 	var ordered = fake.new()
 
+	run_data.current_wave = 10
 	legend.on_shop_opened()
 	check(legend.orders_left(0) == 0, "sin élites ni jefes no hay encargos")
-	run_data.elites_killed_this_run.append(1)
-	legend.on_shop_closed()
-	legend.on_shop_opened()
+	_next_wave(legend, run_data, 1)
 	check(legend.orders_left(0) == 1, "un élite derrotado da un encargo")
 	check(legend.is_unlocked(0), "el catálogo debería estar abierto")
 	# No lo gasta, pasa otra oleada y derrota a un jefe: se suman.
-	run_data.bosses_killed_this_run.append(2)
-	legend.on_shop_closed()
-	legend.on_shop_opened()
+	_next_wave(legend, run_data, 1)
 	check(legend.orders_left(0) == 2, "el encargo sin gastar debería guardarse (%d)" % legend.orders_left(0))
+	# Dos jefes en la misma oleada (o uno que el juego cuenta dos veces): uno solo.
+	_next_wave(legend, run_data, 2)
+	check(legend.orders_left(0) == 3, "dos jefes en la misma oleada dan un solo encargo (%d)" % legend.orders_left(0))
+	# Volver a entrar en la misma tienda no suma nada.
+	legend.on_shop_opened()
+	check(legend.orders_left(0) == 3, "la misma tienda no vuelve a sumar")
 
 	# Al rerolear, el encargo sale un momento de la lista de bloqueados.
 	var kept = fake.new()
 	kept.my_id = "item_kept"
 	run_data.locked_shop_items[0].append([kept, 12])
 	check(legend.order(null, ordered, 0) == "", "debería poder encargarse")
-	check(legend.orders_left(0) == 1, "queda un encargo")
+	check(legend.orders_left(0) == 2, "quedan dos encargos")
 	var live: Array = run_data.locked_shop_items[0]
 	check(live.size() == 2 and live[1][0] == ordered, "el encargo va a la lista de bloqueados")
 	legend.hold_pending_locks(0)
@@ -382,20 +386,31 @@ func _test_supermarket_saved_orders(legend, fake: GDScript) -> void:
 	reloaded.setup(core, "supermarket_legend")
 	reloaded.run_state_path = SUPERMARKET_STATE_PATH
 	reloaded.on_shop_opened()
-	check(reloaded.orders_left(0) == 1, "al continuar la partida debería quedar uno (%d)" % reloaded.orders_left(0))
+	check(reloaded.orders_left(0) == 2, "al continuar la partida deberían quedar dos (%d)" % reloaded.orders_left(0))
 	reloaded.free()
 
-	# En el modo infinito el juego sortea más élites a mitad de partida: sigue
-	# siendo la misma.
-	run_data.elites_spawn.append([41, 0, "elite_endless_2"])
+	# El juego sortea más élites a mitad de partida: sigue siendo la misma.
+	run_data.elites_spawn.append([21, 0, "elite_after_wave_10"])
+	run_data.bosses_spawn.append("boss_b")
 	legend.on_shop_opened()
-	check(legend.spent_orders(0) == 1, "los élites del modo infinito no cambian la partida")
+	check(legend.spent_orders(0) == 1 and legend.orders_left(0) == 2, "cambiar las listas de élites y jefes no cambia la partida")
 
-	# Otra partida empieza de cero.
-	run_data.elites_spawn = [[12, 0, "elite_b"]]
+	# Otra partida (vuelve a la oleada 1, sin bajas) empieza de cero.
+	run_data.elites_killed_this_run.clear()
+	run_data.bosses_killed_this_run.clear()
+	run_data.current_wave = 1
 	legend.on_shop_opened()
-	check(legend.spent_orders(0) == 0, "en otra partida no hay encargos gastados")
+	check(legend.spent_orders(0) == 0 and legend.orders_left(0) == 0, "en otra partida no hay encargos ganados ni gastados")
 	run_data.free()
+
+
+# Juega una oleada en la que caen `kills` élites o jefes y entra en su tienda.
+func _next_wave(legend, run_data: Node, kills: int) -> void:
+	legend.on_shop_closed()
+	run_data.current_wave += 1
+	for kill in kills:
+		run_data.bosses_killed_this_run.append(kill)
+	legend.on_shop_opened()
 
 
 func _remove_file(path: String) -> void:
