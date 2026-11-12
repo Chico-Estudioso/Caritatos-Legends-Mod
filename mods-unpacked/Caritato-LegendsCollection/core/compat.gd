@@ -405,24 +405,19 @@ static func elite_and_boss_kills() -> int:
 	return total
 
 
-# Huella de la partida en curso: no cambia al guardar y continuar, y casi
-# siempre cambia de una partida a otra. Junta los personajes, la dificultad,
-# el modo y los élites y jefes que se sortean al empezar. En el modo infinito
-# se sortean más élites pasada la oleada 20; esos no cuentan.
+# Huella de la partida en curso: personajes, dificultad y modo. No usa las
+# listas de élites y jefes sorteados, que el juego amplía a mitad de partida
+# (y que una actualización podría tocar). Brotato solo guarda una partida a
+# la vez; una partida nueva se reconoce además porque empieza en la oleada 1
+# y sin bajas (ver SupermarketRules.is_same_run).
 static func run_fingerprint() -> String:
 	var run_data = _singleton("RunData")
 	if run_data == null:
 		return ""
 	var parts := []
-	for property in ["current_difficulty", "is_endless_run", "is_coop_run", "bosses_spawn"]:
+	for property in ["current_difficulty", "is_endless_run", "is_coop_run"]:
 		if property in run_data:
 			parts.append(str(run_data.get(property)))
-	if "elites_spawn" in run_data and run_data.elites_spawn is Array:
-		var last_wave := normal_wave_count()
-		for entry in run_data.elites_spawn:
-			# [oleada, tipo, id]
-			if entry is Array and not entry.empty() and int(entry[0]) <= last_wave:
-				parts.append(str(entry))
 	for player_index in get_player_count():
 		var character = get_player_character(player_index)
 		parts.append(str(character.my_id) if character != null and "my_id" in character else "")

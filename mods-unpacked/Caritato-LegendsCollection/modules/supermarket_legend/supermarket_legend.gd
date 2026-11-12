@@ -7,8 +7,8 @@ extends Node
 # las restricciones del personaje) hasta el tier elegido.
 #
 # Para que no rompa la partida:
-#   - Los encargos se ganan al derrotar a un élite o a un jefe, y se guardan
-#     hasta gastarlos (o, si se configura así, hay encargos en cada tienda,
+#   - Los encargos se ganan en cada oleada en la que se derrota a un élite o
+#     a un jefe (uno por oleada), y se guardan hasta gastarlos (o, si se configura así, hay encargos en cada tienda,
 #     que no se acumulan).
 #   - Encargar cuesta un recargo (por defecto, el 50 % del precio) que se paga
 #     al momento.
@@ -21,8 +21,7 @@ const SupermarketRules = preload("res://mods-unpacked/Caritato-LegendsCollection
 const MENU_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/supermarket_legend/supermarket_menu.gd"
 const BOX_POPUP_PATH := "res://mods-unpacked/Caritato-LegendsCollection/modules/supermarket_legend/order_box_popup.gd"
 const LOG_NAME := "Caritato-LegendsCollection:Supermarket"
-# Encargos gastados en la partida en curso (los ganados se cuentan con las
-# bajas de élites y jefes, que guarda el juego).
+# Encargos ganados y gastados en la partida en curso.
 const RUN_STATE_PATH := "user://caritato_legends/supermarket_run.json"
 
 var core = null
@@ -77,10 +76,12 @@ func on_shop_closed() -> void:
 	_release_all_held()
 
 
-# Lee los encargos gastados en esta partida. Si es otra partida, empiezan de
-# cero.
+# Al entrar en la tienda: suma los encargos ganados en la oleada que acaba de
+# terminar (uno por oleada con algún élite o jefe derrotado) y lee los
+# gastados. Si es otra partida, todo empieza de cero.
 func sync_run_state() -> void:
-	_run_state = SupermarketRules.next_run_state(_read_run_state(), Compat.run_fingerprint(), Compat.elite_and_boss_kills())
+	var per := int(get_setting("orders_per_shop", 1))
+	_run_state = SupermarketRules.next_run_state(_read_run_state(), Compat.run_fingerprint(), Compat.elite_and_boss_kills(), Compat.current_wave(), per)
 	_write_run_state()
 
 
@@ -214,7 +215,7 @@ func orders_left(player_index: int) -> int:
 	var per := int(get_setting("orders_per_shop", 1))
 	if mode() == SupermarketRules.MODE_EVERY_SHOP:
 		return SupermarketRules.every_shop_left(per, int(_orders_done.get(player_index, 0)))
-	return SupermarketRules.boss_credits(Compat.elite_and_boss_kills(), per, spent_orders(player_index))
+	return SupermarketRules.credits(int(_run_state.get("earned", 0)), spent_orders(player_index))
 
 
 func spent_orders(player_index: int) -> int:
