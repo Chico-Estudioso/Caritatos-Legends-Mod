@@ -7,8 +7,9 @@ extends Node
 # las restricciones del personaje) hasta el tier elegido.
 #
 # Para que no rompa la partida:
-#   - Los encargos se ganan en cada oleada en la que se derrota a un élite o
-#     a un jefe (uno por oleada), y se guardan hasta gastarlos (o, si se configura así, hay encargos en cada tienda,
+#   - Los encargos se ganan en cada oleada en la que se derrota a un jefe o
+#     al élite de una oleada de élite (uno por oleada), y se guardan hasta
+#     gastarlos (o, si se configura así, hay encargos en cada tienda,
 #     que no se acumulan).
 #   - Encargar cuesta un recargo (por defecto, el 50 % del precio) que se paga
 #     al momento.
@@ -76,13 +77,18 @@ func on_shop_closed() -> void:
 	_release_all_held()
 
 
-# Al entrar en la tienda: suma los encargos ganados en la oleada que acaba de
-# terminar (uno por oleada con algún élite o jefe derrotado) y lee los
-# gastados. Si es otra partida, todo empieza de cero.
+# Al entrar en la tienda: suma el encargo de la oleada que acaba de terminar
+# (si cayó un jefe, o el élite de una oleada de élite) y lee los gastados. Si
+# es otra partida, todo empieza de cero. Deja constancia en modloader.log.
 func sync_run_state() -> void:
 	var per := int(get_setting("orders_per_shop", 1))
-	_run_state = SupermarketRules.next_run_state(_read_run_state(), Compat.run_fingerprint(), Compat.elite_and_boss_kills(), Compat.current_wave(), per)
+	var wave := Compat.current_wave()
+	var elite_wave := Compat.is_scheduled_elite_wave(wave)
+	_run_state = SupermarketRules.next_run_state(_read_run_state(), Compat.run_fingerprint(), Compat.elite_kills(), Compat.boss_kills(), wave, elite_wave, per)
 	_write_run_state()
+	ModLoaderLog.info("Encargos en la tienda de la oleada %d: élites derrotados %d, jefes %d, oleada de élite %s; ganados %d, gastados %d" % [
+		wave, int(_run_state.elite_kills), int(_run_state.boss_kills), "sí" if elite_wave else "no",
+		int(_run_state.earned), spent_orders(0)], LOG_NAME)
 
 
 # Al rerolear, la tienda del juego cuenta los bloqueados para saber cuántas

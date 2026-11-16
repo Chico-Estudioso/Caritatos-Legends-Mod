@@ -9,6 +9,7 @@ func _init() -> void:
 	run_case("encargos ganados menos gastados", "test_credits")
 	run_case("encargos en cada tienda", "test_every_shop_left")
 	run_case("misma partida o partida nueva", "test_is_same_run")
+	run_case("qué oleadas dan encargo", "test_wave_earns")
 	run_case("un encargo por oleada con élite o jefe", "test_next_run_state")
 	run_case("encargos apartados al rerolear", "test_last_occurrences")
 	run_case("recargo del encargo", "test_order_fee")
@@ -41,19 +42,32 @@ func test_is_same_run() -> void:
 	check(not SupermarketRules.is_same_run(null, "abc", 0, 1), "sin estado guardado")
 
 
+func test_wave_earns() -> void:
+	check(SupermarketRules.wave_earns(1, 0, true), "el élite de su oleada")
+	check(not SupermarketRules.wave_earns(1, 0, false), "un élite fuera de su oleada (Cebo, Bolsa de caramelos, DLC) no cuenta")
+	check(SupermarketRules.wave_earns(0, 1, false), "un jefe cuenta en cualquier oleada")
+	check(SupermarketRules.wave_earns(1, 2, false), "la oleada 20 con dos jefes y un élite")
+	check(not SupermarketRules.wave_earns(0, 0, true), "una oleada de élite en la que el élite no muere")
+
+
 func test_next_run_state() -> void:
-	var stored := {"run": "abc", "kills": 2, "wave": 12, "earned": 1, "spent": {"0": 1}}
-	var same: Dictionary = SupermarketRules.next_run_state(stored, "abc", 2, 13, 1)
+	var stored := {"run": "abc", "kills": 2, "wave": 12, "elite_kills": 1, "boss_kills": 1, "earned": 1, "spent": {"0": 1}}
+	var same: Dictionary = SupermarketRules.next_run_state(stored, "abc", 1, 1, 13, false, 1)
 	check(same.earned == 1 and same.spent.get("0") == 1, "sin bajas nuevas no se gana nada y se conserva lo gastado")
-	var one: Dictionary = SupermarketRules.next_run_state(stored, "abc", 3, 13, 1)
-	check(one.earned == 2 and one.kills == 3 and one.wave == 13, "un élite derrotado: un encargo más")
-	var two: Dictionary = SupermarketRules.next_run_state(stored, "abc", 4, 13, 1)
-	check(two.earned == 2, "dos jefes en la misma oleada: un solo encargo")
-	var more: Dictionary = SupermarketRules.next_run_state(stored, "abc", 3, 13, 2)
+	var elite: Dictionary = SupermarketRules.next_run_state(stored, "abc", 2, 1, 13, true, 1)
+	check(elite.earned == 2 and elite.kills == 3 and elite.wave == 13, "el élite de su oleada: un encargo más")
+	var stray: Dictionary = SupermarketRules.next_run_state(stored, "abc", 2, 1, 13, false, 1)
+	check(stray.earned == 1 and stray.elite_kills == 2, "un élite fuera de su oleada no da encargo, pero se apunta")
+	var bosses: Dictionary = SupermarketRules.next_run_state(stored, "abc", 1, 3, 13, false, 1)
+	check(bosses.earned == 2, "dos jefes en la misma oleada: un solo encargo")
+	var more: Dictionary = SupermarketRules.next_run_state(stored, "abc", 1, 2, 13, false, 2)
 	check(more.earned == 3, "con 2 encargos por oleada, dos más")
-	var other: Dictionary = SupermarketRules.next_run_state(stored, "abc", 0, 1, 1)
+	var other: Dictionary = SupermarketRules.next_run_state(stored, "abc", 0, 0, 1, false, 1)
 	check(other.earned == 0 and other.spent.empty(), "otra partida empieza de cero")
-	var broken: Dictionary = SupermarketRules.next_run_state({"run": "abc", "kills": 0, "wave": 2, "spent": "roto"}, "abc", 0, 3, 1)
+	var old_format := {"run": "abc", "kills": 2, "wave": 12, "earned": 1, "spent": {"0": 1}}
+	var migrated: Dictionary = SupermarketRules.next_run_state(old_format, "abc", 2, 1, 13, true, 1)
+	check(migrated.earned == 1 and migrated.elite_kills == 2 and migrated.boss_kills == 1, "un estado de la versión anterior no suma: toma las bajas como punto de partida")
+	var broken: Dictionary = SupermarketRules.next_run_state({"run": "abc", "kills": 0, "wave": 2, "spent": "roto"}, "abc", 0, 0, 3, false, 1)
 	check(broken.spent.empty() and broken.earned == 0, "un estado roto no rompe nada")
 
 

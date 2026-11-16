@@ -392,17 +392,39 @@ static func remove_currency(amount: int, player_index: int) -> void:
 
 # --- Élites, jefes y artículos bloqueados -----------------------------------------
 
+# EliteType del juego: 0 = élite, 1 = horda.
+const ELITE_TYPE_ELITE := 0
+
+
 # Élites y jefes derrotados en lo que va de partida (el juego los guarda con
-# la partida).
-static func elite_and_boss_kills() -> int:
+# la partida). Ojo: el juego apunta como élite cualquier enemigo con cuerpo de
+# jefe que muera, también los que no son el élite de la oleada (los que añaden
+# el Cebo, la Bolsa de caramelos o algunos grupos de los DLC).
+static func elite_kills() -> int:
+	return _list_size(_singleton("RunData"), "elites_killed_this_run")
+
+
+static func boss_kills() -> int:
+	return _list_size(_singleton("RunData"), "bosses_killed_this_run")
+
+
+# ¿La oleada `wave` tenía programado un élite (no una horda)? En la tienda,
+# current_wave es la oleada que acaba de terminar.
+static func is_scheduled_elite_wave(wave: int) -> bool:
 	var run_data = _singleton("RunData")
-	if run_data == null:
+	if run_data == null or not "elites_spawn" in run_data or not run_data.elites_spawn is Array:
+		return false
+	for entry in run_data.elites_spawn:
+		# [oleada, tipo, id]
+		if entry is Array and entry.size() >= 2 and int(entry[0]) == wave and int(entry[1]) == ELITE_TYPE_ELITE:
+			return true
+	return false
+
+
+static func _list_size(object, property: String) -> int:
+	if object == null or not property in object or not object.get(property) is Array:
 		return 0
-	var total := 0
-	for list_name in ["elites_killed_this_run", "bosses_killed_this_run"]:
-		if list_name in run_data and run_data.get(list_name) is Array:
-			total += run_data.get(list_name).size()
-	return total
+	return object.get(property).size()
 
 
 # Huella de la partida en curso: personajes, dificultad y modo. No usa las
