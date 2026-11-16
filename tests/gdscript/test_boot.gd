@@ -354,14 +354,19 @@ func _test_supermarket_saved_orders(legend, fake: GDScript) -> void:
 	run_data.current_wave = 10
 	legend.on_shop_opened()
 	check(legend.orders_left(0) == 0, "sin élites ni jefes no hay encargos")
-	_next_wave(legend, run_data, 1)
-	check(legend.orders_left(0) == 1, "un élite derrotado da un encargo")
+	# Oleada 11: la de élite (FAKE_RUN_DATA la tiene programada).
+	_next_wave(legend, run_data, 1, 0)
+	check(legend.orders_left(0) == 1, "el élite de su oleada da un encargo")
 	check(legend.is_unlocked(0), "el catálogo debería estar abierto")
-	# No lo gasta, pasa otra oleada y derrota a un jefe: se suman.
-	_next_wave(legend, run_data, 1)
+	# Oleada 12: cae un élite que no es el de la oleada (Cebo, Bolsa de
+	# caramelos, grupos de los DLC). Es el fallo que vio Mauro: no da encargo.
+	_next_wave(legend, run_data, 1, 0)
+	check(legend.orders_left(0) == 1, "un élite fuera de su oleada no da encargo (%d)" % legend.orders_left(0))
+	# Oleada 13: un jefe. El encargo sin gastar se guarda y se suma.
+	_next_wave(legend, run_data, 0, 1)
 	check(legend.orders_left(0) == 2, "el encargo sin gastar debería guardarse (%d)" % legend.orders_left(0))
-	# Dos jefes en la misma oleada (o uno que el juego cuenta dos veces): uno solo.
-	_next_wave(legend, run_data, 2)
+	# Oleada 14: dos jefes a la vez: uno solo.
+	_next_wave(legend, run_data, 0, 2)
 	check(legend.orders_left(0) == 3, "dos jefes en la misma oleada dan un solo encargo (%d)" % legend.orders_left(0))
 	# Volver a entrar en la misma tienda no suma nada.
 	legend.on_shop_opened()
@@ -404,11 +409,14 @@ func _test_supermarket_saved_orders(legend, fake: GDScript) -> void:
 	run_data.free()
 
 
-# Juega una oleada en la que caen `kills` élites o jefes y entra en su tienda.
-func _next_wave(legend, run_data: Node, kills: int) -> void:
+# Juega una oleada en la que caen `elites` élites y `bosses` jefes y entra en
+# su tienda.
+func _next_wave(legend, run_data: Node, elites: int, bosses: int) -> void:
 	legend.on_shop_closed()
 	run_data.current_wave += 1
-	for kill in kills:
+	for kill in elites:
+		run_data.elites_killed_this_run.append(kill)
+	for kill in bosses:
 		run_data.bosses_killed_this_run.append(kill)
 	legend.on_shop_opened()
 

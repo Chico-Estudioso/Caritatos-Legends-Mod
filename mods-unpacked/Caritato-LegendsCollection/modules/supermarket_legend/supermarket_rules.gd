@@ -30,21 +30,34 @@ static func is_same_run(stored, fingerprint: String, kills: int, wave: int) -> b
 	return not (wave <= 1 and int(stored.get("wave", 0)) > 1)
 
 
+# ¿Da encargo la oleada que acaba de terminar? Sí si cayó un jefe (el juego
+# los apunta aparte) o si cayó un élite en una oleada de élite programada.
+# Los élites que caen fuera de su oleada (Cebo, Bolsa de caramelos, grupos de
+# los DLC) no cuentan: daban un encargo de más en la oleada siguiente.
+static func wave_earns(new_elites: int, new_bosses: int, elite_wave: bool) -> bool:
+	return new_bosses > 0 or (new_elites > 0 and elite_wave)
+
+
 # Estado de la partida al entrar en una tienda:
-# {run, kills, wave, earned, spent: {jugador: gastados}}.
-# Si en la oleada que acaba de terminar cayó al menos un élite o jefe (hay
-# más bajas que las apuntadas), se ganan per_wave encargos: uno por oleada
-# aunque caigan dos jefes a la vez. En otra partida, todo empieza de cero.
-static func next_run_state(stored, fingerprint: String, kills: int, wave: int, per_wave: int) -> Dictionary:
+# {run, kills, wave, elite_kills, boss_kills, earned, spent: {jugador: gastados}}.
+# Si la oleada que acaba de terminar da encargo (wave_earns), se ganan
+# per_wave encargos: uno por oleada aunque caigan dos jefes a la vez. En otra
+# partida, todo empieza de cero. Con un estado de una versión anterior (sin
+# bajas por separado) se toman las bajas actuales como punto de partida.
+static func next_run_state(stored, fingerprint: String, elite_kills: int, boss_kills: int, wave: int, elite_wave: bool, per_wave: int) -> Dictionary:
+	var kills := elite_kills + boss_kills
 	if not is_same_run(stored, fingerprint, kills, wave):
-		return {"run": fingerprint, "kills": kills, "wave": wave, "earned": 0, "spent": {}}
+		return {"run": fingerprint, "kills": kills, "wave": wave, "elite_kills": elite_kills, "boss_kills": boss_kills, "earned": 0, "spent": {}}
 	var earned := int(stored.get("earned", 0))
-	if kills > int(stored.get("kills", 0)):
-		earned += int(max(0, per_wave))
+	if stored.has("elite_kills") and stored.has("boss_kills"):
+		var new_elites := elite_kills - int(stored.elite_kills)
+		var new_bosses := boss_kills - int(stored.boss_kills)
+		if wave_earns(new_elites, new_bosses, elite_wave):
+			earned += int(max(0, per_wave))
 	var spent = stored.get("spent", {})
 	if not spent is Dictionary:
 		spent = {}
-	return {"run": fingerprint, "kills": kills, "wave": wave, "earned": earned, "spent": spent}
+	return {"run": fingerprint, "kills": kills, "wave": wave, "elite_kills": elite_kills, "boss_kills": boss_kills, "earned": earned, "spent": spent}
 
 
 # Recargo del encargo: porcentaje del precio del artículo, redondeado hacia arriba.

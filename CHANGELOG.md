@@ -27,6 +27,10 @@ Los cambios importantes de Caritatos Legends se documentan aquí. El formato sig
   - Se oculta tras 5 s sin mover el ratón (ajustable; 0 = nunca).
 
 ### Corregido
+- **Supermercado: tras cada jefe aparecía un encargo de más en la tienda siguiente** (visto por Mauro en la 1.2.0.2).
+  - El juego apunta como élite cualquier enemigo con cuerpo de jefe que muera, también los que no son el élite de la oleada (los extra del Cebo, de la Bolsa de caramelos o de algunos grupos de los DLC).
+  - Ahora solo cuentan los jefes y el élite de una oleada de élite programada.
+  - Cada tienda anota en `modloader.log` lo que ha contado, para comprobarlo si vuelve a pasar.
 - **Supermercado: al derrotar un segundo jefe salían 2 encargos en vez de 1** (visto por Mauro en la 1.2.0.2).
   - Ahora se gana un encargo por cada oleada en la que cae al menos un élite o jefe, aunque caigan dos a la vez o el juego cuente dos veces el mismo.
   - La partida ya no se reconoce con la lista de élites sorteados, que el juego amplía a mitad de partida y que podía hacer olvidar los encargos gastados. Ahora una partida nueva se reconoce por los personajes, la dificultad y el modo, por bajar las bajas o por volver a la oleada 1.
